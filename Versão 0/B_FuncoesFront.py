@@ -1,12 +1,5 @@
 from C_ClasseJogador import *
 
-TAMANHO_TELA = (
-    600, 400
-)
-
-# 1000 milisegundos = 1s
-DT = 10
-
 
 def carregando_visual(
 
