@@ -6,7 +6,9 @@ VEL_DE_IMPULSO_JOGADOR = 30
 
 COEF_DE_FORCA_DO_CHUTE = 0.5
 
-MASSA_JOGADOR = 100
+MASSA_JOGADOR = 10
+
+DISTANCIA_MINIMA_PARA_CAPTURA = TAMANHO_JOGADOR + TAMANHO_BOLA[0]
 
 
 class Jogador(Objeto):
@@ -39,6 +41,37 @@ class Jogador(Objeto):
         self._estar_com_a_bola = False
         self.forca_de_chute = 0
 
+
+    def apresentar_possiveis_pontos_de_captura(
+            self,
+            tela: pg.Surface
+    ):
+        """
+        Descrição:
+            Função responsável por apresentar uma forma de visualizar
+            os pontos possiveis que o jogador pode capturar.
+        """
+
+        # Vamos desenhar uma circunferencia em torno dos pontos
+        PASSO = 1
+        for x_ in range(int(self.pos.x) - 100, int(self.pos.x) + 100, PASSO):
+            for y_ in range(int(self.pos.y) - 100, int(self.pos.y) + 100, PASSO):
+                # Aqui vai depender da métrica usada para medir a distância.
+                if abs((
+                    pg.Vector2(
+                        x_, y_
+                    ) - self.pos
+                ).magnitude() - DISTANCIA_MINIMA_PARA_CAPTURA) <= 1:
+                    pg.draw.circle(
+                        tela,
+                        "white",
+                        (x_, y_),
+                        1,
+                        5
+                    )
+
+
+
     def segurar_bola(
             self,
             bola: Bola,
@@ -57,10 +90,9 @@ class Jogador(Objeto):
         if (
                 bola.pos - self.pos
         ).magnitude() <= (
-                TAMANHO_JOGADOR + TAMANHO_BOLA[0]
+                30
         ):
             # Caso esteja em uma distância mínima
-
             # Primeiro, bola acompanha
             bola.vel = self.vel
             self._estar_com_a_bola = True
@@ -91,11 +123,12 @@ class Jogador(Objeto):
         if (
                 bola.pos - self.pos
         ).magnitude() <= (
-                TAMANHO_JOGADOR + TAMANHO_BOLA[0]
+                DISTANCIA_MINIMA_PARA_CAPTURA
         ):
             # Devemos chutar a bola conservando momento.
             bola.vel = COEF_DE_FORCA_DO_CHUTE * self.forca_de_chute * self.vel.normalize()
 
+            print(self.vel.magnitude())
             self.vel = self.vel - (MASSA_BOLA / MASSA_JOGADOR) * bola.vel
-
+            print(self.vel.magnitude())
         self.forca_de_chute = 0

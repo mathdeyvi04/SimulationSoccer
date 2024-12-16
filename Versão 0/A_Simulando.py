@@ -102,6 +102,12 @@ def simular() -> None:
                 TAMANHO_JOGADOR
             )
 
+        lista_de_jogadores[0].apresentar_possiveis_pontos_de_captura(
+            janela
+        )
+
+
+
         pg.time.wait(
             # Milisegundos
             MEDIDOR_DE_FREQUENCIA_DE_FRAMES
