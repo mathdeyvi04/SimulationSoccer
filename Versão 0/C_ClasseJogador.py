@@ -4,7 +4,9 @@ TAMANHO_JOGADOR = 10
 
 VEL_DE_IMPULSO_JOGADOR = 30
 
+COEF_DE_FORCA_DO_CHUTE = 0.5
 
+MASSA_JOGADOR = 100
 
 
 class Jogador(Objeto):
@@ -34,9 +36,12 @@ class Jogador(Objeto):
             )
         )
 
+        self._estar_com_a_bola = False
+        self.forca_de_chute = 0
+
     def segurar_bola(
             self,
-            bola: Bola
+            bola: Bola,
     ):
         """
         Descrição:
@@ -50,7 +55,7 @@ class Jogador(Objeto):
         """
 
         if (
-            bola.pos - self.pos
+                bola.pos - self.pos
         ).magnitude() <= (
                 TAMANHO_JOGADOR + TAMANHO_BOLA[0]
         ):
@@ -58,4 +63,39 @@ class Jogador(Objeto):
 
             # Primeiro, bola acompanha
             bola.vel = self.vel
+            self._estar_com_a_bola = True
 
+    def soltar_bola(
+            self,
+            bola: Bola
+    ):
+        """
+        Descrição:
+            Função responsável pelo jogador soltar a bola.
+        """
+
+        if self._estar_com_a_bola:
+            bola.vel = self.vel.copy()
+            self._estar_com_a_bola = False
+
+    def chutar_bola(
+            self,
+            bola: Bola
+    ):
+        """
+        Descrição:
+            Função responsável por chutar a bola e providenciar as
+            respectivas consequências.
+        """
+
+        if (
+                bola.pos - self.pos
+        ).magnitude() <= (
+                TAMANHO_JOGADOR + TAMANHO_BOLA[0]
+        ):
+            # Devemos chutar a bola conservando momento.
+            bola.vel = COEF_DE_FORCA_DO_CHUTE * self.forca_de_chute * self.vel.normalize()
+
+            self.vel = self.vel - (MASSA_BOLA / MASSA_JOGADOR) * bola.vel
+
+        self.forca_de_chute = 0

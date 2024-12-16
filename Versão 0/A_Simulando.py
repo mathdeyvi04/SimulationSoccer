@@ -46,14 +46,29 @@ def simular() -> None:
                 if evento.key == pg.K_s:
                     lista_de_jogadores[0].vel.y += VEL_DE_IMPULSO_JOGADOR
 
-                if evento.key == pg.K_a:
+                elif evento.key == pg.K_a:
                     lista_de_jogadores[0].vel.x += - VEL_DE_IMPULSO_JOGADOR
 
-                if evento.key == pg.K_d:
+                elif evento.key == pg.K_d:
                     lista_de_jogadores[0].vel.x += VEL_DE_IMPULSO_JOGADOR
 
-                if evento.key == pg.K_k:
+                elif evento.key == pg.K_k:
                     lista_de_jogadores[0].segurar_bola(bola)
+
+                elif evento.key == pg.K_p:
+                    lista_de_jogadores[0].vel = pg.Vector2(0, 0)
+
+                elif evento.key == pg.K_l:
+                    lista_de_jogadores[0].forca_de_chute = 1
+
+            # Verificação de Teclas Soltas
+            if evento.type == pg.KEYUP:
+                if evento.key == pg.K_k:
+                    lista_de_jogadores[0].soltar_bola(bola)
+
+                if evento.key == pg.K_l:
+                    # Aqui devemos chutar e liberar a força do chute.
+                    lista_de_jogadores[0].chutar_bola(bola)
 
         # Aplicando Física na Bola
         bola.estar_preso_ao_campo()
@@ -72,6 +87,10 @@ def simular() -> None:
         )
 
         for jogador in lista_de_jogadores:
+
+            if jogador.forca_de_chute:
+                jogador.forca_de_chute += 1
+
             jogador.estar_preso_ao_campo()
             jogador.arrastar()
             jogador.movimentar(INTERV_DE_TEMPO)
