@@ -2,7 +2,9 @@ from D_ClasseBola import *
 
 TAMANHO_JOGADOR = 10
 
-VEL_DE_IMPULSO_JOGADOR = 10
+VEL_DE_IMPULSO_JOGADOR = 30
+
+
 
 
 class Jogador(Objeto):
@@ -31,3 +33,29 @@ class Jogador(Objeto):
                 DIMENSOES_MINIMAS[1][1]
             )
         )
+
+    def segurar_bola(
+            self,
+            bola: Bola
+    ):
+        """
+        Descrição:
+            Função responsável por capacitar o jogador de segurar a bola.
+
+        Parâmetros:
+            Autoexplicativos.
+
+        Retorno:
+            Bola seguirá o jogador.
+        """
+
+        if (
+            bola.pos - self.pos
+        ).magnitude() <= (
+                TAMANHO_JOGADOR + TAMANHO_BOLA[0]
+        ):
+            # Caso esteja em uma distância mínima
+
+            # Primeiro, bola acompanha
+            bola.vel = self.vel
+

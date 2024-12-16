@@ -52,6 +52,9 @@ def simular() -> None:
                 if evento.key == pg.K_d:
                     lista_de_jogadores[0].vel.x += VEL_DE_IMPULSO_JOGADOR
 
+                if evento.key == pg.K_k:
+                    lista_de_jogadores[0].segurar_bola(bola)
+
         # Aplicando Física na Bola
         bola.estar_preso_ao_campo()
         bola.arrastar()

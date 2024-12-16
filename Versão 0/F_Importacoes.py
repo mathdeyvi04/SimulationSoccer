@@ -6,7 +6,7 @@ TAMANHO_TELA = (
 )
 DIMENSOES_MINIMAS = (
     (44, 751),
-    (45, 465),
+    (45, 455),
 )
 
 # 1000 milisegundos = 1s
