@@ -92,6 +92,11 @@ def simular() -> None:
                             bola
                         )
 
+                    case 1:
+                        lista_de_jogadores[
+                            0
+                        ].iniciar_preparacao_para_chute()
+
                     case _:
                         pass
 
@@ -102,6 +107,13 @@ def simular() -> None:
                         lista_de_jogadores[
                             0
                         ].soltar_bola()
+
+                    case 1:
+                        lista_de_jogadores[
+                            0
+                        ].chutar_bola(
+                            bola
+                        )
 
                     case _:
                         pass
@@ -122,7 +134,8 @@ def simular() -> None:
 
         for jogador in lista_de_jogadores:
             jogador.fazer_existir(
-                bola
+                bola,
+                janela
             )
 
             pg.draw.circle(
