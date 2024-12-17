@@ -3,6 +3,8 @@ from D_ClasseBola import *
 TAMANHO_JOGADOR = 10
 VEL_DE_IMPULSO_JOGADOR = 30
 
+DISTANCIA_MINIMA_PARA_CAPTURA = 20
+
 
 class Jogador(Objeto):
     """
@@ -36,27 +38,71 @@ class Jogador(Objeto):
         # Atributos Interessantes
 
         # Atributos Privados
-        self._PESO_PARA_DISTANCIA_EM_X = 1
-        self._PESO_PARA_DISTANCIA_EM_Y = 1
+        self._jogador_esta_com_a_bola = False
+        self._acumulando_forca_de_chute = 0
 
     # Métodos de Revisão ou Técnicos
 
     # Métodos de Estado
-    def estar_perto_de_um_ponto(
+    def _estar_perto_de_um_ponto(
             self,
-            ponto: pg.Vector2
+            ponto: Bola
     ) -> bool:
         """
         Descrição:
             Função responsável por permitir saber se o jogador está perto.
-
-            Infelizmente, acredito que devido a não-quadratura da janela,
-            não basta apenas colocar a distância. Deve haver uma espécie
-            de peso relativo no eixo_y.
         """
 
-        return self.pos != ponto
+        return (
+                ponto.pos - self.pos
+        ).magnitude() <= DISTANCIA_MINIMA_PARA_CAPTURA
+
+    def fazer_existir(
+            self,
+            bola: Bola
+    ):
+        """
+        Descrição:
+            Função responsável por executar todos os métodos
+            inerentes à existência de cada jogador.
+        """
+
+        self.estar_preso_ao_campo()
+        self.arrastar()
+        self.movimentar(
+            INTERV_DE_TEMPO
+        )
+
+        if self._jogador_esta_com_a_bola:
+            bola.vel = self.vel.copy()
+
+        if self._acumulando_forca_de_chute:
+            self._acumulando_forca_de_chute += 1
 
     # Métodos de Ações Ativa
+    def segurar_bola(
+            self,
+            bola
+    ):
+        """
+        Descrição:
+            Função responsável por permitir que o jogador
+            leve a bola consigo.
+        """
+
+        if self._estar_perto_de_um_ponto(
+                bola
+        ):
+            self._jogador_esta_com_a_bola = True
 
     # Métodos de Ações Passivas
+    def soltar_bola(
+            self
+    ):
+        """
+        Descrição:
+            Autoexplicação.
+        """
+
+        if self._jogador_esta_com_a_bola:
+            self._jogador_esta_com_a_bola = False

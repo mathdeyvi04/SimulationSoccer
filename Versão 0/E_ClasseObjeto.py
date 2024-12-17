@@ -27,6 +27,12 @@ class Objeto:
             Função responsável por realizar as conversões
             necessárias quando algo tentar sair do campo.
 
+            Fazendo desta forma, resolvemos um bug:
+                Quando a bola nascia, ou por algum motivo, ficava
+                em uma região proibida com pouca velocidade de tal forma
+                que à cada iteração ela ainda ficava na região proibida,
+                ela apenas ficava 'vibrando' eternamente, sem conseguir sair.
+
         Parâmetros:
             Nenhum.
 
@@ -34,12 +40,21 @@ class Objeto:
             Objeto sofre reflexão.
         """
 
-        if self.pos.x <= DIMENSOES_MINIMAS[0][0] or self.pos.x >= DIMENSOES_MINIMAS[0][1]:  # Bordas Laterais.
+        if self.pos.x <= DIMENSOES_MINIMAS[0][0]:
             self.vel.x *= -1
-            return None
+            self.pos.x = DIMENSOES_MINIMAS[0][0] + 1
 
-        if self.pos.y <= DIMENSOES_MINIMAS[1][0] or self.pos.y >= DIMENSOES_MINIMAS[1][1]:
+        elif self.pos.x >= DIMENSOES_MINIMAS[0][1]:
+            self.vel.x *= -1
+            self.pos.x = DIMENSOES_MINIMAS[0][1] - 1
+
+        elif self.pos.y <= DIMENSOES_MINIMAS[1][0]:
             self.vel.y *= -1
+            self.pos.y = DIMENSOES_MINIMAS[1][0] + 1
+
+        elif self.pos.y >= DIMENSOES_MINIMAS[1][1]:
+            self.vel.y *= -1
+            self.pos.y = DIMENSOES_MINIMAS[1][1] - 1
 
     def movimentar(self, interv: float):
         """

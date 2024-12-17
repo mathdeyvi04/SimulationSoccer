@@ -82,9 +82,15 @@ def simular() -> None:
                         pass
 
             elif evento.type == pg.MOUSEBUTTONDOWN:
-                # 3 É O DIREITO
+                # 3 É O Esquerdo
 
                 match evento.button:
+                    case 3:
+                        lista_de_jogadores[
+                            0
+                        ].segurar_bola(
+                            bola
+                        )
 
                     case _:
                         pass
@@ -92,13 +98,16 @@ def simular() -> None:
             elif evento.type == pg.MOUSEBUTTONUP:
                 match evento.button:
 
+                    case 3:
+                        lista_de_jogadores[
+                            0
+                        ].soltar_bola()
+
                     case _:
                         pass
 
         # Aplicando Física na Bola
-        bola.estar_preso_ao_campo()
-        bola.arrastar()
-        bola.movimentar(INTERV_DE_TEMPO)
+        bola.fazer_existir()
 
         # Atualizações na tela
         janela.blit(
@@ -108,15 +117,12 @@ def simular() -> None:
 
         janela.blit(
             bola.imagem,
-            bola.pos
+            bola.POS_IMAGEM
         )
 
         for jogador in lista_de_jogadores:
-
-            jogador.estar_preso_ao_campo()
-            jogador.arrastar()
-            jogador.movimentar(
-                INTERV_DE_TEMPO
+            jogador.fazer_existir(
+                bola
             )
 
             pg.draw.circle(

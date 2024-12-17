@@ -1,8 +1,9 @@
 import pygame as pg
+from math import sqrt
 import random as rd
 
 TAMANHO_TELA = (
-    500, 300
+    800, 500
 )
 DIMENSOES_MINIMAS = (
     (
