@@ -2,15 +2,22 @@ import pygame as pg
 import random as rd
 
 TAMANHO_TELA = (
-    800, 500
+    500, 300
 )
 DIMENSOES_MINIMAS = (
-    (44, 751),
-    (45, 455),
+    (
+        int(0.053 * TAMANHO_TELA[0] + 0.7),
+        int(0.94 * TAMANHO_TELA[0] + 0.2)
+    ),
+    (
+        int(0.085 * TAMANHO_TELA[1] + 0.8),
+        int(0.926 * TAMANHO_TELA[1] + 0.8)
+    ),
 )
 
 # 1000 milisegundos = 1s
-MEDIDOR_DE_FREQUENCIA_DE_FRAMES = 1
+# 29 -> 30 quadros por segundo.
+MEDIDOR_DE_FREQUENCIA_DE_FRAMES = 29
 
-INTERV_DE_TEMPO = 0.01
+INTERV_DE_TEMPO = 0.03
 

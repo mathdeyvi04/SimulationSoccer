@@ -4,8 +4,6 @@ TAMANHO_BOLA = (
     20,
     20
 )
-MASSA_BOLA = 1
-
 
 class Bola(Objeto):
     """

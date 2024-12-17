@@ -32,43 +32,68 @@ def simular() -> None:
                 FIM_DE_JOGO = True
 
             # Verificação de Teclas Pressionadas
-            if evento.type == pg.KEYDOWN:
-                if evento.key == pg.K_ESCAPE:
-                    print(f"\nÚltima posição do mouse registrada: {pg.mouse.get_pos()}")
-                    FIM_DE_JOGO = True
+            elif evento.type == pg.KEYDOWN:
 
-                # Vamos controlar o primeiro jogador.
-                if evento.key == pg.K_w:
-                    lista_de_jogadores[
-                        0
-                    ].vel.y += - VEL_DE_IMPULSO_JOGADOR
+                match evento.key:
 
-                if evento.key == pg.K_s:
-                    lista_de_jogadores[0].vel.y += VEL_DE_IMPULSO_JOGADOR
+                    case pg.K_ESCAPE:
+                        print(f"\nÚltima posição do mouse registrada: {pg.mouse.get_pos()}")
+                        FIM_DE_JOGO = True
 
-                elif evento.key == pg.K_a:
-                    lista_de_jogadores[0].vel.x += - VEL_DE_IMPULSO_JOGADOR
+                    # Direcionais
+                    case pg.K_w:
+                        lista_de_jogadores[
+                            0
+                        ].vel.y += - VEL_DE_IMPULSO_JOGADOR
 
-                elif evento.key == pg.K_d:
-                    lista_de_jogadores[0].vel.x += VEL_DE_IMPULSO_JOGADOR
+                    case pg.K_s:
+                        lista_de_jogadores[
+                            0
+                        ].vel.y += VEL_DE_IMPULSO_JOGADOR
 
-                elif evento.key == pg.K_k:
-                    lista_de_jogadores[0].segurar_bola(bola)
+                    case pg.K_a:
+                        lista_de_jogadores[
+                            0
+                        ].vel.x += - VEL_DE_IMPULSO_JOGADOR
 
-                elif evento.key == pg.K_p:
-                    lista_de_jogadores[0].vel = pg.Vector2(0, 0)
+                    case pg.K_d:
+                        lista_de_jogadores[
+                            0
+                        ].vel.x += VEL_DE_IMPULSO_JOGADOR
 
-                elif evento.key == pg.K_l:
-                    lista_de_jogadores[0].forca_de_chute = 1
+                    case pg.K_p:
+                        lista_de_jogadores[
+                            0
+                        ].vel = pg.Vector2(
+                            0,
+                            0
+                        )
+
+                    case _:
+                        # Default
+                        pass
 
             # Verificação de Teclas Soltas
-            if evento.type == pg.KEYUP:
-                if evento.key == pg.K_k:
-                    lista_de_jogadores[0].soltar_bola(bola)
+            elif evento.type == pg.KEYUP:
 
-                if evento.key == pg.K_l:
-                    # Aqui devemos chutar e liberar a força do chute.
-                    lista_de_jogadores[0].chutar_bola(bola)
+                match evento.key:
+
+                    case _:
+                        pass
+
+            elif evento.type == pg.MOUSEBUTTONDOWN:
+                # 3 É O DIREITO
+
+                match evento.button:
+
+                    case _:
+                        pass
+
+            elif evento.type == pg.MOUSEBUTTONUP:
+                match evento.button:
+
+                    case _:
+                        pass
 
         # Aplicando Física na Bola
         bola.estar_preso_ao_campo()
@@ -88,12 +113,11 @@ def simular() -> None:
 
         for jogador in lista_de_jogadores:
 
-            if jogador.forca_de_chute:
-                jogador.forca_de_chute += 1
-
             jogador.estar_preso_ao_campo()
             jogador.arrastar()
-            jogador.movimentar(INTERV_DE_TEMPO)
+            jogador.movimentar(
+                INTERV_DE_TEMPO
+            )
 
             pg.draw.circle(
                 janela,
@@ -102,18 +126,11 @@ def simular() -> None:
                 TAMANHO_JOGADOR
             )
 
-        lista_de_jogadores[0].apresentar_possiveis_pontos_de_captura(
-            janela
-        )
-
-
-
         pg.time.wait(
             # Milisegundos
             MEDIDOR_DE_FREQUENCIA_DE_FRAMES
         )
         pg.display.flip()
-
     pg.quit()
 
 
