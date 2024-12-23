@@ -1,6 +1,4 @@
-import pygame as pg
-from math import sqrt
-import random as rd
+from G_Variaveis_De_Texto import *
 
 TAMANHO_TELA = (
     800, 500
@@ -22,10 +20,3 @@ LIMITES_VERTICAIS_DOS_GOLS = (
     int(0.42 * TAMANHO_TELA[1] + 7.33),  # Mais Acima
     int(0.59 * TAMANHO_TELA[1] - 3)  # Mais Abaixo
 )
-
-# 1000 milisegundos = 1s
-# 29 -> 30 quadros por segundo.
-MEDIDOR_DE_FREQUENCIA_DE_FRAMES = 29
-
-INTERV_DE_TEMPO = 0.03
-

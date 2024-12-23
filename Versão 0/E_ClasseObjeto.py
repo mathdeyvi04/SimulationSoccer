@@ -1,4 +1,4 @@
-from F_Importacoes import *
+from F_Variaveis_De_Geometria import *
 
 COEF_ARRASTO = 0.2
 
