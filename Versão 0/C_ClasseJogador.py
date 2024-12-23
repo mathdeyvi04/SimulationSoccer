@@ -21,8 +21,16 @@ class Jogador(Objeto):
         super().__init__()
 
         # Definimos características inerentes à cada jogador.
-        self.numero_jogador = numero_jogador
-        self.cor = "red" if numero_jogador % 2 == 0 else "blue"
+        self.numero_jogador = numero_jogador // 2 if numero_jogador % 2 == 0 else (numero_jogador + 1) // 2
+        self.cor = (
+            252,
+            114,
+            114
+        ) if numero_jogador % 2 == 0 else (
+            97,
+            97,
+            250
+        )
 
         # Definimos o local inicial do jogador.
         self.pos = pg.Vector2(
@@ -37,6 +45,18 @@ class Jogador(Objeto):
         )
 
         # Atributos Interessantes
+        self.texto_do_numero_do_jogador = pg.font.Font(
+            None,
+            25
+        ).render(
+            str(self.numero_jogador),
+            True,
+            (
+                255,
+                255,
+                255
+            )
+        )
 
         # Atributos Privados
         self._jogador_esta_com_a_bola = False
@@ -156,9 +176,9 @@ class Jogador(Objeto):
                 bola
         ):
             bola.vel = self._acumulando_forca_de_chute * (
-                pg.Vector2(
-                    pg.mouse.get_pos()
-                ) - self.pos
+                    pg.Vector2(
+                        pg.mouse.get_pos()
+                    ) - self.pos
             ).normalize()
 
             self.vel = self.vel - 0.1 * bola.vel

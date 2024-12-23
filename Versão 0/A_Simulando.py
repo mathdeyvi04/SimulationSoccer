@@ -1,5 +1,6 @@
 from B_FuncoesFront import *
 
+# Nesta versão, deve ser 1.
 QUANTIDADE_DE_JOGADORES = 1
 
 
@@ -16,8 +17,8 @@ def simular() -> None:
     bola = Bola()
     lista_de_jogadores = []
     for indice_do_jogador in range(
-            0,
-            QUANTIDADE_DE_JOGADORES
+            1,
+            QUANTIDADE_DE_JOGADORES + 1
     ):
         lista_de_jogadores.append(
             Jogador(
@@ -167,6 +168,15 @@ def simular() -> None:
                 jogador.pos,
                 TAMANHO_JOGADOR
             )
+
+            janela.blit(
+                jogador.texto_do_numero_do_jogador,
+                jogador.texto_do_numero_do_jogador.get_rect(
+                    center=jogador.pos
+                )
+            )
+
+            # Dentro de cada jogador, devemos ter um número inerente à ele.
 
         pg.time.wait(
             # Milisegundos

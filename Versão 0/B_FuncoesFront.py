@@ -67,7 +67,7 @@ def animacao_de_gol(
     """
     TEMPO_TOTAL_DE_DURACAO = 2
     PULSACAO = 500  # Lembre-se que isto é milisegundos.
-    TAMANHO_DA_FONTE_PARA_GOL = 30
+    TAMANHO_DA_FONTE_PARA_GOL = 50
 
     t = 0
     while t < TEMPO_TOTAL_DE_DURACAO:
@@ -78,9 +78,9 @@ def animacao_de_gol(
             "G O L!",
             True,
             (
-                219,
-                219,
-                92
+                0,
+                0,
+                0
             )
         )
 
@@ -102,4 +102,3 @@ def animacao_de_gol(
             PULSACAO
         )
         t += PULSACAO * pow(10, -3)
-        TAMANHO_DA_FONTE_PARA_GOL += 5
