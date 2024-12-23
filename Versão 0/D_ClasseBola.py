@@ -5,6 +5,7 @@ TAMANHO_BOLA = (
     20
 )
 
+VELOCIDADE_DE_EXPULSAO_DO_GOL = 100
 
 class Bola(Objeto):
     """
@@ -100,6 +101,31 @@ class Bola(Objeto):
 
         return se_chegou_ao_limite_lateral_do_campo and se_esta_nos_limites_verticais_do_gol
 
+    def houve_gol(
+            self
+    ) -> None:
+        """
+        Descrição:
+            Função responsável por tomar
+            as providências quando há gol.
+        """
+
+        self.pos = pg.Vector2(
+            self.pos.x + (
+                5 if self.pos.x < TAMANHO_TELA[0] // 2 else -5
+            ),
+            sum(LIMITES_VERTICAIS_DOS_GOLS) // 2
+        )
+
+        self.vel = pg.Vector2(
+            VELOCIDADE_DE_EXPULSAO_DO_GOL * (
+                1 if self.pos.x < TAMANHO_TELA[0] // 2 else -1
+            ),
+            rd.randint(
+                -VELOCIDADE_DE_EXPULSAO_DO_GOL,
+                VELOCIDADE_DE_EXPULSAO_DO_GOL
+            )
+        )
 
 
 

@@ -118,6 +118,8 @@ def simular() -> None:
                     case _:
                         pass
 
+        # Antes de qualquer coisa
+
         # Verificações de Gol
         if bola.verificar_se_eh_gol():
             """
@@ -127,14 +129,26 @@ def simular() -> None:
             Nesta versão, apenas teremos a mensagem de gol e a bola emergirá
             com uma determinada velocidade do meio do gol.
             """
-        # Aplicando Física na Bola
-        bola.fazer_existir()
+
+            bola.vel = pg.Vector2(
+                0,
+                0
+            )
+
+            animacao_de_gol(
+                janela
+            )
+
+            bola.houve_gol()
 
         # Atualizações na tela
         janela.blit(
             campo,
             (0, 0)
         )
+
+        # Aplicando Física na Bola
+        bola.fazer_existir()
 
         janela.blit(
             bola.imagem,
