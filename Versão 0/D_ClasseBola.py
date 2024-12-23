@@ -77,3 +77,31 @@ class Bola(Objeto):
             - TAMANHO_BOLA[0] // 2,
             - TAMANHO_BOLA[1] // 2
         )
+
+    # Métodos de Ação Passiva
+    def verificar_se_eh_gol(
+            self,
+    ) -> bool:
+        """
+        Descrição:
+            Função responsável por verificar se houve gol.
+            Caso sim, iniciará todas as medidas cabíveis.
+        """
+
+        MARGEM_PARA_QUE_HAJA_GOL = 0
+
+        se_chegou_ao_limite_lateral_do_campo = self.pos.x <= (
+               MARGEM_PARA_QUE_HAJA_GOL + DIMENSOES_MINIMAS[0][0]
+        ) or self.pos.x >= (
+               DIMENSOES_MINIMAS[0][1] - MARGEM_PARA_QUE_HAJA_GOL
+        )
+
+        se_esta_nos_limites_verticais_do_gol = LIMITES_VERTICAIS_DOS_GOLS[0] <= self.pos.y <= LIMITES_VERTICAIS_DOS_GOLS[1]
+
+        return se_chegou_ao_limite_lateral_do_campo and se_esta_nos_limites_verticais_do_gol
+
+
+
+
+
+

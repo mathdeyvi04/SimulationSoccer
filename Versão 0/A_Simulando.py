@@ -118,6 +118,15 @@ def simular() -> None:
                     case _:
                         pass
 
+        # Verificações de Gol
+        if bola.verificar_se_eh_gol():
+            """
+            Devíamos ter um goleiro para pegar a bola imediatamente
+            e ser capaz de lançá-la à alguem especifico.
+            
+            Nesta versão, apenas teremos a mensagem de gol e a bola emergirá
+            com uma determinada velocidade do meio do gol.
+            """
         # Aplicando Física na Bola
         bola.fazer_existir()
 
