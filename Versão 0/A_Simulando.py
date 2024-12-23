@@ -27,6 +27,7 @@ def simular() -> None:
         )
 
     FIM_DE_JOGO = False
+    TEMPO_TOTAL = 0
     while not FIM_DE_JOGO:
         for evento in pg.event.get():
             if evento.type == pg.QUIT:
@@ -177,6 +178,29 @@ def simular() -> None:
             )
 
             # Dentro de cada jogador, devemos ter um número inerente à ele.
+
+        horario = pg.font.Font(
+            None,
+            25
+        ).render(
+            f"{int(TEMPO_TOTAL) // 60}min:{int(TEMPO_TOTAL) % 60}sec",
+            True,
+            (
+                255,
+                255,
+                255
+            )
+        )
+        janela.blit(
+            horario,
+            horario.get_rect(
+                topright=(
+                    DIMENSOES_MINIMAS[0][1],
+                    22
+                )
+            )
+        )
+        TEMPO_TOTAL += MEDIDOR_DE_FREQUENCIA_DE_FRAMES * pow(10, -3)
 
         pg.time.wait(
             # Milisegundos
