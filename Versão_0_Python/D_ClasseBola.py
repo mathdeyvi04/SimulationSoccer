@@ -107,7 +107,7 @@ class Bola(Objeto):
         """
         Descrição:
             Função responsável por tomar
-            as providências quando há gol.
+            as providências quando há gol de fato.
         """
 
         self.pos = pg.Vector2(
@@ -126,6 +126,11 @@ class Bola(Objeto):
                 VELOCIDADE_DE_EXPULSAO_DO_GOL
             )
         )
+
+        QUANTIDADE_DE_GOLS[
+            # Alto nível aqui
+            self.pos.x < TAMANHO_TELA[0]
+        ] += 1
 
 
 
