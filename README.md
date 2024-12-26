@@ -14,11 +14,11 @@ Sendo assim, guardo aqui neste repositório toda minha construção sobre tal pr
 > De tal forma que:
 >
 >* W, A, S, D
->  * movimentam-no;
+>   * movimentam-no;
 >* Botão Esquerdo Segurado
->  * Segura a bola carregando com ele;
+>   * Segura a bola carregando com ele;
 >* Botão Direito Segurado
->  * Começa a carregar força para chutar;
+>   * Começa a carregar força para chutar;
 >* Botão Direito Solta 
->  * Chuta a bola para a direção do mouse.
+>   * Chuta a bola para a direção do mouse.
 
