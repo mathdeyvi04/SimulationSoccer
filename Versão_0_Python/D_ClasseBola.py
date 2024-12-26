@@ -129,9 +129,8 @@ class Bola(Objeto):
 
         QUANTIDADE_DE_GOLS[
             # Alto nível aqui
-            self.pos.x < TAMANHO_TELA[0]
+            self.pos.x < TAMANHO_TELA[0] // 2
         ] += 1
-
 
 
 
