@@ -12,13 +12,13 @@ Sendo assim, guardo aqui neste repositório toda minha construção sobre tal pr
 >
 > Há apenas um jogador e uma bola, sendo aquele controlado pelo usuário.
 > De tal forma que:
-
-* W, A, S, D
-  * movimentam-no;
-* Botão Esquerdo Segurado
-  * Segura a bola carregando com ele;
-* Botão Direito Segurado
-  * Começa a carregar força para chutar;
-* Botão Direito Solta 
-  * Chuta a bola para a direção do mouse.
+>
+>* W, A, S, D
+>  * movimentam-no;
+>* Botão Esquerdo Segurado
+>  * Segura a bola carregando com ele;
+>* Botão Direito Segurado
+>  * Começa a carregar força para chutar;
+>* Botão Direito Solta 
+>  * Chuta a bola para a direção do mouse.
 
