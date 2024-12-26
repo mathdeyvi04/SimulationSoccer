@@ -22,3 +22,13 @@ Sendo assim, guardo aqui neste repositório toda minha construção sobre tal pr
 >* Botão Direito Solta 
 >   * Chuta a bola para a direção do mouse.
 
+* Versão_0_C
+> Construção da Primeira Versão Já funcional do Problema 2D.
+> Foi construída em C pela diversão e aprimoramento.
+> 
+> Principal Feature: Multiprocessamento.
+> 
+> 
+> 
+> 
+> 
