@@ -24,8 +24,6 @@ main(
 		return 1;
 	}
 	
-	// Simulação Funcionando.
-	
 	destruir_display(
 		display
 	);
