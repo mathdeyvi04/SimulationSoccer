@@ -24,6 +24,19 @@ main(
 		return 1;
 	}
 	
+	int simulation_is_running = 1;
+	
+	while(
+		simulation_is_running
+	){
+		//entrada_de_usuario();
+		//atualizacao_de_estado();
+		//render();
+		
+		break;
+	}
+	
+	
 	destruir_display(
 		display
 	);
