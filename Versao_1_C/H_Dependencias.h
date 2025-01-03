@@ -19,6 +19,9 @@
 #define N_DIMENSIONS 2
 
 
+#define QUANTIDADE_DE_PLAYERS 1
+
+
 
 /////////////////////////////// Structs /////////////////////////////
 

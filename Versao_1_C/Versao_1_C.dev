@@ -24,12 +24,12 @@ HostApplication=
 UseCustomMakefile=0
 CustomMakefile=
 CommandLine=
-Folders=A_Simulando,B_FuncoesFront,C_Jogador,D_Bola,F_FuncoesBasicas,H_Dependencias
+Folders=A_Simulando,B_FuncoesFront,C_Player,F_FuncoesBasicas,H_Dependencias
 IncludeVersionInfo=0
 SupportXPThemes=0
 CompilerSet=0
 CompilerSettings=0000000000000000000000000
-UnitCount=11
+UnitCount=9
 
 [VersionInfo]
 Major=1
@@ -121,9 +121,9 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit8]
-FileName=C_Jogador.c
+FileName=C_Player.c
 CompileCpp=0
-Folder=C_Jogador
+Folder=C_Player
 Compile=1
 Link=1
 Priority=1000
@@ -131,29 +131,9 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit9]
-FileName=C_Jogador.h
+FileName=C_Player.h
 CompileCpp=0
-Folder=C_Jogador
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit10]
-FileName=D_Bola.c
-CompileCpp=0
-Folder=D_Bola
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit11]
-FileName=D_Bola.h
-CompileCpp=0
-Folder=D_Bola
+Folder=C_Player
 Compile=1
 Link=1
 Priority=1000

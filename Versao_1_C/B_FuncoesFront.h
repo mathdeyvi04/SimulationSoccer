@@ -1,7 +1,7 @@
 #ifndef B_FUNCOESFRONT_H
 #define B_FUNCOESFRONT_H
 
-#include "C_Jogador.h"
+#include "C_Player.h"
 
 Display
 inicializar_display(
