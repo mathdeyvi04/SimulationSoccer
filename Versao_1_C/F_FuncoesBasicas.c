@@ -13,6 +13,9 @@ apresentar_erro(
     printf("\033[0m");   
 }
 
+//////////////////////// Funções Relacionadas à Vetores ////////////////
+
+
 
 
 

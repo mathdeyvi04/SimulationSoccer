@@ -116,8 +116,47 @@ destruir_display(
 }
 
 
+void 
+entrada_de_usuario(){
+	/*
+	Descrição:
+		Função responsável por gerenciar o input do
+		usuário.
+	
+	Parâmetros:
+		
+	Retorno:
+		Chamada das respectivas funções de entrada.
+	*/
+}
 
 
+void
+atualizacoes_de_estado(){
+	/*
+	Descrição:
+		Função responsável por gerenciar as respectivas
+		atualizações de cada um dos membros da simulação.
+	
+	Parâmetros:
+		
+	Retorno:
+		Membros da simulação atualizados de forma multiprocessada.
+	*/	
+}
 
+
+void
+render(){
+	/*
+	Descrição:
+		Função responsável por gerenciar as atualizações na tela.
+	
+	Parâmetros:
+		
+	Retorno:
+		Tela atualizada conforme as necessidades de renderização.
+	*/
+}
 
 

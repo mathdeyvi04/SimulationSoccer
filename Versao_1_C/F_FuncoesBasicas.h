@@ -8,4 +8,5 @@ apresentar_erro(
 	const char *texto_de_apresentacao_de_erro
 );
 
+
 #endif  // F_FUNCOESBASICAS_H
