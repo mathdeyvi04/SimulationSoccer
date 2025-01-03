@@ -29,7 +29,7 @@ IncludeVersionInfo=0
 SupportXPThemes=0
 CompilerSet=0
 CompilerSettings=0000000000000000000000000
-UnitCount=7
+UnitCount=11
 
 [VersionInfo]
 Major=1
@@ -120,6 +120,43 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
+[Unit8]
+FileName=C_Jogador.c
+CompileCpp=0
+Folder=C_Jogador
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
 [Unit9]
-FileName=I_Structs.h
+FileName=C_Jogador.h
+CompileCpp=0
+Folder=C_Jogador
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit10]
+FileName=D_Bola.c
+CompileCpp=0
+Folder=D_Bola
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit11]
+FileName=D_Bola.h
+CompileCpp=0
+Folder=D_Bola
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
 

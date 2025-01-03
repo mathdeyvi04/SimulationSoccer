@@ -13,6 +13,7 @@ main(
 	*/
 	char* argv[]
 ){
+	/*
 	Display display = inicializar_display();
 	
 	if (
@@ -40,6 +41,30 @@ main(
 	destruir_display(
 		display
 	);
+	*/
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
     
     printf("\n\n");
 	system("pause");
