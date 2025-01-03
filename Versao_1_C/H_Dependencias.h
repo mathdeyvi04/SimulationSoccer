@@ -16,6 +16,8 @@
 #define COMPRIMENTO_TELA 800
 #define ALTURA_TELA 600
 
+#define N_DIMENSIONS 2
+
 
 
 /////////////////////////////// Structs /////////////////////////////
