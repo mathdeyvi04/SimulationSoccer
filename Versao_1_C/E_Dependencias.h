@@ -13,22 +13,24 @@
 
 //////////////////////////////// Variáveis //////////////////////////
 
-#define COMPRIMENTO_TELA 800
-#define ALTURA_TELA 600
+#define WIDTH_SCREEN 800
+#define HEIGHT_SCREEN 600
+#define FPS 30
+#define frame_target_time (1000 / FPS)  // in miliseconds.
 
 #define N_DIMENSIONS 2
 
 
-#define QUANTIDADE_DE_PLAYERS 1
+#define NUMBER_OF_PLAYERS 1
 
 
 
 /////////////////////////////// Structs /////////////////////////////
 
-// Para guardarmos as informações de tela.
+// To save screen information.
 typedef struct {
-	SDL_Window *janela;
-	SDL_Renderer *renderizador;
+	SDL_Window *window;
+	SDL_Renderer *renderer;
 } Display;
 
 #endif  // H_Dependencias_H

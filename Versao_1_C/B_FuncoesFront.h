@@ -4,23 +4,31 @@
 #include "C_Player.h"
 
 Display
-inicializar_display(
+initialize_display(
 	void
 );
 
 
 int 
-destruir_display(
+destroy_display(
 	Display
 );
 
 int 
-entrada_de_usuario(
+input_user(
 	int*
 );
 
+int
+render(
+	Display
+);
 
 
+int 
+update(
+	void
+);
 
 
 #endif // B_FUNCOESFRONT_H

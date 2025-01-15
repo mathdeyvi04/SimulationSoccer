@@ -1,17 +1,17 @@
 #ifndef F_FUNCOESBASICAS_H
 #define F_FUNCOESBASICAS_H
 
-#include "H_Dependencias.h"
+#include "E_Dependencias.h"
 
 void
-apresentar_erro(
-	const char *texto_de_apresentacao_de_erro
+display_error(
+	const char *error_display_text
 );
 
 ///////////////// Funções de Vetores //////////////
 
 int 
-apresentation(
+apresentation_vector(
 	double*
 );
 

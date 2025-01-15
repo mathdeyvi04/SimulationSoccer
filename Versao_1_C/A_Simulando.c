@@ -3,28 +3,28 @@
 int
 main(
 	/*
-	Quantos argumentos foram passados.
-	Sendo que o nome do .exe já conta como 1 argumento.
+	How many arguments were passed.
+	The .exe name already counts as 1 argument.
 	*/
 	int argc,
 	/*
-	Contém os argumentos passados. 
-	Cada elemento do vetor é uma string representando um argumento.
+	Contains the arguments passed.
+	Each element of the array is a string representing an argument.
 	*/
 	char* argv[]
 ){
 	
-	Display display = inicializar_display();
+	Display display = initialize_display();
 	
 	if (
-		(display.janela == NULL) || (display.renderizador == NULL)
+		(display.window == NULL) || (display.renderer == NULL)
 	){
-		destruir_display(
+		destroy_display(
 			display
 		);
 		
-		apresentar_erro(
-			"Houve erro na inicialização da janela."
+		display_error(
+			"(A) An error occurred while initializing the window."
 		);
 		
 		return 1;
@@ -35,22 +35,21 @@ main(
 	while(
 		simulation_is_running
 	){
-		entrada_de_usuario(
+		input_user(
 			&simulation_is_running
 		);
-		//atualizacao_de_estado();
-		//render();
+		
+		update();
+		
+		render(
+			display
+		);
 		
 	}
 	
-	destruir_display(
+	destroy_display(
 		display
 	);
-	
-	
-	
-	
-	
     
     printf("\n\n");
 	system("pause");

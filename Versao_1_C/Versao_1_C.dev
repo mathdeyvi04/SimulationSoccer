@@ -24,7 +24,7 @@ HostApplication=
 UseCustomMakefile=0
 CustomMakefile=
 CommandLine=
-Folders=A_Simulando,B_FuncoesFront,C_Player,F_FuncoesBasicas,H_Dependencias
+Folders=A_Simulando,B_FuncoesFront,C_Player,D_FuncoesBasicas,E_Dependencias
 IncludeVersionInfo=0
 SupportXPThemes=0
 CompilerSet=0
@@ -91,9 +91,9 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit5]
-FileName=F_FuncoesBasicas.c
+FileName=D_FuncoesBasicas.c
 CompileCpp=0
-Folder=F_FuncoesBasicas
+Folder=D_FuncoesBasicas
 Compile=1
 Link=1
 Priority=1000
@@ -101,9 +101,9 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit6]
-FileName=F_FuncoesBasicas.h
+FileName=D_FuncoesBasicas.h
 CompileCpp=0
-Folder=F_FuncoesBasicas
+Folder=D_FuncoesBasicas
 Compile=1
 Link=1
 Priority=1000
@@ -111,9 +111,9 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit7]
-FileName=H_Dependencias.h
+FileName=E_Dependencias.h
 CompileCpp=0
-Folder=H_Dependencias
+Folder=E_Dependencias
 Compile=1
 Link=1
 Priority=1000

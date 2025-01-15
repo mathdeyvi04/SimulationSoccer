@@ -1,14 +1,11 @@
 #ifndef C_PLAYER_H
 #define C_PLAYER_H
 
-#include "F_FuncoesBasicas.h"
+#include "D_FuncoesBasicas.h"
 
 typedef struct {
-	// Visual na Tela
+
 	double radius;
-	
-	// Cor na Tela.
-	// xxxxxxxxxxxx
 	
 	// Cinematic Attributes
 	int mass;
@@ -29,7 +26,7 @@ Player players[
 		i = 1...x -> Jogadores, Goleiros, Reservas
 		i = x + 1 -> Judge
 	*/
-	QUANTIDADE_DE_PLAYERS
+	NUMBER_OF_PLAYERS
 ];
 
 

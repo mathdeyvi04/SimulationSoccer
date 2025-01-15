@@ -1,21 +1,21 @@
-#include "F_FuncoesBasicas.h"
+#include "D_FuncoesBasicas.h"
 
 void
-apresentar_erro(
-	const char *texto_de_apresentacao_de_erro
+display_error(
+	const char *error_display_text
 ){
 	/*
-	Descrição:
-		Função responsável por apresentar o erro em vermelho.
+	Description:
+		Function responsible for displaying the error in red.
 	*/
 	printf("\033[1;31m");
-    printf("%s", texto_de_apresentacao_de_erro);   
+    printf("%s", error_display_text);   
     printf("\033[0m");   
 }
 
 //////////////////////// Funções Relacionadas à Vetores ////////////////
 
-int apresentation(
+int apresentation_vector(
 	double *vector
 ){
 	/*

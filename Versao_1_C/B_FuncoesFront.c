@@ -1,22 +1,24 @@
 #include "B_FuncoesFront.h"
 
 Display
-inicializar_display(
+initialize_display(
 	void
 ){
 	/*
-	Descrição:
-		Função responsável por verificar e inicializar a janela e o renderizador.
-		Como são estruturas que precisamos juntas, é mais interessante que usemos 
-		uma struct da união delas.
+	Description:
+		Function responsible for checking and initializing the window and the renderer.
+		Since these are structures that we need together, it is more interesting to use
+		a struct of the union of them.
 	
-	Retorno:
-		Display em condições de ser usada, sendo este composto pela janela e renderizador;
-		Display com renderizador NULL, caso apenas este tenha dado erro.
-		Display NULO.
+	Return possibilities:
+		Display in conditions to be used, being this composed of the window and the renderer;
+		
+		Display with NULL renderer, if only this one gave an error;
+		
+		NULL display.
 	*/
 	
-	Display resultado = {
+	Display result = {
 		NULL,
 		NULL
 	};
@@ -26,85 +28,85 @@ inicializar_display(
 			SDL_INIT_EVERYTHING
 		) != 0
 	){
-		apresentar_erro(
-			"Houve erro ao inicializar ferramentas.\n"
+		display_error(
+			"(B) There was an error initializing SDL general tools.\n"
 		);
 		
-		return resultado;
+		return result;
 	}
 	
-	SDL_Window *janela = SDL_CreateWindow(
-		"Minha Janela",
+	SDL_Window *window = SDL_CreateWindow(
+		"My Window",
 		SDL_WINDOWPOS_CENTERED,
 		SDL_WINDOWPOS_CENTERED,
-		COMPRIMENTO_TELA,
-		ALTURA_TELA,
+		WIDTH_SCREEN,
+		HEIGHT_SCREEN,
 		SDL_WINDOW_SHOWN
 	);
 	
 	if(
-		!janela
+		!window
 	){
-		apresentar_erro(
-			"Houve erro ao tentar criar janela.\n"
+		display_error(
+			"There was an error trying to create the window.\n"
 		);
 		
-		return resultado;
+		return result;
 	}
 	
-	resultado.janela = janela;
+	result.window = window;
 	
-	SDL_Renderer *renderizador = SDL_CreateRenderer(
-		janela,  // À qual janela vamos anexá-lo.
-		-1,  // Qual o código do display que vamos usar, -1 default.
-		0  // Não desejamos características especiais.
+	SDL_Renderer *renderer = SDL_CreateRenderer(
+		window,  // The window we are going to attach it to;
+		-1,  // -1 defautl;
+		0  // No special features.
 	);
 	
 	if(
-		!renderizador
+		!renderer
 	){
-		apresentar_erro(
-			"Houve erro ao tentar criar renderizador."
+		display_error(
+			"There was an error trying to create renderer."
 		);
 		
-		return resultado;
+		return result;
 	}
 	
-	resultado.renderizador = renderizador;
+	result.renderer = renderer;
 	
-	return resultado;
+	return result;
 }
 
 
 int
-destruir_display(
+destroy_display(
 	Display display
 ){
 	/*
-	Descrição:
-		Função responsável por fechar corretamente o display.
+	Description:
+		Function responsible for correctly closing the display.
 	
-	Parâmetros:
-		Autoexplicativo.
+	Parameters:
+		Self-explanatory.
 	
-	Retorno:
-		Encerramento do display.
+	Return:
+		Display closes.
 	*/
 	
 	
 	if (
-		display.renderizador != NULL
+		!display.renderer
 	){
 		SDL_DestroyRenderer(
-			display.renderizador
+			display.renderer
 		);
 	}
 	
 	if (
-		display.janela != NULL
+		!display.window
 	){
 		SDL_DestroyWindow(
-			display.janela
+			display.window
 		);
 	}
 	
@@ -115,19 +117,17 @@ destruir_display(
 
 
 int
-entrada_de_usuario(
+input_user(
 	int *game_is_running
 ){
 	/*
-	Descrição:
-		Função responsável por gerenciar o input do
-		usuário.
+	Description:
+		Function responsible for managing user input.
 	
-	Parâmetros:
-		
-		
-	Retorno:
-		Chamada das respectivas funções de entrada.
+	Parameters:
+	
+	Return:
+		Call to the respective input functions.
 	*/
 	
 	SDL_Event event;
@@ -145,6 +145,7 @@ entrada_de_usuario(
 			return 0;
 			
 		case SDL_KEYDOWN:
+		/**************************************************/
 			
 			switch(
 				event.key.keysym.sym
@@ -153,14 +154,12 @@ entrada_de_usuario(
 					*game_is_running = 0;
 					
 					return 0;
-				
-				
-				
-				
-				
+									
 				default:
 					return 0;
 			}
+			
+		/**************************************************/
 			
 		default:
 			return 0;
@@ -169,32 +168,77 @@ entrada_de_usuario(
 }
 
 
-void
-atualizacoes_de_estado(){
+int
+update(){
 	/*
-	Descrição:
-		Função responsável por gerenciar as respectivas
-		atualizações de cada um dos membros da simulação.
-	
-	Parâmetros:
-		
-	Retorno:
-		Membros da simulação atualizados de forma multiprocessada.
-	*/	
-}
+	Description:
+		Function responsible for managing the respective
+		updates of each simulation member.
 
+	Parameters:
 
-void
-render(){
-	/*
-	Descrição:
-		Função responsável por gerenciar as atualizações na tela.
-	
-	Parâmetros:
-		
-	Retorno:
-		Tela atualizada conforme as necessidades de renderização.
+	Return:
+		Simulation members updated in a multiprocessor way.
 	*/
+	
 }
+
+
+int
+render(
+	Display display
+){
+	/*
+	Description:
+		Function responsible for managing screen updates.
+
+	Parameters:
+
+	Return:
+		Screen updated according to rendering needs.
+	*/
+	
+	SDL_SetRenderDrawColor(
+		/*
+		Set the color used for drawing operations
+		*/
+		display.renderer,
+		100,  // R
+		0,  // G
+		0,  // B
+		255  // Transparency.
+	);
+	
+	SDL_RenderClear(
+		display.renderer
+	);
+	
+	/*
+	Aqui apresentaremos tudo que precisamos na tela.
+	
+	SDL_Rect -> Desenha um retangulo.
+	SDL_SetRenderDrawColor -> Setará a cor.
+	SDL_RenderFillRect -> Preenche com a cor setada antes.
+	*/
+	
+	SDL_RenderPresent(
+		display.renderer
+	);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
