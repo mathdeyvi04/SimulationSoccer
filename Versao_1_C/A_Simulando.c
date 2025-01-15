@@ -13,15 +13,20 @@ main(
 	*/
 	char* argv[]
 ){
-	/*
+	
 	Display display = inicializar_display();
 	
 	if (
 		(display.janela == NULL) || (display.renderizador == NULL)
 	){
+		destruir_display(
+			display
+		);
+		
 		apresentar_erro(
 			"Houve erro na inicialização da janela."
 		);
+		
 		return 1;
 	}
 	
@@ -30,36 +35,17 @@ main(
 	while(
 		simulation_is_running
 	){
-		//entrada_de_usuario();
+		entrada_de_usuario(
+			&simulation_is_running
+		);
 		//atualizacao_de_estado();
 		//render();
 		
-		break;
 	}
-	
 	
 	destruir_display(
 		display
 	);
-	*/
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	
 	

@@ -110,14 +110,14 @@ destruir_display(
 	
 	SDL_Quit();
 	
-	printf("\nEncerrado com sucesso!");
-	
 	return 0;
 }
 
 
-void 
-entrada_de_usuario(){
+int
+entrada_de_usuario(
+	int *game_is_running
+){
 	/*
 	Descrição:
 		Função responsável por gerenciar o input do
@@ -125,9 +125,47 @@ entrada_de_usuario(){
 	
 	Parâmetros:
 		
+		
 	Retorno:
 		Chamada das respectivas funções de entrada.
 	*/
+	
+	SDL_Event event;
+	
+	SDL_PollEvent(
+		&event
+	);
+	
+	switch(
+		event.type
+	){
+		case SDL_QUIT:
+			*game_is_running = 0;
+			
+			return 0;
+			
+		case SDL_KEYDOWN:
+			
+			switch(
+				event.key.keysym.sym
+			){
+				case SDLK_ESCAPE:
+					*game_is_running = 0;
+					
+					return 0;
+				
+				
+				
+				
+				
+				default:
+					return 0;
+			}
+			
+		default:
+			return 0;
+	}
+	
 }
 
 

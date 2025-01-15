@@ -14,6 +14,10 @@ destruir_display(
 	Display
 );
 
+int 
+entrada_de_usuario(
+	int*
+);
 
 
 
