@@ -4,8 +4,8 @@
 CPP      = g++.exe
 CC       = gcc.exe
 WINDRES  = windres.exe
-OBJ      = A_Simulando.o B_FuncoesFront.o D_FuncoesBasicas.o C_Player.o
-LINKOBJ  = A_Simulando.o B_FuncoesFront.o D_FuncoesBasicas.o C_Player.o
+OBJ      = A_Simulando.o B_FuncoesMain.o D_FuncoesBasicas.o C_Player.o
+LINKOBJ  = A_Simulando.o B_FuncoesMain.o D_FuncoesBasicas.o C_Player.o
 LIBS     = -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib" -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib" -L"C:/Users/deyvi/Downloads/SDL2-devel-2.30.10-mingw/SDL2-2.30.10/x86_64-w64-mingw32/lib" -static-libgcc -lopengl32 -lmingw32 -lSDL2main -lSDL2
 INCS     = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include" -I"C:/Users/deyvi/Downloads/SDL2-devel-2.30.10-mingw/SDL2-2.30.10/x86_64-w64-mingw32/include"
 CXXINCS  = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include/c++"
@@ -27,8 +27,8 @@ $(BIN): $(OBJ)
 A_Simulando.o: A_Simulando.c
 	$(CC) -c A_Simulando.c -o A_Simulando.o $(CFLAGS)
 
-B_FuncoesFront.o: B_FuncoesFront.c
-	$(CC) -c B_FuncoesFront.c -o B_FuncoesFront.o $(CFLAGS)
+B_FuncoesMain.o: B_FuncoesMain.c
+	$(CC) -c B_FuncoesMain.c -o B_FuncoesMain.o $(CFLAGS)
 
 D_FuncoesBasicas.o: D_FuncoesBasicas.c
 	$(CC) -c D_FuncoesBasicas.c -o D_FuncoesBasicas.o $(CFLAGS)
