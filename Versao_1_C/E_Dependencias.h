@@ -16,7 +16,7 @@
 #define WIDTH_SCREEN 800
 #define HEIGHT_SCREEN 600
 #define FPS 30
-#define frame_target_time (1000 / FPS)  // in miliseconds.
+#define FRAME_TARGET_TIME (1000 / FPS)  // in miliseconds.
 
 #define N_DIMENSIONS 2
 

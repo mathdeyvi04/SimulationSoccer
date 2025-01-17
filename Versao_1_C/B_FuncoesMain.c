@@ -1,5 +1,8 @@
 #include "B_FuncoesMain.h"
 
+// Keep tracking the time of the last frame, in miliseconds.
+int last_frame_time = 0;
+
 Display
 initialize_display(
 	void
@@ -181,6 +184,47 @@ update(){
 		Simulation members updated in a multiprocessor way.
 	*/
 	
+	/*
+	In the past:
+	
+		Waste time until we reach the frame target time
+		while(
+			!SDL_TICKS_PASSED(
+				SDL_GetTicks(),
+				last_frame_time + FRAME_TARGET_TIME
+			)
+		);
+		We can put the pthread_cond_wait here!
+	*/
+	
+	int time_to_wait = FRAME_TARGET_TIME - (
+		SDL_GetTicks() - last_frame_time
+	);
+	
+	if(
+		time_to_wait > 0 && time_to_wait <= FRAME_TARGET_TIME
+	){
+		SDL_Delay(
+			time_to_wait
+		);
+	}
+	
+	int last_frame_time = SDL_GetTicks();
+	
+	/*
+	delta_time = (
+		SDL_GetTicks() - last_frame_time
+	) / 1000; -> In seconds
+	
+	So, with * delta_time, we will pixels per second.
+	
+	
+	
+	*/
+	
+	
+	
+	return 0;
 }
 
 
