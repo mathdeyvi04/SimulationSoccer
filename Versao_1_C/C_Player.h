@@ -4,8 +4,11 @@
 #include "D_FuncoesBasicas.h"
 
 typedef struct {
-
-	double radius;
+	
+	// Visual Attributes
+	int radius;
+	int center;
+	int color[3];  // RGB
 	
 	// Cinematic Attributes
 	int mass;
@@ -13,7 +16,6 @@ typedef struct {
 	double vel[N_DIMENSIONS];
 	double acel[N_DIMENSIONS];
 } Player;
-
 
 Player players[
 	/*

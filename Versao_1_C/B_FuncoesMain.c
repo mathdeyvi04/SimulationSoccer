@@ -1,7 +1,59 @@
 #include "B_FuncoesMain.h"
 
+///////////////////////////////////////////////////////////////////////////////
+/// Variáveis Main
+///////////////////////////////////////////////////////////////////////////////
+
 // Keep tracking the time of the last frame, in miliseconds.
 int last_frame_time = 0;
+
+///////////////////////////////////////////////////////////////////////////////
+/// Funções Diversas
+///////////////////////////////////////////////////////////////////////////////
+
+SDL_Texture*
+load_field(
+	Display display,
+	const char *name_image
+){
+	/*
+	Description:
+		Will load the image in the beginning.
+	*/
+	
+	SDL_Surface *bmp_surface = SDL_LoadBMP(
+		name_image
+	);
+	
+	if(
+		!bmp_surface
+	){
+		printf(
+			"\n(B) Error loading field image.\n"
+		);
+		
+		destroy_display(
+			display
+		);
+	}
+	
+	SDL_Texture *texture = SDL_CreateTextureFromSurface(
+		display.renderer,
+		bmp_surface
+	);
+	
+	SDL_FreeSurface(
+		bmp_surface
+	);
+	
+	return texture;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+/// Funções Main
+///////////////////////////////////////////////////////////////////////////////
+
 
 Display
 initialize_display(
@@ -23,6 +75,7 @@ initialize_display(
 	
 	Display result = {
 		NULL,
+		NULL,
 		NULL
 	};
 	
@@ -32,7 +85,7 @@ initialize_display(
 		) != 0
 	){
 		display_error(
-			"(B) There was an error initializing SDL general tools.\n"
+			"\n(B) There was an error initializing SDL general tools.\n"
 		);
 		
 		return result;
@@ -51,7 +104,7 @@ initialize_display(
 		!window
 	){
 		display_error(
-			"There was an error trying to create the window.\n"
+			"\n(B) There was an error trying to create the window.\n"
 		);
 		
 		return result;
@@ -69,13 +122,18 @@ initialize_display(
 		!renderer
 	){
 		display_error(
-			"There was an error trying to create renderer."
+			"\n(B)There was an error trying to create renderer."
 		);
 		
 		return result;
 	}
 	
 	result.renderer = renderer;
+	
+	result.image_field = load_field(
+		result,
+		IMAGE_NAME
+	);
 	
 	return result;
 }
@@ -196,7 +254,6 @@ update(){
 		);
 		We can put the pthread_cond_wait here!
 	*/
-	
 	int time_to_wait = FRAME_TARGET_TIME - (
 		SDL_GetTicks() - last_frame_time
 	);
@@ -209,21 +266,17 @@ update(){
 		);
 	}
 	
-	int last_frame_time = SDL_GetTicks();
+	last_frame_time = SDL_GetTicks();
 	
+	// Example
 	/*
 	delta_time = (
 		SDL_GetTicks() - last_frame_time
 	) / 1000; -> In seconds
 	
 	So, with * delta_time, we will pixels per second.
-	
-	
-	
 	*/
-	
-	
-	
+
 	return 0;
 }
 
@@ -255,6 +308,13 @@ render(
 	
 	SDL_RenderClear(
 		display.renderer
+	);
+	
+	SDL_RenderCopy(
+		display.renderer,
+		display.image_field,
+		NULL,
+		NULL
 	);
 	
 	/*

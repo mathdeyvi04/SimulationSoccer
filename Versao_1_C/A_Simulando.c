@@ -24,7 +24,7 @@ main(
 		);
 		
 		display_error(
-			"(A) An error occurred while initializing the window."
+			"\n(A) An error occurred while initializing the window."
 		);
 		
 		return 1;

@@ -10,9 +10,9 @@
 // Importações de Interface
 #include <SDL2/SDL.h>
 
-
 //////////////////////////////// Variáveis //////////////////////////
 
+#define IMAGE_NAME "campo.bmp"
 #define WIDTH_SCREEN 800
 #define HEIGHT_SCREEN 600
 #define FPS 30
@@ -31,6 +31,7 @@
 typedef struct {
 	SDL_Window *window;
 	SDL_Renderer *renderer;
+	SDL_Texture *image_field;
 } Display;
 
 #endif  // H_Dependencias_H

@@ -3,11 +3,16 @@
 
 #include "C_Player.h"
 
+SDL_Texture*
+load_field(
+	Display,
+	const char*
+);
+
 Display
 initialize_display(
 	void
 );
-
 
 int 
 destroy_display(
@@ -19,16 +24,14 @@ input_user(
 	int*
 );
 
-int
-render(
-	Display
-);
-
-
 int 
 update(
 	void
 );
 
+int
+render(
+	Display
+);
 
 #endif // B_FUNCOESFRONT_H
