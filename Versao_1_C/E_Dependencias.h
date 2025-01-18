@@ -10,6 +10,9 @@
 // Importações de Interface
 #include <SDL2/SDL.h>
 
+//
+#include <math.h>
+
 //////////////////////////////// Variáveis //////////////////////////
 
 #define IMAGE_NAME "campo.bmp"
@@ -19,7 +22,7 @@
 #define FRAME_TARGET_TIME (1000 / FPS)  // in miliseconds.
 
 #define N_DIMENSIONS 2
-
+#define TAM_MINOR_RECT 1
 
 #define NUMBER_OF_PLAYERS 1
 

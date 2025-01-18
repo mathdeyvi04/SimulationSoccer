@@ -7,14 +7,14 @@ typedef struct {
 	
 	// Visual Attributes
 	int radius;
-	int center;
 	int color[3];  // RGB
 	
 	// Cinematic Attributes
 	int mass;
-	double pos[N_DIMENSIONS];
+	double pos[N_DIMENSIONS]; // Will be the center
 	double vel[N_DIMENSIONS];
 	double acel[N_DIMENSIONS];
+	
 } Player;
 
 Player players[
@@ -31,11 +31,15 @@ Player players[
 	NUMBER_OF_PLAYERS
 ];
 
+///////////////////////////////////////////////////////////////////////////////
+/// Protótipos de Funções em Ordem
+///////////////////////////////////////////////////////////////////////////////
 
-
-
-
-
+int
+draw_a_player(
+	Player,
+	Display
+);
 
 
 #endif // C_PLAYER_H
