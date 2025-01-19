@@ -1,5 +1,7 @@
 #include "A_Simulando.h"
 
+extern Player playables[NUMBER_OF_PLAYERS];
+	
 int
 main(
 	/*
@@ -29,6 +31,10 @@ main(
 		
 		return 1;
 	}
+	
+	generate_players(
+		playables
+	);
 	
 	int simulation_is_running = 1;
 	

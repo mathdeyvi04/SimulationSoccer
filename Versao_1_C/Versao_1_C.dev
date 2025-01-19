@@ -29,7 +29,7 @@ IncludeVersionInfo=0
 SupportXPThemes=0
 CompilerSet=0
 CompilerSettings=0000000000000000000000000
-UnitCount=10
+UnitCount=9
 
 [VersionInfo]
 Major=1
@@ -133,15 +133,6 @@ BuildCmd=
 [Unit9]
 FileName=C_Player.h
 CompileCpp=0
-Folder=C_Player
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit10]
-FileName=C_Player_Documentation.md
 Folder=C_Player
 Compile=1
 Link=1

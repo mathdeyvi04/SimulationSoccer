@@ -14,6 +14,45 @@ int FOR_CHECKING_PIXEL_NUMBER = 0;
 //// Funções 
 //////////////////////////////////////////////////////////////////////////////
 
+
+int
+generate_players(
+	Player *list_of_playable
+){
+	/*
+	Description:
+		Function responsible for create a generation of playables.
+		Each one with respectives attributes. 
+	*/
+	
+	for(
+		int i = 0;
+		i < NUMBER_OF_PLAYERS;
+		i++
+	){
+		if(
+			!i // Only for i == 0.
+		){
+			// The Ball
+			
+			list_of_playable[0] = (Player) {
+				.radius = RADIUS_BALL, 
+				.color = {255, 255, 255},
+				.mass = MASS_BALL,
+				// Initial position ball
+				.pos = {200, 200},
+				.vel = {0, 0},
+				.acel = {0, 0}
+			};
+			
+			continue;
+		}
+	}
+	
+	return 1;
+}
+
+
 int
 draw_a_player(
 	Player playable,
@@ -37,6 +76,24 @@ draw_a_player(
 		255
 	);
 	
+	if(
+		playable.mass == 1
+	){
+		SDL_Rect rect = {
+			playable.pos[0] - playable.radius,
+			playable.pos[1] + playable.radius,
+			playable.radius,
+			playable.radius
+		};
+		
+		SDL_RenderFillRect(
+			display.renderer,
+			&rect
+		);
+		
+		return 1;
+	}
+	
 	for(
 		int w = 0;
 		w < 2 * playable.radius;
@@ -54,12 +111,6 @@ draw_a_player(
 			if(
 				(dx * dx + dy * dy) <= (playable.radius * playable.radius)	
 			){
-				//SDL_RenderDrawPoint(
-				//	display.renderer,
-				//	playable.pos[0] + dx,
-				//	playable.pos[1] + dy
-				//);
-				
 				SDL_Rect rect = {
 					playable.pos[0] + dx,
 					playable.pos[1] + dy,
@@ -71,7 +122,6 @@ draw_a_player(
 					display.renderer,
 					&rect
 				);		
-				
 				
 				total_pixels++;
 	

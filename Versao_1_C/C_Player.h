@@ -11,7 +11,7 @@ typedef struct {
 	
 	// Cinematic Attributes
 	int mass;
-	double pos[N_DIMENSIONS]; // Will be the center
+	double pos[N_DIMENSIONS];  // Will be the center
 	double vel[N_DIMENSIONS];
 	double acel[N_DIMENSIONS];
 	
@@ -22,8 +22,21 @@ Player playables[
 ];
 
 ///////////////////////////////////////////////////////////////////////////////
+/// Variáveis de Jogadores
+///////////////////////////////////////////////////////////////////////////////
+
+// The Ball
+#define RADIUS_BALL 10
+#define MASS_BALL 1 // Only the ball has this mass.
+
+///////////////////////////////////////////////////////////////////////////////
 /// Protótipos de Funções em Ordem
 ///////////////////////////////////////////////////////////////////////////////
+
+int
+generate_players(
+	Player*
+);
 
 int
 draw_a_player(
