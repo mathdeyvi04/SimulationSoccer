@@ -142,7 +142,81 @@ draw_a_player(
 }
 
 
+int 
+moviment(
+	Player *playable,
+	double delta_time
+){
+	/*
+	Description:
+		Function responsible for the moviment's playable.
+	*/
+	
+	for(
+		int i = 0;
+		i < 2;
+		i++
+	){
+		(*playable).pos[i] += (*playable).vel[i] * delta_time + 0.5 * (*playable).acel[i] * delta_time * delta_time;
+		
+		(*playable).vel[i] += (*playable).acel[i] * delta_time;
+	}
+	
+	return 1;
+}
 
+int 
+secure_player(
+	Player *playable
+){
+	/*
+	Description:
+		Function responsible for ensuring that the player is kept within
+		the boundaries of the field. 
+		
+	Return:
+		0 if within field soccer.
+		1 if not.
+	*/
+	
+	if(
+		(*playable).pos[0] <= TOPLEFT_X
+	){
+		(*playable).vel[0] = (double) (*playable).vel[0] * (-1);
+		(*playable).pos[0] = TOPLEFT_X + 1;
+		
+		return 1;
+	}
+	
+	if(
+		(*playable).pos[0] >= BOTTOMRIGHT_X
+	){
+		(*playable).vel[0] = (double) (*playable).vel[0] * (-1);
+		(*playable).pos[0] = BOTTOMRIGHT_X - 1;
+		
+		return 1;
+	}
+	
+	if(
+		(*playable).pos[1] <= TOPLEFT_Y
+	){
+		(*playable).vel[1] = (double) (*playable).vel[1] * (-1);
+		(*playable).pos[1] = TOPLEFT_Y + 1;
+		
+		return 1;
+	}
+	
+	if(
+		(*playable).pos[1] >= BOTTOMRIGHT_Y
+	){
+		(*playable).vel[1] = (double) (*playable).vel[1] * (-1);
+		(*playable).pos[1] = BOTTOMRIGHT_Y - 1;
+		
+		return 1;
+	}
+	
+	return 0;
+}
 
 
 

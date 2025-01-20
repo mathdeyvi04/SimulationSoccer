@@ -105,7 +105,7 @@ multiple_vector_by_scalar(
 	
 	Return:
 		Vector multipled by the scalar. Allocaded in 
-		the vector_! adress.
+		the vector_1 adress.
 	*/
 	
 	for(

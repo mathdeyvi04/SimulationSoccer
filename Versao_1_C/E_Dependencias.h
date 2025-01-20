@@ -31,8 +31,6 @@
 #define BOTTOMRIGHT_X 752
 #define BOTTOMRIGHT_Y 556
 
-
-
 #define NUMBER_OF_PLAYERS 1
 #define N_DIMENSIONS 2
 #define TAM_MINOR_RECT 1

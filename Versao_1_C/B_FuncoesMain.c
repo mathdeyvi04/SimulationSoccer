@@ -236,6 +236,18 @@ input_user(
 					);
 					
 					return 0;
+					
+				case SDLK_UP:
+					
+					playables[0].vel[1] -= 10;
+					
+					return 0;
+					
+				case SDLK_RIGHT:
+					
+					playables[0].vel[0] += 10;
+					
+					return 0;
 									
 				default:
 					return 0;
@@ -287,17 +299,21 @@ update(){
 		);
 	}
 	
+	double delta_time = (
+		SDL_GetTicks() - last_frame_time
+	) / 1000.0;
+	
 	last_frame_time = SDL_GetTicks();
 	
-	// Example
-	/*
-	delta_time = (
-		SDL_GetTicks() - last_frame_time
-	) / 1000; -> In seconds
+	moviment(
+		playables,
+		delta_time
+	);
 	
-	So, with * delta_time, we will pixels per second.
-	*/
-
+	secure_player(
+		playables
+	); 
+	
 	return 0;
 }
 

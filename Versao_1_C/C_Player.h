@@ -44,5 +44,16 @@ draw_a_player(
 	Display
 );
 
+int
+moviment(
+	Player*,
+	double
+);
+
+int
+secure_player(
+	Player*
+);
+
 
 #endif // C_PLAYER_H
