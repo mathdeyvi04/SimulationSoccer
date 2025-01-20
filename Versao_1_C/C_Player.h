@@ -6,7 +6,7 @@
 typedef struct {
 	
 	// Visual Attributes
-	int radius;
+	int side;
 	int color[3];  // RGB
 	
 	// Cinematic Attributes

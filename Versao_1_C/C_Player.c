@@ -36,7 +36,7 @@ generate_players(
 			// The Ball
 			
 			list_of_playable[0] = (Player) {
-				.radius = RADIUS_BALL, 
+				.side = RADIUS_BALL, 
 				.color = {255, 255, 255},
 				.mass = MASS_BALL,
 				// Initial position ball
@@ -80,10 +80,10 @@ draw_a_player(
 		playable.mass == 1
 	){
 		SDL_Rect rect = {
-			playable.pos[0] - playable.radius,
-			playable.pos[1] + playable.radius,
-			playable.radius,
-			playable.radius
+			playable.pos[0] - playable.side,
+			playable.pos[1] + playable.side,
+			playable.side,
+			playable.side
 		};
 		
 		SDL_RenderFillRect(
@@ -96,20 +96,20 @@ draw_a_player(
 	
 	for(
 		int w = 0;
-		w < 2 * playable.radius;
+		w < 2 * playable.side;
 		w = w + TAM_MINOR_RECT
 	){
 		for(
 			int h = 0;
-			h < 2 * playable.radius;
+			h < 2 * playable.side;
 			h = h + TAM_MINOR_RECT
 		){
 			
-			int dx = playable.radius - w;
-			int dy = playable.radius - h;
+			int dx = playable.side - w;
+			int dy = playable.side - h;
 			
 			if(
-				(dx * dx + dy * dy) <= (playable.radius * playable.radius)	
+				(dx * dx + dy * dy) <= (playable.side * playable.side)	
 			){
 				SDL_Rect rect = {
 					playable.pos[0] + dx,
