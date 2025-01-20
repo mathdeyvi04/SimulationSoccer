@@ -30,11 +30,10 @@
 #define TOPLEFT_Y 44
 #define BOTTOMRIGHT_X 752
 #define BOTTOMRIGHT_Y 535
-
 #define MEDIUM_X 402
 #define MEDIUM_Y 288
 
-#define NUMBER_OF_PLAYERS 2
+#define NUMBER_OF_PLAYERS 1
 #define N_DIMENSIONS 2
 #define TAM_MINOR_RECT 1
 
