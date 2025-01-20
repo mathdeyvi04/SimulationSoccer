@@ -32,7 +32,7 @@ generate_players(
 		.color = {COLOR[0][0], COLOR[0][1], COLOR[0][2]},
 		.mass = MASS_BALL,
 		
-		// Initial position ball
+		// Initial position ball defef
 		.pos = {MEDIUM_X, MEDIUM_Y},
 		.vel = {0, 0},
 		.acel = {0, 0}
@@ -66,8 +66,8 @@ draw_a_player(
 	);
 	
 	SDL_Rect rect = {
-		playable.pos[0] - playable.side,
-		playable.pos[1] + playable.side,
+		playable.pos[0] - (playable.side / 2),
+		playable.pos[1] - (playable.side / 2),
 		playable.side,
 		playable.side
 	};

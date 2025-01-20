@@ -26,12 +26,12 @@
 #define FRAME_TARGET_TIME (1000 / FPS)  // in miliseconds.
 
 // Borders Field Soccer
-#define TOPLEFT_X 55 
-#define TOPLEFT_Y 44
-#define BOTTOMRIGHT_X 752
-#define BOTTOMRIGHT_Y 535
-#define MEDIUM_X 402
-#define MEDIUM_Y 288
+#define TOPLEFT_X 46 
+#define TOPLEFT_Y 55
+#define BOTTOMRIGHT_X 748
+#define BOTTOMRIGHT_Y 555
+#define MEDIUM_X 396
+#define MEDIUM_Y 306
 
 #define NUMBER_OF_PLAYERS 1
 #define N_DIMENSIONS 2
