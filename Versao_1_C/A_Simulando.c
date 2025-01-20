@@ -15,6 +15,7 @@ main(
 	*/
 	char* argv[]
 ){
+	setlocale(LC_ALL, "");
 	
 	Display display = initialize_display();
 	

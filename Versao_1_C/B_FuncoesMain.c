@@ -201,19 +201,39 @@ input_user(
 	switch(
 		event.type
 	){
+		
 		case SDL_QUIT:
 			*game_is_running = 0;
 			
 			return 0;
 			
 		case SDL_KEYDOWN:
-		/**************************************************/
-			
+		////////////////////////////////////////////////////////////////////////
+		///// Input de KeyDown
+		////////////////////////////////////////////////////////////////////////
 			switch(
 				event.key.keysym.sym
 			){
 				case SDLK_ESCAPE:
 					*game_is_running = 0;
+					
+					return 0;
+					
+				case SDLK_m:
+					printf("");
+					
+					int last_mouse_position[2];
+					
+					SDL_GetMouseState(
+						last_mouse_position,
+						last_mouse_position + 1
+					);
+					
+					printf(
+						"\nÚltima Posição do Mouse -> (%d, %d).",
+						last_mouse_position[0],
+						last_mouse_position[1]
+					);
 					
 					return 0;
 									
@@ -317,14 +337,10 @@ render(
 		NULL,
 		NULL
 	);
-	
-	/*
-	Aqui apresentaremos tudo que precisamos na tela.
-	
-	SDL_Rect -> Desenha um retangulo.
-	SDL_SetRenderDrawColor -> Setará a cor.
-	SDL_RenderFillRect -> Preenche com a cor setada antes.
-	*/
+
+ 	////////////////////////////////////////////////////////////////////////////
+	//// Renderizações
+	////////////////////////////////////////////////////////////////////////////
 	
 	for(
 		int i = 0;
@@ -336,6 +352,10 @@ render(
 			display
 		);
 	}
+	
+	////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////
 	
 	SDL_RenderPresent(
 		display.renderer
