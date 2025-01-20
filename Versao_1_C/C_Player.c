@@ -16,7 +16,7 @@ int FOR_CHECKING_PIXEL_NUMBER = 0;
 
 
 int
-generate_players(
+generate_players( 
 	Player *list_of_playable
 ){
 	/*
@@ -29,7 +29,7 @@ generate_players(
 		int i = 0;
 		i < NUMBER_OF_PLAYERS;
 		i++
-	){
+	){ 
 		if(
 			!i // Only for i == 0.
 		){
@@ -40,7 +40,7 @@ generate_players(
 				.color = {255, 255, 255},
 				.mass = MASS_BALL,
 				// Initial position ball
-				.pos = {200, 200},
+				.pos = {MEDIUM_X, MEDIUM_Y},
 				.vel = {0, 0},
 				.acel = {0, 0}
 			};
@@ -202,8 +202,8 @@ secure_player(
 	){
 		(*playable).vel[1] = (double) (*playable).vel[1] * (-1);
 		(*playable).pos[1] = TOPLEFT_Y + 1;
-		
-		return 1;
+		   
+  		return 1;
 	}
 	
 	if(

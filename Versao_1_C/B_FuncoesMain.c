@@ -1,5 +1,7 @@
 #include "B_FuncoesMain.h"
 
+#define VEL_ADD 40        
+ 
 ///////////////////////////////////////////////////////////////////////////////
 //// Variáveis Main
 ///////////////////////////////////////////////////////////////////////////////
@@ -239,13 +241,13 @@ input_user(
 					
 				case SDLK_UP:
 					
-					playables[0].vel[1] -= 10;
+					playables[0].vel[1] -= VEL_ADD;
 					
 					return 0;
 					
 				case SDLK_RIGHT:
 					
-					playables[0].vel[0] += 10;
+					playables[0].vel[0] += VEL_ADD;
 					
 					return 0;
 									
@@ -305,14 +307,14 @@ update(){
 	
 	last_frame_time = SDL_GetTicks();
 	
+	secure_player(
+		playables
+	); 
+	
 	moviment(
 		playables,
 		delta_time
 	);
-	
-	secure_player(
-		playables
-	); 
 	
 	return 0;
 }
