@@ -241,25 +241,25 @@ input_user(
 					
 				case SDLK_UP:
 					
-					playables[0].vel[1] +=  - VEL_ADD;
+					playables[1].vel[1] +=  - VEL_ADD;
 					
 					return 0;
 					
 				case SDLK_RIGHT:
 					
-					playables[0].vel[0] += VEL_ADD;
+					playables[1].vel[0] += VEL_ADD;
 					
 					return 0;
 					
 				case SDLK_LEFT:
 					
-					playables[0].vel[0] += - VEL_ADD;
+					playables[1].vel[0] += - VEL_ADD;
 					
 					return 0;
 					
 				case SDLK_DOWN:
 						
-					playables[0].vel[1] += VEL_ADD;
+					playables[1].vel[1] += VEL_ADD;
 					
 					return 1;
 									

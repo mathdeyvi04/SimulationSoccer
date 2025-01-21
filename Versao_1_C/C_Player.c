@@ -10,6 +10,10 @@ int COLOR[3][3] = {
 	{0, 0, 255}	
 };
 
+SDL_Rect for_draw_information[
+	NUMBER_OF_BLOCKS_PER_PLAYER  // Players will be defined by 5 blocks.
+];
+
 //////////////////////////////////////////////////////////////////////////////
 //// Funções 
 //////////////////////////////////////////////////////////////////////////////
@@ -28,12 +32,22 @@ generate_players(
 	*/
 	
 	list_of_playable[0] = (Player) {
-		.side = SIDE_BALL, 
+		.side = RADIUS_BALL, 
 		.color = {COLOR[0][0], COLOR[0][1], COLOR[0][2]},
 		.mass = MASS_BALL,
 		
-		// Initial position ball defef
+		// Initial position ball
 		.pos = {MEDIUM_X, MEDIUM_Y},
+		.vel = {0, 0},
+		.acel = {0, 0}
+	};
+	
+	list_of_playable[1] = (Player) {
+		.side = SIDE_PLAYER, 
+		.color = {COLOR[1][0], COLOR[1][1], COLOR[1][2]},
+		.mass = MASS_PLAYER,
+		
+		.pos = {300, 400},
 		.vel = {0, 0},
 		.acel = {0, 0}
 	};
@@ -49,7 +63,7 @@ draw_a_player(
 	Player playable,
 	Display display
 ){
-	/*
+	/*ededwd
 	Description:
 		Function responsable for draw a player thinking about the index's player.
 		
@@ -64,19 +78,71 @@ draw_a_player(
 		playable.color[2],
 		255
 	);
+
+	if(
+		playable.mass == 1
+	){
+		SDL_Rect rect = {
+			playable.pos[0] - playable.side / 2,
+			playable.pos[1] - playable.side / 2,
+			playable.side,
+			playable.side
+		};
+
+		SDL_RenderFillRect(
+			display.renderer,
+			&rect
+		);
+
+		return 1;
+	}
 	
-	SDL_Rect rect = {
-		playable.pos[0] - (playable.side / 2),
-		playable.pos[1] - (playable.side / 2),
-		playable.side,
-		playable.side
+	for_draw_information[0] = (SDL_Rect) {
+		playable.pos[0] - MINOR_SIZE_SQUARE / 2 - 3 * MINOR_SIZE_SQUARE,
+		playable.pos[1] - MINOR_SIZE_SQUARE / 2 - 1 * MINOR_SIZE_SQUARE,
+		MINOR_SIZE_SQUARE,
+		3 * MINOR_SIZE_SQUARE
 	};
 	
-	SDL_RenderFillRect(
-		display.renderer,
-		&rect
-	);
-		
+	for_draw_information[1] = (SDL_Rect) {
+		playable.pos[0] - MINOR_SIZE_SQUARE / 2 - 2 * MINOR_SIZE_SQUARE,
+		playable.pos[1] - MINOR_SIZE_SQUARE / 2 - 2 * MINOR_SIZE_SQUARE,
+		MINOR_SIZE_SQUARE,
+		5 * MINOR_SIZE_SQUARE
+	};
+ 
+	for_draw_information[2] = (SDL_Rect) {
+		playable.pos[0] - MINOR_SIZE_SQUARE / 2 - MINOR_SIZE_SQUARE,
+		playable.pos[1] - MINOR_SIZE_SQUARE / 2 - 3 * MINOR_SIZE_SQUARE,
+		3 * MINOR_SIZE_SQUARE,
+		7 * MINOR_SIZE_SQUARE
+	};
+	
+	for_draw_information[3] = (SDL_Rect) {
+		playable.pos[0] - MINOR_SIZE_SQUARE / 2 + 2 * MINOR_SIZE_SQUARE,
+		playable.pos[1] - MINOR_SIZE_SQUARE / 2 - 2 * MINOR_SIZE_SQUARE,
+		MINOR_SIZE_SQUARE,
+		5 * MINOR_SIZE_SQUARE
+	};
+	
+	for_draw_information[4] = (SDL_Rect) {
+		playable.pos[0] - MINOR_SIZE_SQUARE / 2 + 3 * MINOR_SIZE_SQUARE,
+		playable.pos[1] - MINOR_SIZE_SQUARE / 2 - 1 * MINOR_SIZE_SQUARE,
+		MINOR_SIZE_SQUARE,
+		3 * MINOR_SIZE_SQUARE
+	};
+	
+	for(
+		int i = 0;
+		i < NUMBER_OF_BLOCKS_PER_PLAYER;
+		i++
+	){
+		SDL_RenderFillRect(
+			display.renderer,
+			for_draw_information + i
+		);
+	} 
+	
 	return 1;
 }
 
