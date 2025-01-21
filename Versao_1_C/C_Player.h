@@ -21,6 +21,10 @@ Player playables[
 	NUMBER_OF_PLAYERS
 ];
 
+pthread_t coachs[2];
+pthread_barrier_t coachs_command_flow;
+#define NUMBER_OF_COACHS 3
+
 ///////////////////////////////////////////////////////////////////////////////
 /// Variáveis de Jogadores
 ///////////////////////////////////////////////////////////////////////////////
@@ -33,6 +37,8 @@ Player playables[
 #define MASS_PLAYER 10
 #define NUMBER_OF_BLOCKS_PER_PLAYER 5
 #define MINOR_SIZE_SQUARE SIDE_PLAYER / 4
+
+#define NUMBER_OF_PLAYERS_IN_EACH_TEAM (NUMBER_OF_PLAYERS - 1) / 2
 
 ///////////////////////////////////////////////////////////////////////////////
 /// Protótipos de Funções em Ordem
@@ -58,6 +64,11 @@ moviment(
 int
 secure_player(
 	Player*
+);
+
+void*
+managing_team(
+	void*
 );
 
 

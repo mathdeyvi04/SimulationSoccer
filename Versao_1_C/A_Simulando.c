@@ -1,6 +1,8 @@
 #include "A_Simulando.h"
 
 extern Player playables[NUMBER_OF_PLAYERS];
+
+extern pthread_barrier_t coachs_command_flow;
 	
 int
 main(
@@ -33,6 +35,12 @@ main(
 		return 1;
 	}
 	
+	pthread_barrier_init(
+		&coachs_command_flow,
+		NULL,
+		NUMBER_OF_COACHS
+	);
+	
 	generate_players(
 		playables
 	);
@@ -58,7 +66,11 @@ main(
 		display
 	);
     
-    printf("\n\n");
+    pthread_barrier_destroy(
+		&coachs_command_flow
+	);
+    
+    printf("\n\nEncerrado Com Sucesso.\n");
 	system("pause");
     return 0;
 }

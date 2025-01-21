@@ -42,17 +42,32 @@ generate_players(
 		.acel = {0, 0}
 	};
 	
-	list_of_playable[1] = (Player) {
-		.side = SIDE_PLAYER, 
-		.color = {COLOR[1][0], COLOR[1][1], COLOR[1][2]},
-		.mass = MASS_PLAYER,
-		
-		.pos = {300, 400},
-		.vel = {0, 0},
-		.acel = {0, 0}
-	};
-	
 	// create threads.
+	
+	int teams[2] = {1, 2};
+	
+	for(
+		int i = 0;
+		i < 2;
+		i++
+	){
+		if(
+			pthread_create(
+				coachs + i,
+				NULL,
+				managing_team,
+				teams + i  // Indicates the team's thread.
+			) != 0
+		){
+			display_error(
+				"\n(C) Error in create threads coachs."
+			);
+		}
+		
+		pthread_detach(
+			coachs[i]
+		);
+	}
 	
 	return 1;
 }
@@ -170,6 +185,7 @@ moviment(
 	return 1;
 }
 
+
 int 
 secure_player(
 	Player *playable
@@ -224,7 +240,57 @@ secure_player(
 }
 
 
+void*
+managing_team(
+	void *arg
+){
+	/*
+	Description:
+		Function responsible for be able to self execute with another in parallel.
+		It will manage the entire team.
+		
+	Parameters:
+		-> arg:
+			Indicates the index's of the player's team.
+	*/
+	
+	int team_indicator = *(int*)arg;
+	
+	srand(
+		time(NULL) + team_indicator
+	);
+	
+	// First, generate each team.
+	for(
+		int i = 0;
+		(i / 2) < NUMBER_OF_PLAYERS_IN_EACH_TEAM;
+		i = i + 2
+	){
+		playables[
+			team_indicator + i
+		] = (Player) {
+			.side = SIDE_PLAYER, 
+			.color = {
+				COLOR[team_indicator][0],
+				COLOR[team_indicator][1],
+				COLOR[team_indicator][2]
+			},
+			.mass = MASS_PLAYER,
 
+			// Initial position ball
+			.pos = {
+				rand() % (WIDTH_SCREEN - 100) + TOPLEFT_X,
+				rand() % (HEIGHT_SCREEN - 100) + TOPLEFT_Y
+			},
+			.vel = {0, 0},
+			.acel = {0, 0}
+		};		
+		printf("\nColoquei em %d", team_indicator + i);
+	}
+	
+	
+	pthread_exit(0);
+}
 
 
 
