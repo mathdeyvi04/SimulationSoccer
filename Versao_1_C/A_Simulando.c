@@ -3,7 +3,7 @@
 extern Player playables[NUMBER_OF_PLAYERS];
 
 extern pthread_barrier_t coachs_command_flow;
-	
+
 int
 main(
 	/*
@@ -41,11 +41,19 @@ main(
 		NUMBER_OF_COACHS
 	);
 	
+	int simulation_is_running = 1;
+	
 	generate_players(
-		playables
+		playables,
+		&simulation_is_running
 	);
 	
-	int simulation_is_running = 1;
+	pthread_barrier_wait(
+		/*
+		To ensure all players are initialized before the simulation begins.
+		*/
+		&coachs_command_flow
+	);
 	
 	while(
 		simulation_is_running

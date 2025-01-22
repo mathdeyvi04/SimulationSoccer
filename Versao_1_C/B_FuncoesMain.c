@@ -182,7 +182,7 @@ destroy_display(
 
 int
 input_user(
-	int *game_is_running
+	int *simulation_is_running
 ){
 	/*
 	Description:
@@ -205,7 +205,7 @@ input_user(
 	){
 		
 		case SDL_QUIT:
-			*game_is_running = 0;
+			*simulation_is_running = 0;
 			
 			return 0;
 			
@@ -217,7 +217,7 @@ input_user(
 				event.key.keysym.sym
 			){
 				case SDLK_ESCAPE:
-					*game_is_running = 0;
+					*simulation_is_running = 0;
 					
 					return 0;
 					

@@ -17,6 +17,14 @@ typedef struct {
 	
 } Player;
 
+typedef struct {
+	/*
+	For the argument's threads
+	*/
+	int team_indicator;
+	int *simulation_indicator;
+} Arg_Coach;
+
 Player playables[
 	NUMBER_OF_PLAYERS
 ];
@@ -46,7 +54,8 @@ pthread_barrier_t coachs_command_flow;
 
 int
 generate_players(
-	Player*
+	Player*,
+	int*
 );
 
 int

@@ -21,7 +21,8 @@ SDL_Rect for_draw_information[
 
 int
 generate_players( 
-	Player *list_of_playable
+	Player *list_of_playable,
+	int *simulation_is_running
 ){
 	/*
 	Description:
@@ -47,9 +48,11 @@ generate_players(
 		i < 2;
 		i++
 	){
-		int *arg = (int*) malloc(sizeof(int));
-		*arg = i + 1;
 		
+		Arg_Coach *arg = (Arg_Coach*) malloc(sizeof(Arg_Coach));
+		(*arg).team_indicator = i + 1;
+		(*arg).simulation_indicator = simulation_is_running;
+			
 		if(
 			pthread_create(
 				coachs,
@@ -61,11 +64,16 @@ generate_players(
 			display_error(
 				"\n(C) Error in create threads coachs."
 			);
+			
+			*simulation_is_running = 0;
+			break;
 		}
 		
 		pthread_detach(
 			coachs[i]
 		);
+		
+		*simulation_is_running = 0;
 	}
 
 	return 1;
@@ -253,10 +261,10 @@ managing_team(
 			Indicates the index's of the player's team.
 	*/
 	
-	int team_indicator = *(int*)arg;
+	Arg_Coach coach_info = *(Arg_Coach*) arg;
 	
 	srand(
-		time(NULL) + team_indicator
+		time(NULL) + coach_info.team_indicator
 	);
 	
 	// First, generate each team.
@@ -266,13 +274,13 @@ managing_team(
 		i = i + 2
 	){
 		playables[
-			team_indicator + i
+			coach_info.team_indicator + i
 		] = (Player) {
 			.side = SIDE_PLAYER, 
 			.color = {
-				COLOR[team_indicator][0],
-				COLOR[team_indicator][1],
-				COLOR[team_indicator][2]
+				COLOR[coach_info.team_indicator][0],
+				COLOR[coach_info.team_indicator][1],
+				COLOR[coach_info.team_indicator][2]
 			},
 			.mass = MASS_PLAYER,
 
@@ -285,7 +293,16 @@ managing_team(
 			.acel = {0, 0}
 		};	
 	}
-
+	
+	pthread_barrier_wait(
+		/*
+		To ensure all players are initialized before the simulation begins.
+		*/
+		&coachs_command_flow
+	);
+	
+	printf("\nSimu = %d.", *(coach_info.simulation_indicator));
+	
 	free(arg);
 	pthread_exit(0);
 }
