@@ -36,7 +36,7 @@
 #define MEDIUM_X 396
 #define MEDIUM_Y 306
 
-#define NUMBER_OF_PLAYERS 15
+#define NUMBER_OF_PLAYERS 7
 #define N_DIMENSIONS 2
 
 //////////////////////////////////////////////////////////////////////////////////

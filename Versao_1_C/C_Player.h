@@ -23,7 +23,7 @@ Player playables[
 
 pthread_t coachs[2];
 pthread_barrier_t coachs_command_flow;
-#define NUMBER_OF_COACHS 3
+#define NUMBER_OF_COACHS 3  // Main Include
 
 ///////////////////////////////////////////////////////////////////////////////
 /// Variáveis de Jogadores

@@ -42,21 +42,20 @@ generate_players(
 		.acel = {0, 0}
 	};
 	
-	// create threads.
-	
-	int teams[2] = {1, 2};
-	
 	for(
 		int i = 0;
 		i < 2;
 		i++
 	){
+		int *arg = (int*) malloc(sizeof(int));
+		*arg = i + 1;
+		
 		if(
 			pthread_create(
-				coachs + i,
+				coachs,
 				NULL,
 				managing_team,
-				teams + i  // Indicates the team's thread.
+				arg  // Indicates the team's thread.
 			) != 0
 		){
 			display_error(
@@ -68,7 +67,7 @@ generate_players(
 			coachs[i]
 		);
 	}
-	
+
 	return 1;
 }
 
@@ -78,7 +77,7 @@ draw_a_player(
 	Player playable,
 	Display display
 ){
-	/*ededwd
+	/*
 	Description:
 		Function responsable for draw a player thinking about the index's player.
 		
@@ -284,11 +283,10 @@ managing_team(
 			},
 			.vel = {0, 0},
 			.acel = {0, 0}
-		};		
-		printf("\nColoquei em %d", team_indicator + i);
+		};	
 	}
-	
-	
+
+	free(arg);
 	pthread_exit(0);
 }
 
