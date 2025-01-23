@@ -1,3 +1,4 @@
+
 #ifndef C_PLAYER_H
 #define C_PLAYER_H
 
@@ -23,6 +24,9 @@ typedef struct {
 	*/
 	int team_indicator;
 	int *simulation_indicator;
+	double *delta_time;
+	Display *display;
+	
 } Arg_Coach;
 
 Player playables[
@@ -31,6 +35,7 @@ Player playables[
 
 pthread_t coachs[2];
 pthread_barrier_t coachs_command_flow;
+pthread_mutex_t access_blocker_to_set_color;
 #define NUMBER_OF_COACHS 3  // Main Include
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -55,7 +60,9 @@ pthread_barrier_t coachs_command_flow;
 int
 generate_players(
 	Player*,
-	int*
+	int*,
+	double*,
+	Display*
 );
 
 int
@@ -82,3 +89,4 @@ managing_team(
 
 
 #endif // C_PLAYER_H
+

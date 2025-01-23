@@ -26,11 +26,16 @@ input_user(
 
 int 
 update(
-	void
+	double*
 );
 
 int
 render(
+	Display
+);
+
+int 
+sub_render(
 	Display
 );
 

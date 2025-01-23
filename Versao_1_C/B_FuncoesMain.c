@@ -279,7 +279,9 @@ input_user(
 
 
 int
-update(){
+update(
+	double *delta_time
+){
 	/*
 	Description:
 		Function responsible for managing the respective
@@ -315,11 +317,27 @@ update(){
 		);
 	}
 	
-	double delta_time = (
+	*delta_time = (
 		SDL_GetTicks() - last_frame_time
 	) / 1000.0;
 	
 	last_frame_time = SDL_GetTicks();
+	
+	pthread_barrier_wait(
+		/*
+		Releases coach threads that were waiting for delta time
+		*/
+		&coachs_command_flow
+	);
+	
+	pthread_barrier_wait(
+		/*
+		Wait for coachs threads to update and to move the players.
+		*/
+		&coachs_command_flow
+	);
+	
+	// All three free.
 	
 	// Only the ball.
 	secure_player(
@@ -328,7 +346,7 @@ update(){
 	
 	moviment(
 		playables,
-		delta_time
+		*delta_time
 	);
 	
 	return 0;
@@ -349,12 +367,45 @@ render(
 		Screen updated according to rendering needs.
 	*/
 	
+	/*
+	COACHS THREADS ESTÃO FAZENDO COLOCANDO E SÓ DPS A MAIN FAZ ISSO.
+	
+	POR ISSO ESTÁ DANDO ERRADO.
+	*/
+
+ 	////////////////////////////////////////////////////////////////////////////
+	//// Renderizações
+	////////////////////////////////////////////////////////////////////////////
+	
+	draw_a_player(
+		playables[0],
+		display
+	);
+	
+	////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////
+	
+	SDL_RenderPresent(
+		display.renderer
+	);
+}
+
+
+int
+sub_render(
+	Display display
+){
+	/*
+	
+	*/
+	
 	SDL_SetRenderDrawColor(
 		/*
 		Set the color used for drawing operations
 		*/
 		display.renderer,
-		100,  // R
+		0,  // R
 		0,  // G
 		0,  // B
 		255  // Transparency.
@@ -370,31 +421,15 @@ render(
 		NULL,
 		NULL
 	);
-
- 	////////////////////////////////////////////////////////////////////////////
-	//// Renderizações
-	////////////////////////////////////////////////////////////////////////////
 	
-	for(
-		int i = 0;
-		i < NUMBER_OF_PLAYERS;
-		i++
-	){
-		draw_a_player(
-			playables[i],
-			display
-		);
-		
-	}
-	
-	////////////////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////////////////
-	
-	SDL_RenderPresent(
-		display.renderer
-	);
+	return 1;
 }
+
+
+
+
+
+
 
 
 
