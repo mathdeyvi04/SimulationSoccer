@@ -1,3 +1,18 @@
+# v0_Python
+> Construção da Base da Interface e das Funcionalidades.
+>
+> Há apenas um jogador e uma bola, sendo aquele controlado pelo usuário.
+> De tal forma que:
+>
+>* W, A, S, D
+>   * movimentam-no;
+>* Botão Esquerdo do Mouse Segurado
+>   * Segura a bola carregando com ele;
+>* Botão Direito do Mouse Segurado
+>   * Começa a carregar força para chutar;
+>* Botão Direito do Mouse Soltado
+>   * Chuta a bola para a direção do mouse.
+
 # Features
 
 * Básicas

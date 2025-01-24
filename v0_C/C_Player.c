@@ -299,7 +299,7 @@ managing_team(
 				rand() % (WIDTH_SCREEN - 100) + TOPLEFT_X,
 				rand() % (HEIGHT_SCREEN - 100) + TOPLEFT_Y
 			},
-			.vel = {0, 0},
+			.vel = {rand() % 100, rand() % 100},
 			.acel = {0, 0}
 		};	
 	}
