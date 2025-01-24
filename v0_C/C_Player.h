@@ -42,14 +42,15 @@ pthread_mutex_t access_blocker_to_set_color;
 /// Variáveis de Jogadores
 ///////////////////////////////////////////////////////////////////////////////
 
-// The Ball
-#define RADIUS_BALL 10
+SDL_Texture *texture_ball;
+#define RADIUS_BALL 20
 #define MASS_BALL 1 // Only the ball has this mass.
 
 #define SIDE_PLAYER 16  // Should be a multiple of 4.
 #define MASS_PLAYER 10
 #define NUMBER_OF_BLOCKS_PER_PLAYER 5
 #define MINOR_SIZE_SQUARE SIDE_PLAYER / 4
+#define COEF_DRAG 0.25
 
 #define NUMBER_OF_PLAYERS_IN_EACH_TEAM (NUMBER_OF_PLAYERS - 1) / 2
 

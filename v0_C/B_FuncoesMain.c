@@ -11,6 +11,8 @@ int last_frame_time = 0;
 
 extern Player playables[NUMBER_OF_PLAYERS];
 
+extern SDL_Texture *texture_ball;
+
 ///////////////////////////////////////////////////////////////////////////////
 //// Funções Diversas
 ///////////////////////////////////////////////////////////////////////////////
@@ -27,6 +29,19 @@ load_field(
 	
 	SDL_Surface *bmp_surface = SDL_LoadBMP(
 		name_image
+	);
+	
+	SDL_Surface *surface_ball = SDL_LoadBMP(
+		"bola.bmp"
+	);
+	
+	texture_ball = SDL_CreateTextureFromSurface(
+		display.renderer,
+		surface_ball
+	);
+	
+	SDL_FreeSurface(
+		surface_ball
 	);
 	
 	if(
@@ -241,7 +256,7 @@ input_user(
 					
 				case SDLK_UP:
 					
-					playables[1].vel[1] +=  - VEL_ADD;
+					playables[0].vel[1] +=  - VEL_ADD;
 					
 					return 0;
 					
@@ -271,6 +286,19 @@ input_user(
 		////////////////////////////////////////////////////////////////////////
 		////////////////////////////////////////////////////////////////////////
 		
+		case SDL_MOUSEBUTTONDOWN:
+			
+			if(
+				event.button.button == SDL_BUTTON_LEFT
+			){
+				printf("\nDireito.");
+			}
+			else{
+				printf("\nEsquerdo.");
+			}
+			
+			return 0;
+
 		default:
 			return 0;
 	}

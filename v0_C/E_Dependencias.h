@@ -36,7 +36,7 @@
 #define MEDIUM_X WIDTH_SCREEN / 2 - 5
 #define MEDIUM_Y HEIGHT_SCREEN / 2 + 5
 
-#define NUMBER_OF_PLAYERS 7
+#define NUMBER_OF_PLAYERS 3
 #define N_DIMENSIONS 2
 
 //////////////////////////////////////////////////////////////////////////////////

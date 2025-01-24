@@ -93,7 +93,7 @@ draw_a_player(
 	Player playable,
 	Display display
 ){
-	/*
+	/*efef
 	Description:
 		Function responsable for draw a player thinking about the index's player.
 		
@@ -118,12 +118,14 @@ draw_a_player(
 			playable.side,
 			playable.side
 		};
-
-		SDL_RenderFillRect(
+		
+		SDL_RenderCopy(
 			display.renderer,
+			texture_ball,
+			NULL,
 			&rect
 		);
-
+		
 		return 1;
 	}
 	
@@ -192,6 +194,9 @@ moviment(
 		i < 2;
 		i++
 	){
+		// We will add acceleration to prevent all players from moving infinitely.
+		(*playable).acel[i] = - COEF_DRAG * (*playable).vel[i];
+		
 		(*playable).pos[i] += (*playable).vel[i] * delta_time + 0.5 * (*playable).acel[i] * delta_time * delta_time;
 		
 		(*playable).vel[i] += (*playable).acel[i] * delta_time;
@@ -299,7 +304,7 @@ managing_team(
 				rand() % (WIDTH_SCREEN - 100) + TOPLEFT_X,
 				rand() % (HEIGHT_SCREEN - 100) + TOPLEFT_Y
 			},
-			.vel = {100, rand() % 100},
+			.vel = {rand() % 100, rand() % 100},
 			.acel = {0, 0}
 		};	
 	}
@@ -373,7 +378,6 @@ managing_team(
 	pthread_exit(0);
 }
 
-//dwdwdede
 
 
 
