@@ -93,7 +93,7 @@ initialize_display(
 		
 		return result;
 	}
-	
+
 	SDL_Window *window = SDL_CreateWindow(
 		"My Window",
 		SDL_WINDOWPOS_CENTERED,

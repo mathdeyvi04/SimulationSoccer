@@ -23,5 +23,15 @@
 > Discussão sobre o comportamento das 'coachs' threads, que são os agentes que
 > cuidam dos jogadores.
 
+# Ajuda 
+
+> When making changes to .h files, we must also update the .c file that uses the variables that were updated in .h.
+
+
 # Decisão
 Desenvolveremos o restante da aplicação em C mesmo devido à velocidade e custo de processamento.
+
+
+
+
+

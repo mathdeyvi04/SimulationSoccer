@@ -23,18 +23,18 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 #define IMAGE_NAME "campo.bmp"
-#define WIDTH_SCREEN 800
-#define HEIGHT_SCREEN 600
+#define WIDTH_SCREEN 1200
+#define HEIGHT_SCREEN 800
 #define FPS 30
 #define FRAME_TARGET_TIME (1000 / FPS)  // in miliseconds.
 
 // Borders Field Soccer
-#define TOPLEFT_X 46 
-#define TOPLEFT_Y 56
-#define BOTTOMRIGHT_X 748
-#define BOTTOMRIGHT_Y 555
-#define MEDIUM_X 396
-#define MEDIUM_Y 306
+#define TOPLEFT_X 0.053 * WIDTH_SCREEN + 0.7 
+#define TOPLEFT_Y 0.085 * HEIGHT_SCREEN + 0.8
+#define BOTTOMRIGHT_X 0.94 * WIDTH_SCREEN + 0.2
+#define BOTTOMRIGHT_Y 0.926 * HEIGHT_SCREEN + 0.8
+#define MEDIUM_X WIDTH_SCREEN / 2 - 5
+#define MEDIUM_Y HEIGHT_SCREEN / 2 + 5
 
 #define NUMBER_OF_PLAYERS 7
 #define N_DIMENSIONS 2
