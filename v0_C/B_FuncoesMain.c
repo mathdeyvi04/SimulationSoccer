@@ -430,6 +430,7 @@ update(
 	);
 	
 	// All three free.
+	
 	if(
 		*ball_dominator
 	){
@@ -451,6 +452,8 @@ update(
 		}
 			
 	}
+	
+	verify_goal();
 	
 	// Only the ball.
 	if(

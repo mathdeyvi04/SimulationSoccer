@@ -38,6 +38,8 @@ int last_position_mouse[2];
 #define BOTTOMRIGHT_Y 0.926 * HEIGHT_SCREEN + 0.8
 #define MEDIUM_X WIDTH_SCREEN / 2 - 5
 #define MEDIUM_Y HEIGHT_SCREEN / 2 + 5
+#define TOP_GOAL 0.42 * HEIGHT_SCREEN + 0.8
+#define BOTTOM_GOAL 0.926 * HEIGHT_SCREEN + 0.8
 
 #define NUMBER_OF_PLAYERS 3
 #define N_DIMENSIONS 2

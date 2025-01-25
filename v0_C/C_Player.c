@@ -440,8 +440,6 @@ kick_ball(
 	verser_ball_to_mouse[0] /= module_direction;
 	verser_ball_to_mouse[1] /= module_direction;
 	
-	printf("\nChute: %d.", COEF_KICK_CHARGE * (*kick_charge));
-	
 	playables[0].vel[0] = COEF_KICK_CHARGE * (*kick_charge) * verser_ball_to_mouse[0];
 	playables[0].vel[1] = COEF_KICK_CHARGE * (*kick_charge) * verser_ball_to_mouse[1];
 	
@@ -451,6 +449,44 @@ kick_ball(
 }
 
 
+int 
+verify_goal(){
+	/*
+	Check if it is a goal.
+	
+	If yes, returns 1.
+	*/
+	
+	if(
+		(
+			playables[0].pos[0] <= TOPLEFT_X
+		) && (
+			playables[0].pos[1] >= TOP_GOAL
+		) && (
+			playables[0].pos[1] <= BOTTOM_GOAL
+		)
+	){
+		printf("GOL ESQUERDO");
+		
+		return 1;
+	}
+	
+	if(
+		(
+			playables[0].pos[0] >= BOTTOMRIGHT_X
+		) && (
+			playables[0].pos[1] >= TOP_GOAL
+		) && (
+			playables[0].pos[1] <= BOTTOM_GOAL
+		)
+	){
+		printf("GOL DIREITO");
+		
+		return 1;
+	}
+	
+	return 0;
+}
 
 
 
