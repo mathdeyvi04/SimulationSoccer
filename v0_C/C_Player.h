@@ -50,6 +50,8 @@ SDL_Texture *texture_ball;
 Player's index will hold the ball.
 */
 int ball_dominator[1];
+int kick_charge[1];
+#define COEF_KICK_CHARGE 1
 
 #define SIDE_PLAYER 16  // Should be a multiple of 4.
 #define MASS_PLAYER 10
@@ -94,8 +96,13 @@ managing_team(
 );
 
 int 
-try_to_catch_ball(
+close_enough(
 	Player*
+);
+
+int 
+kick_ball(
+	int
 );
 
 #endif // C_PLAYER_H

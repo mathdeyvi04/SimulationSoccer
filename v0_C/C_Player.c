@@ -51,6 +51,10 @@ generate_players(
 		NULL
 	);
 	
+	// Initialize the variable.
+	*ball_dominator = 0;
+	*kick_charge = 0;
+	
 	for(
 		int i = 0;
 		i < 2;
@@ -383,16 +387,15 @@ managing_team(
 //////////////////////////////////////////////////////////////////////////////
 
 int 
-try_to_catch_ball(
+close_enough(
 	Player *playable
 ){
 	/*
 	Description:
-		Player will try to take the ball.
+		Verify if the player is close enough to the ball.
 		
 		If sucess:
-			Returns 1 and ball will follow the player.
-			Modify the ball's mass for 1.01 for indicates the catch.
+			Returns 1.
 		
 		else:
 			Returns 0.
@@ -403,10 +406,7 @@ try_to_catch_ball(
 	
 	if(
 		(part_1 + part_2) < MIN_POW_DIST_2_FOR_CATCH
-	){
-		playables[0].vel[0] = (*playable).vel[0];
-		playables[0].vel[1] = (*playable).vel[1];
-		
+	){	
 		return 1;
 	}
 	
@@ -414,7 +414,41 @@ try_to_catch_ball(
 }
 
 
-
+int
+kick_ball(
+	int force
+){
+	/*
+	Description:
+		Once you have the last mouse position, kick the ball with force in its direction.
+	*/
+	
+	// Releases the ball.
+	*ball_dominator = 0;
+	
+	double verser_ball_to_mouse[2] = {
+		last_position_mouse[0] - playables[0].pos[0],
+		last_position_mouse[1] - playables[0].pos[1]
+	};
+	
+	double module_direction = sqrt(
+		get_module_squared(
+			verser_ball_to_mouse
+		)
+	);
+	
+	verser_ball_to_mouse[0] /= module_direction;
+	verser_ball_to_mouse[1] /= module_direction;
+	
+	printf("\nChute: %d.", COEF_KICK_CHARGE * (*kick_charge));
+	
+	playables[0].vel[0] = COEF_KICK_CHARGE * (*kick_charge) * verser_ball_to_mouse[0];
+	playables[0].vel[1] = COEF_KICK_CHARGE * (*kick_charge) * verser_ball_to_mouse[1];
+	
+	*kick_charge = 0;
+	
+	return 0;
+}
 
 
 

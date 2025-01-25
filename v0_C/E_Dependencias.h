@@ -14,6 +14,8 @@
 // Importações de Interface
 #include <SDL2/SDL.h>
 
+// Para cálculos
+#include <math.h>
 
 // Importação de Multiprocessamento.
 #include <pthread.h>
@@ -27,6 +29,7 @@
 #define HEIGHT_SCREEN 800
 #define FPS 30
 #define FRAME_TARGET_TIME (1000 / FPS)  // in miliseconds.
+int last_position_mouse[2];
 
 // Borders Field Soccer
 #define TOPLEFT_X 0.053 * WIDTH_SCREEN + 0.7 

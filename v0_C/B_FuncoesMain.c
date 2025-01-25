@@ -9,11 +9,15 @@
 // Keep tracking the time of the last frame, in miliseconds.
 int last_frame_time = 0;
 
+extern int last_position_mouse[2];
+
 extern Player playables[NUMBER_OF_PLAYERS];
 
 extern SDL_Texture *texture_ball;
 
 extern int ball_dominator[1];
+
+extern int kick_charge[1];
 
 ///////////////////////////////////////////////////////////////////////////////
 //// Funções Diversas
@@ -69,6 +73,26 @@ load_field(
 	
 	return texture;
 }
+
+void
+get_mouse_position(){
+	/*
+	Description:
+		Self Explained.
+	*/
+	
+	SDL_GetMouseState(
+		last_position_mouse,
+		last_position_mouse + 1
+	);
+	
+	printf(
+		"\nÚltima Posição do Mouse -> (%d, %d).",
+		last_position_mouse[0],
+		last_position_mouse[1]
+	);
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////
 //// Funções Main
@@ -234,25 +258,14 @@ input_user(
 				event.key.keysym.sym
 			){
 				case SDLK_ESCAPE:
+					
 					*simulation_is_running = 0;
 					
 					return 0;
 					
 				case SDLK_m:
-					printf("");
-					
-					int last_mouse_position[2];
-					
-					SDL_GetMouseState(
-						last_mouse_position,
-						last_mouse_position + 1
-					);
-					
-					printf(
-						"\nÚltima Posição do Mouse -> (%d, %d).",
-						last_mouse_position[0],
-						last_mouse_position[1]
-					);
+
+					get_mouse_position();
 					
 					return 0;
 					
@@ -294,14 +307,21 @@ input_user(
 				event.button.button == SDL_BUTTON_LEFT
 			){
 				// Direito 
-				printf("\nDireito.");
+				
+				if(
+					close_enough(
+						playables + 1
+					)
+				){
+					*kick_charge = 1;
+				}
 			}
 			else{
 				// Esquerdo
 				// Segurar bola.
 				
 				if(
-					try_to_catch_ball(
+					close_enough(
 						playables + 1
 					)
 				){
@@ -318,6 +338,15 @@ input_user(
 				event.button.button == SDL_BUTTON_LEFT
 			){
 				// Direito Levantado
+				
+				get_mouse_position();
+				
+				kick_ball(
+					*kick_charge
+				);
+				
+				*kick_charge = 0;
+	
 			}
 			else{
 				// Esquerdo Levantado
@@ -408,10 +437,29 @@ update(
 		playables[0].vel[1] = playables[*ball_dominator].vel[1];
 	}
 	
+	if(
+		*kick_charge
+	){
+		if(
+			*ball_dominator
+		){
+			*kick_charge += 1;
+		}
+		else{
+			// Unload the kick
+			*kick_charge = 0;
+		}
+			
+	}
+	
 	// Only the ball.
-	secure_player(
-		playables
-	); 
+	if(
+		secure_player(
+			playables
+		)
+	){
+		*ball_dominator = 0;
+	}
 	
 	moviment(
 		playables,
