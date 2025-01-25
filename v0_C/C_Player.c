@@ -15,7 +15,7 @@ SDL_Rect for_draw_information[
 ];
 
 //////////////////////////////////////////////////////////////////////////////
-//// Funções 
+//// Funções Base dos Jogadores
 //////////////////////////////////////////////////////////////////////////////
 
 
@@ -378,9 +378,40 @@ managing_team(
 	pthread_exit(0);
 }
 
+//////////////////////////////////////////////////////////////////////////////
+//// Funções de Ação
+//////////////////////////////////////////////////////////////////////////////
 
-
-
+int 
+try_to_catch_ball(
+	Player *playable
+){
+	/*
+	Description:
+		Player will try to take the ball.
+		
+		If sucess:
+			Returns 1 and ball will follow the player.
+			Modify the ball's mass for 1.01 for indicates the catch.
+		
+		else:
+			Returns 0.
+	*/
+	
+	double part_1 = ((*playable).pos[0] - playables[0].pos[0]) * ((*playable).pos[0] - playables[0].pos[0]);
+	double part_2 = ((*playable).pos[1] - playables[0].pos[1]) * ((*playable).pos[1] - playables[0].pos[1]);
+	
+	if(
+		(part_1 + part_2) < MIN_POW_DIST_2_FOR_CATCH
+	){
+		playables[0].vel[0] = (*playable).vel[0];
+		playables[0].vel[1] = (*playable).vel[1];
+		
+		return 1;
+	}
+	
+	return 0;
+}
 
 
 

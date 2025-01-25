@@ -45,6 +45,11 @@ pthread_mutex_t access_blocker_to_set_color;
 SDL_Texture *texture_ball;
 #define RADIUS_BALL 20
 #define MASS_BALL 1 // Only the ball has this mass.
+#define MIN_POW_DIST_2_FOR_CATCH 400
+/*
+Player's index will hold the ball.
+*/
+int ball_dominator[1];
 
 #define SIDE_PLAYER 16  // Should be a multiple of 4.
 #define MASS_PLAYER 10
@@ -88,6 +93,10 @@ managing_team(
 	void*
 );
 
+int 
+try_to_catch_ball(
+	Player*
+);
 
 #endif // C_PLAYER_H
 

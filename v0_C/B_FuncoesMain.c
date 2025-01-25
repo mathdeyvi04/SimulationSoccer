@@ -13,6 +13,8 @@ extern Player playables[NUMBER_OF_PLAYERS];
 
 extern SDL_Texture *texture_ball;
 
+extern int ball_dominator[1];
+
 ///////////////////////////////////////////////////////////////////////////////
 //// Funções Diversas
 ///////////////////////////////////////////////////////////////////////////////
@@ -254,25 +256,25 @@ input_user(
 					
 					return 0;
 					
-				case SDLK_UP:
+				case SDLK_w:
 					
-					playables[0].vel[1] +=  - VEL_ADD;
+					playables[1].vel[1] +=  - VEL_ADD;
 					
 					return 0;
 					
-				case SDLK_RIGHT:
+				case SDLK_d:
 					
 					playables[1].vel[0] += VEL_ADD;
 					
 					return 0;
 					
-				case SDLK_LEFT:
+				case SDLK_a:
 					
 					playables[1].vel[0] += - VEL_ADD;
 					
 					return 0;
 					
-				case SDLK_DOWN:
+				case SDLK_s:
 						
 					playables[1].vel[1] += VEL_ADD;
 					
@@ -291,12 +293,45 @@ input_user(
 			if(
 				event.button.button == SDL_BUTTON_LEFT
 			){
+				// Direito 
 				printf("\nDireito.");
 			}
 			else{
-				printf("\nEsquerdo.");
+				// Esquerdo
+				// Segurar bola.
+				
+				if(
+					try_to_catch_ball(
+						playables + 1
+					)
+				){
+					*ball_dominator = 1;
+				}
+				
 			}
 			
+			return 0;
+			
+		case SDL_MOUSEBUTTONUP:
+			
+			if(
+				event.button.button == SDL_BUTTON_LEFT
+			){
+				// Direito Levantado
+			}
+			else{
+				// Esquerdo Levantado
+				
+				*ball_dominator = 0;
+			}
+			
+			return 0;
+			
+		case SDL_MOUSEWHEEL:
+			/*
+			event.wheel.y is the amount scroll gives by the user.
+			*/
+						
 			return 0;
 
 		default:
@@ -366,6 +401,12 @@ update(
 	);
 	
 	// All three free.
+	if(
+		*ball_dominator
+	){
+		playables[0].vel[0] = playables[*ball_dominator].vel[0];
+		playables[0].vel[1] = playables[*ball_dominator].vel[1];
+	}
 	
 	// Only the ball.
 	secure_player(
