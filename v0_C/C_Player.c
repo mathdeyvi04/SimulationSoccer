@@ -466,7 +466,9 @@ verify_goal(){
 			playables[0].pos[1] <= BOTTOM_GOAL
 		)
 	){
-		printf("GOL ESQUERDO");
+		// Esquerdo
+		
+		goals[0]++;
 		
 		return 1;
 	}
@@ -480,7 +482,9 @@ verify_goal(){
 			playables[0].pos[1] <= BOTTOM_GOAL
 		)
 	){
-		printf("GOL DIREITO");
+		// Direito
+		
+		goals[1]++;
 		
 		return 1;
 	}

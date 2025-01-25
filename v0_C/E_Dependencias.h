@@ -13,6 +13,7 @@
 
 // Importações de Interface
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 
 // Para cálculos
 #include <math.h>
@@ -45,13 +46,37 @@ int last_position_mouse[2];
 #define N_DIMENSIONS 2
 
 //////////////////////////////////////////////////////////////////////////////////
-//// Structs
+//// Variaveis Diversas
 //////////////////////////////////////////////////////////////////////////////////
+
 // To save screen information.
 typedef struct {
 	SDL_Window *window;
 	SDL_Renderer *renderer;
 	SDL_Texture *image_field;
 } Display;
+
+TTF_Font *font_to_be_used;
+#define TAM_FONT 20
+#define BUFFER_SIZE 11
+char buffer_time_match[BUFFER_SIZE];
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #endif  // H_Dependencias_H

@@ -9,15 +9,25 @@
 // Keep tracking the time of the last frame, in miliseconds.
 int last_frame_time = 0;
 
+
+
 extern int last_position_mouse[2];
 
 extern Player playables[NUMBER_OF_PLAYERS];
 
-extern SDL_Texture *texture_ball;
-
 extern int ball_dominator[1];
 
 extern int kick_charge[1];
+
+
+
+extern SDL_Texture *texture_ball;
+
+extern TTF_Font *font_to_be_used;
+
+extern char buffer_time_match[BUFFER_SIZE];
+
+extern int goals[2];
 
 ///////////////////////////////////////////////////////////////////////////////
 //// Funções Diversas
@@ -179,6 +189,13 @@ initialize_display(
 		IMAGE_NAME
 	);
 	
+	TTF_Init();
+	
+	font_to_be_used = TTF_OpenFont(
+		"times_new_arial.ttf",
+		TAM_FONT
+	);
+	
 	return result;
 }
 
@@ -198,7 +215,6 @@ destroy_display(
 		Display closes.
 	*/
 	
-	
 	if (
 		!display.renderer
 	){
@@ -215,8 +231,13 @@ destroy_display(
 		);
 	}
 	
-	SDL_Quit();
+	TTF_CloseFont(
+		font_to_be_used
+	);
+	TTF_Quit();
 	
+	SDL_Quit();
+		
 	return 0;
 }
 
@@ -487,15 +508,65 @@ render(
 		Screen updated according to rendering needs.
 	*/
 	
-	/*
-	COACHS THREADS ESTÃO FAZENDO COLOCANDO E SÓ DPS A MAIN FAZ ISSO.
+	void
+	render_time(){
+		/*
+		Description:
+			Presents the time's match on the screen.
+		*/
+		
+		snprintf(
+			buffer_time_match,
+			BUFFER_SIZE,
+			"%d min: %d s",
+			last_frame_time / (60 * 1000),
+			last_frame_time / 1000
+		);
+		
+		SDL_Surface *surface_text = TTF_RenderText_Solid(
+			font_to_be_used,
+			buffer_time_match,
+			(SDL_Color){0, 0, 0}
+		);
+		
+		SDL_Rect position_time_match = {
+			BOTTOMRIGHT_X - 200,
+			10,
+			200,
+			TOPLEFT_Y - 10
+		};
+		
+		SDL_Texture *texture_time_match = SDL_CreateTextureFromSurface(
+			display.renderer,
+			surface_text
+		);
+		
+		SDL_RenderCopy(
+			display.renderer,
+			texture_time_match,
+			NULL,
+			&position_time_match
+		);
+		
+		SDL_FreeSurface(surface_text);
+	}
 	
-	POR ISSO ESTÁ DANDO ERRADO.
-	*/
-
+	
+	void
+	render_goals(){
+		/*
+		Description:
+			Presents the goals of each team.
+		*/
+	}
+	
  	////////////////////////////////////////////////////////////////////////////
 	//// Renderizações
 	////////////////////////////////////////////////////////////////////////////
+	
+	render_time();
+	
+	render_goals();
 	
 	draw_a_player(
 		playables[0],
@@ -503,12 +574,11 @@ render(
 	);
 	
 	////////////////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////////////////
-	
+		
 	SDL_RenderPresent(
 		display.renderer
 	);
+	
 }
 
 
@@ -517,7 +587,9 @@ sub_render(
 	Display display
 ){
 	/*
-	
+	Description:
+		Sub render the frame to ensure that threads 
+		render after pre-rendering the frame.
 	*/
 	
 	SDL_SetRenderDrawColor(

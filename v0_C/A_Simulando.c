@@ -54,7 +54,7 @@ main(
 		&delta_time,
 		&display
 	);
-	
+
 	while(
 		simulation_is_running
 	){

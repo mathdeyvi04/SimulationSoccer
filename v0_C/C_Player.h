@@ -46,12 +46,10 @@ SDL_Texture *texture_ball;
 #define RADIUS_BALL 20
 #define MASS_BALL 1 // Only the ball has this mass.
 #define MIN_POW_DIST_2_FOR_CATCH 400
-/*
-Player's index will hold the ball.
-*/
-int ball_dominator[1];
+int ball_dominator[1];  // Player's index will hold the ball.
 int kick_charge[1];
 #define COEF_KICK_CHARGE 2
+int goals[2];
 
 #define SIDE_PLAYER 16  // Should be a multiple of 4.
 #define MASS_PLAYER 10
