@@ -9,6 +9,8 @@
 // Keep tracking the time of the last frame, in miliseconds.
 int last_frame_time = 0;
 
+int if_there_was_goal = 0;
+
 
 
 extern int last_position_mouse[2];
@@ -25,9 +27,11 @@ extern SDL_Texture *texture_ball;
 
 extern TTF_Font *font_to_be_used;
 
-extern char buffer_time_match[BUFFER_SIZE];
+extern char buffer_time_match[BUFFER_SIZE_TIME_MATCH];
 
 extern int goals[2];
+
+extern char buffer_goals[BUFFER_SIZE_GOALS];
 
 ///////////////////////////////////////////////////////////////////////////////
 //// Funções Diversas
@@ -474,7 +478,7 @@ update(
 			
 	}
 	
-	verify_goal();
+	if_there_was_goal = verify_goal();
 	
 	// Only the ball.
 	if(
@@ -517,7 +521,7 @@ render(
 		
 		snprintf(
 			buffer_time_match,
-			BUFFER_SIZE,
+			BUFFER_SIZE_TIME_MATCH,
 			"%d min: %d s",
 			last_frame_time / (60 * 1000),
 			last_frame_time / 1000
@@ -558,6 +562,41 @@ render(
 		Description:
 			Presents the goals of each team.
 		*/
+		
+		snprintf(
+			buffer_goals,
+			BUFFER_SIZE_GOALS,
+			"%d\t%d",
+			goals[0],
+			goals[1]
+		);
+		
+		SDL_Surface *surface_text = TTF_RenderText_Solid(
+			font_to_be_used,
+			buffer_goals,
+			(SDL_Color){0, 0, 0}
+		);
+		
+		SDL_Rect position_goals = {
+			MEDIUM_X - 50 + 6,
+			10,
+			100,
+			TOPLEFT_Y - 10
+		};
+		
+		SDL_Texture *texture_goals = SDL_CreateTextureFromSurface(
+			display.renderer,
+			surface_text
+		);
+		
+		SDL_RenderCopy(
+			display.renderer,
+			texture_goals,
+			NULL,
+			&position_goals
+		);
+		
+		SDL_FreeSurface(surface_text);
 	}
 	
  	////////////////////////////////////////////////////////////////////////////
@@ -567,6 +606,15 @@ render(
 	render_time();
 	
 	render_goals();
+	
+	if(
+		if_there_was_goal
+	){
+		goal_animation(
+			display
+		);
+		
+	}
 	
 	draw_a_player(
 		playables[0],
@@ -578,6 +626,14 @@ render(
 	SDL_RenderPresent(
 		display.renderer
 	);
+	
+	if(
+		if_there_was_goal
+	){
+		SDL_Delay(1000);
+		
+		if_there_was_goal--;
+	}
 	
 }
 

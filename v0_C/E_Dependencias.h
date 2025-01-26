@@ -58,13 +58,12 @@ typedef struct {
 
 TTF_Font *font_to_be_used;
 #define TAM_FONT 20
-#define BUFFER_SIZE 11
-char buffer_time_match[BUFFER_SIZE];
 
+#define BUFFER_SIZE_TIME_MATCH 11
+char buffer_time_match[BUFFER_SIZE_TIME_MATCH];
 
-
-
-
+#define BUFFER_SIZE_GOALS 5
+char buffer_goals[BUFFER_SIZE_GOALS];
 
 
 

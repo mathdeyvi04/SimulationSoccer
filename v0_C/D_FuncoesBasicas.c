@@ -14,6 +14,7 @@ display_error(
 		Function responsible for displaying the error in red.
 	*/
 	printf("\033[1;31m");
+	
     printf("%s", error_display_text);   
     printf("\033[0m");   
 }
