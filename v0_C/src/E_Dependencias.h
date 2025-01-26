@@ -7,7 +7,6 @@
 
 // Ferramentas de Teste
 #include <stdlib.h>
-#include <stdio.h>
 #include <locale.h>
 #include <time.h> // For the srand()
 
@@ -64,18 +63,5 @@ char buffer_time_match[BUFFER_SIZE_TIME_MATCH];
 
 #define BUFFER_SIZE_GOALS 5
 char buffer_goals[BUFFER_SIZE_GOALS];
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #endif  // H_Dependencias_H

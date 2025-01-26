@@ -25,8 +25,10 @@
 
 # Ajuda 
 
-> When making changes to .h files, we must also update the .c file that uses the variables that were updated in .h.
+> Quando fazemos modificações em arquivos .h, devemos modificar pelo menos um .c para a aplicação também 
+> compute a modificação do .h
 
+>Para abrir a aplicação no DevC++, você deve abrir o .dev que há dentro da pasta _src_.
 
 # Decisão
 Desenvolveremos o restante da aplicação em C mesmo devido à velocidade e custo de processamento.

@@ -95,7 +95,5 @@ main(
 		&access_blocker_to_set_color
 	);
     
-    printf("\n\nEncerrado Com Sucesso.\n");
-	system("pause");
     return 0;
 }
