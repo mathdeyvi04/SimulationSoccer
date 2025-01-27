@@ -12,7 +12,7 @@ int last_frame_time = 0;
 int if_there_was_goal = 0;
 
 
-
+// For interations
 extern int last_position_mouse[2];
 
 extern Player playables[NUMBER_OF_PLAYERS];
@@ -22,7 +22,7 @@ extern int ball_dominator[1];
 extern int kick_charge[1];
 
 
-
+// For Animation and Texts
 extern SDL_Texture *texture_ball;
 
 extern TTF_Font *font_to_be_used;
@@ -266,6 +266,10 @@ input_user(
 		&event
 	);
 	
+	/*
+	We no longer receive more input, teorically.
+	*/
+	
 	switch(
 		event.type
 	){
@@ -454,7 +458,11 @@ update(
 		&coachs_command_flow
 	);
 	
-	// All three free.
+	// All three threads free.
+	
+	//////////////////////////////////////////////////////////////
+	/// Few Interations Control by Main.
+	//////////////////////////////////////////////////////////////
 	
 	if(
 		// If there is a dominator on the ball.
@@ -481,7 +489,11 @@ update(
 	
 	if_there_was_goal = verify_goal();
 	
-	// Only the ball.
+	//////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////
+	
+	// Main Control Ball
 	if(
 		secure_player(
 			playables
