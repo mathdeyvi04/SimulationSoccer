@@ -42,7 +42,7 @@ int last_position_mouse[2];
 #define TOP_GOAL 0.42 * HEIGHT_SCREEN + 0.8
 #define BOTTOM_GOAL 0.926 * HEIGHT_SCREEN + 0.8
 
-#define NUMBER_OF_PLAYERS 3
+#define NUMBER_OF_PLAYERS 7
 #define N_DIMENSIONS 2
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -79,18 +79,6 @@ double
 get_module_squared(
 	double*
 );
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

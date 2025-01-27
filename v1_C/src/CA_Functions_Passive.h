@@ -22,9 +22,19 @@ pthread_barrier_t coachs_command_flow;
 pthread_mutex_t access_blocker_to_set_color;
 #define NUMBER_OF_COACHS 3  // Main Include
 
+int 
+location_at_beginning[
+	2 * NUMBER_OF_PLAYERS_IN_EACH_TEAM
+][
+	2  // X, Y
+];
+
 ///////////////////////////////////////////////////////////////////////////////
 /// Protótipos de Funções em Ordem
 ///////////////////////////////////////////////////////////////////////////////
+
+int 
+generate_location();
 
 int
 generate_players(

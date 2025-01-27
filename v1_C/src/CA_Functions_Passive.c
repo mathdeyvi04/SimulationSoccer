@@ -21,6 +21,65 @@ extern TTF_Font *font_to_be_used;
 //////////////////////////////////////////////////////////////////////////////
 
 
+int 
+generate_location(){
+	/*
+	Description:
+		Function responsible for generate each location's player at 
+		the beginning.
+		
+		Modify the variable location_at_beginning.
+		
+		In the future, the ideal is to have an interface with the
+		checkered field, so the user can choose the initial locations.
+	*/
+	
+	int 
+	row_and_column_player[
+		2 * NUMBER_OF_PLAYERS_IN_EACH_TEAM
+	][
+		2
+	] = {
+		{8, 8},
+		{8, 17},
+		{8, 26},
+		{23, 8},
+		{23, 17},
+		{23, 26}
+	};
+	
+	for(
+		int index_location_entrance = 0;
+		index_location_entrance < (2 * NUMBER_OF_PLAYERS_IN_EACH_TEAM);
+		index_location_entrance++
+	){
+		
+		location_at_beginning[
+			index_location_entrance
+		][
+			0
+		] = row_and_column_player[
+			index_location_entrance
+		][
+			0
+		] * NUMBER_OF_ROWS;
+		
+		location_at_beginning[
+			index_location_entrance
+		][
+			1
+		] = row_and_column_player[
+			index_location_entrance
+		][
+			1
+		] * NUMBER_OF_COLUMNS;
+		
+	}
+	
+	return 0;
+}
+
+
 int
 generate_players( 
 	Player *list_of_playable,
@@ -47,6 +106,9 @@ generate_players(
 		.acel = {0, 0}
 	};
 	
+	// Location Initial
+	generate_location();
+	
 	// Because setcolor sets a color for the entire window, a mutex was required.
 	pthread_mutex_init(
 		&access_blocker_to_set_color,
@@ -68,7 +130,7 @@ generate_players(
 		(*arg).simulation_indicator = simulation_is_running;
 		(*arg).delta_time = delta_time;
 		(*arg).display = display;
-			
+		
 		if(
 			pthread_create(
 				coachs,
@@ -307,10 +369,14 @@ managing_team(
 
 			// Initial position ball
 			.pos = {
-				rand() % (WIDTH_SCREEN - 100) + TOPLEFT_X,
-				rand() % (HEIGHT_SCREEN - 100) + TOPLEFT_Y
+				location_at_beginning[
+					NUMBER_OF_PLAYERS_IN_EACH_TEAM * (coach_info.team_indicator - 1) + (i / 2)
+				][0],
+				location_at_beginning[
+					NUMBER_OF_PLAYERS_IN_EACH_TEAM * (coach_info.team_indicator - 1) + (i / 2)
+				][1]
 			},
-			.vel = {rand() % 100, rand() % 100},
+			.vel = {0, 0},
 			.acel = {0, 0}
 		};	
 	}
