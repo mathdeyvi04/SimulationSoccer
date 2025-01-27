@@ -1,0 +1,43 @@
+# Project: v1_C
+# Makefile created by Dev-C++ 5.11
+
+CPP      = g++.exe
+CC       = gcc.exe
+WINDRES  = windres.exe
+OBJ      = A_Simulando.o B_FuncoesMain.o CA_Functions_Passive.o D_Dependencias.o CB_Functions_Ative.o CC_Animation.o
+LINKOBJ  = A_Simulando.o B_FuncoesMain.o CA_Functions_Passive.o D_Dependencias.o CB_Functions_Ative.o CC_Animation.o
+LIBS     = -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib" -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib" -L"C:/Users/deyvi/Downloads/SDL2-devel-2.30.10-mingw/SDL2-2.30.10/x86_64-w64-mingw32/lib" -static-libgcc -lopengl32 -lmingw32 -lSDL2main -lSDL2 -lSDL2_ttf
+INCS     = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include" -I"C:/Users/deyvi/Downloads/SDL2-devel-2.30.10-mingw/SDL2-2.30.10/x86_64-w64-mingw32/include"
+CXXINCS  = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include/c++"
+BIN      = v1_C.exe
+CXXFLAGS = $(CXXINCS) -std=c99
+CFLAGS   = $(INCS) -std=c99
+RM       = rm.exe -f
+
+.PHONY: all all-before all-after clean clean-custom
+
+all: all-before $(BIN) all-after
+
+clean: clean-custom
+	${RM} $(OBJ) $(BIN)
+
+$(BIN): $(OBJ)
+	$(CC) $(LINKOBJ) -o $(BIN) $(LIBS)
+
+A_Simulando.o: A_Simulando.c
+	$(CC) -c A_Simulando.c -o A_Simulando.o $(CFLAGS)
+
+B_FuncoesMain.o: B_FuncoesMain.c
+	$(CC) -c B_FuncoesMain.c -o B_FuncoesMain.o $(CFLAGS)
+
+CA_Functions_Passive.o: CA_Functions_Passive.c
+	$(CC) -c CA_Functions_Passive.c -o CA_Functions_Passive.o $(CFLAGS)
+
+D_Dependencias.o: D_Dependencias.c
+	$(CC) -c D_Dependencias.c -o D_Dependencias.o $(CFLAGS)
+
+CB_Functions_Ative.o: CB_Functions_Ative.c
+	$(CC) -c CB_Functions_Ative.c -o CB_Functions_Ative.o $(CFLAGS)
+
+CC_Animation.o: CC_Animation.c
+	$(CC) -c CC_Animation.c -o CC_Animation.o $(CFLAGS)
