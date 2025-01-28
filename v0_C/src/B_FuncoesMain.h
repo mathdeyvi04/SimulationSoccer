@@ -1,7 +1,7 @@
 #ifndef B_FUNCOESFRONT_H
 #define B_FUNCOESFRONT_H
 
-#include "C_Player.h"
+#include "CA_Functions_Passive.h"
 
 SDL_Texture*
 load_field(

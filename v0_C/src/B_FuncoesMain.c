@@ -12,7 +12,7 @@ int last_frame_time = 0;
 int if_there_was_goal = 0;
 
 
-
+// For interations
 extern int last_position_mouse[2];
 
 extern Player playables[NUMBER_OF_PLAYERS];
@@ -22,7 +22,7 @@ extern int ball_dominator[1];
 extern int kick_charge[1];
 
 
-
+// For Animation and Texts
 extern SDL_Texture *texture_ball;
 
 extern TTF_Font *font_to_be_used;
@@ -266,6 +266,10 @@ input_user(
 		&event
 	);
 	
+	/*
+	We no longer receive more input, teorically.
+	*/
+	
 	switch(
 		event.type
 	){
@@ -293,7 +297,7 @@ input_user(
 					get_mouse_position();
 					
 					return 0;
-					
+				
 				case SDLK_w:
 					
 					playables[1].vel[1] +=  - VEL_ADD;
@@ -316,15 +320,14 @@ input_user(
 						
 					playables[1].vel[1] += VEL_ADD;
 					
-					return 1;
-									
+					return 0;
+
 				default:
 					return 0;
 			}
 			
 		////////////////////////////////////////////////////////////////////////
-		////////////////////////////////////////////////////////////////////////
-		////////////////////////////////////////////////////////////////////////
+
 		
 		case SDL_MOUSEBUTTONDOWN:
 			
@@ -382,12 +385,11 @@ input_user(
 			return 0;
 			
 		case SDL_MOUSEWHEEL:
-			/*
-			event.wheel.y is the amount scroll gives by the user.
-			*/
+			//event.wheel.y is the amount scroll gives by the user.
+			
 						
 			return 0;
-
+			
 		default:
 			return 0;
 	}
@@ -454,9 +456,14 @@ update(
 		&coachs_command_flow
 	);
 	
-	// All three free.
+	// All three threads free.
+	
+	//////////////////////////////////////////////////////////////
+	/// Few Interations Control by Main.
+	//////////////////////////////////////////////////////////////
 	
 	if(
+		// If there is a dominator on the ball.
 		*ball_dominator
 	){
 		playables[0].vel[0] = playables[*ball_dominator].vel[0];
@@ -480,7 +487,11 @@ update(
 	
 	if_there_was_goal = verify_goal();
 	
-	// Only the ball.
+	//////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////
+	
+	// Main Control Ball
 	if(
 		secure_player(
 			playables
@@ -511,7 +522,7 @@ render(
 	Return:
 		Screen updated according to rendering needs.
 	*/
-	
+
 	void
 	render_time(){
 		/*
@@ -613,12 +624,12 @@ render(
 		goal_animation(
 			display
 		);
-		
 	}
 	
 	draw_a_player(
 		playables[0],
-		display
+		display,
+		0
 	);
 	
 	////////////////////////////////////////////////////////////////////////////
@@ -672,26 +683,6 @@ sub_render(
 	
 	return 1;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
