@@ -26,7 +26,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 #define IMAGE_NAME "campo.bmp"
-#define WIDTH_SCREEN 1200
+#define WIDTH_SCREEN 1500
 #define HEIGHT_SCREEN 800
 #define FPS 30
 #define FRAME_TARGET_TIME (1000 / FPS)  // in miliseconds.
@@ -42,7 +42,10 @@ int last_position_mouse[2];
 #define TOP_GOAL 0.42 * HEIGHT_SCREEN + 0.8
 #define BOTTOM_GOAL 0.926 * HEIGHT_SCREEN + 0.8
 
-#define NUMBER_OF_PLAYERS 7
+#define NUMBER_OF_ROWS (BOTTOMRIGHT_X - TOPLEFT_X) / (7 * MINOR_SIZE_SQUARE)
+#define NUMBER_OF_COLUMNS (BOTTOMRIGHT_Y - TOPLEFT_Y) / (7 * MINOR_SIZE_SQUARE)
+
+#define NUMBER_OF_PLAYERS 9
 #define N_DIMENSIONS 2
 
 //////////////////////////////////////////////////////////////////////////////////

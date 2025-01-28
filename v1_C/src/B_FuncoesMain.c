@@ -524,7 +524,7 @@ render(
 	Return:
 		Screen updated according to rendering needs.
 	*/
-	
+//efededdwdw
 	void
 	render_time(){
 		/*
@@ -630,7 +630,8 @@ render(
 	
 	draw_a_player(
 		playables[0],
-		display
+		display,
+		0
 	);
 	
 	////////////////////////////////////////////////////////////////////////////

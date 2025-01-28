@@ -40,9 +40,12 @@ generate_location(){
 	][
 		2
 	] = {
+		{2, 17},  // Goleiro
 		{8, 8},
 		{8, 17},
 		{8, 26},
+		
+		{30, 17}, // GoalKeeper
 		{23, 8},
 		{23, 17},
 		{23, 26}
@@ -159,7 +162,8 @@ generate_players(
 int
 draw_a_player(
 	Player playable,
-	Display display
+	Display display,
+	int number
 ){
 	/*efef
 	Description:
@@ -242,6 +246,47 @@ draw_a_player(
 			for_draw_information + i
 		);
 	} 
+	
+	// Puttin the number on the player.
+	
+	if(
+		number > 9
+	){
+		snprintf(
+			buffer_number,
+			2,
+			"%d",
+			number
+		);
+	}
+	else{
+		snprintf(
+			buffer_number,
+			2,
+			"%d\0",
+			number
+		);
+	}
+	
+	SDL_Surface *surface_text = TTF_RenderText_Solid(
+		font_to_be_used,
+		buffer_number,
+		(SDL_Color){255, 255, 255}
+	);
+	
+	SDL_Texture *texture_time_match = SDL_CreateTextureFromSurface(
+		display.renderer,
+		surface_text
+	);
+	
+	SDL_RenderCopy(
+		display.renderer,
+		texture_time_match,
+		NULL,
+		&for_draw_information[2]
+	);
+	
+	SDL_FreeSurface(surface_text);
 	
 	return 1;
 }
@@ -428,7 +473,8 @@ managing_team(
 				playables[
 					coach_info.team_indicator + i
 				],
-				*(coach_info.display)
+				*(coach_info.display),
+				1 + (i / 2)
 			);
 			pthread_mutex_unlock(
 				&access_blocker_to_set_color

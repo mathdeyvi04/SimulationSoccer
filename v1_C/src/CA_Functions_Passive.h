@@ -47,7 +47,8 @@ generate_players(
 int
 draw_a_player(
 	Player,
-	Display
+	Display,
+	int
 );
 
 int
