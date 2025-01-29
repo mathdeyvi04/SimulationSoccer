@@ -1,4 +1,4 @@
-# Project: v0_C
+# Project: v1_C_Pure
 # Makefile created by Dev-C++ 5.11
 
 CPP      = g++.exe
@@ -9,7 +9,7 @@ LINKOBJ  = A_Simulando.o B_FuncoesMain.o CA_Functions_Passive.o D_Dependencias.o
 LIBS     = -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib" -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib" -L"C:/Users/deyvi/Downloads/SDL2-devel-2.30.10-mingw/SDL2-2.30.10/x86_64-w64-mingw32/lib" -static-libgcc -lopengl32 -lmingw32 -lSDL2main -lSDL2 -lSDL2_ttf
 INCS     = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include" -I"C:/Users/deyvi/Downloads/SDL2-devel-2.30.10-mingw/SDL2-2.30.10/x86_64-w64-mingw32/include"
 CXXINCS  = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include/c++"
-BIN      = v0_C.exe
+BIN      = v1_C_Pure.exe
 CXXFLAGS = $(CXXINCS) -std=c99
 CFLAGS   = $(INCS) -std=c99
 RM       = rm.exe -f

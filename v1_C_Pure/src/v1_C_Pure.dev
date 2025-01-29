@@ -1,6 +1,6 @@
 [Project]
-FileName=v1_C.dev
-Name=v1_C
+FileName=v1_C_Pure.dev
+Name=v1_C_Pure
 Type=1
 Ver=2
 ObjFiles=
@@ -19,7 +19,7 @@ ObjectOutput=
 LogOutput=
 LogOutputEnabled=0
 OverrideOutput=0
-OverrideOutputName=v1_C.exe
+OverrideOutputName=v1_C_Pure.exe
 HostApplication=
 UseCustomMakefile=0
 CustomMakefile=

@@ -25,10 +25,14 @@
 
 # Ajuda 
 
-> Quando fazemos modificações em arquivos .h, devemos modificar pelo menos um .c para a aplicação também 
-> compute a modificação do .h
+* Modificações em .h não estão funcionando?
 
->Para abrir a aplicação no DevC++, você deve abrir o .dev que há dentro da pasta _src_.
+Quando fazemos modificações em arquivos .h, devemos modificar pelo menos o arquivo .c que usa os 
+dados que foram modificados dentro do arquivo .h.
+
+* Como rodar?
+
+Para abrir a aplicação no DevC++, você deve abrir o .dev que há dentro da pasta _src_.
 
 # Decisão
 Desenvolveremos o restante da aplicação em C mesmo devido à velocidade e custo de processamento.

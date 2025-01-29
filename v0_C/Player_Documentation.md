@@ -1,88 +1,95 @@
 # Index's playable:
+
 * Responsible for detail what kind of playable is.
 
- 
-    For example:
+For example:
+    
+* i = 0:
+  * Ball
 
-       i = 0 -> Ball;
- 
-       i = 1, ..., 10 -> Player's Soccer;
+* i = 1, ..., 10:
+  * Player's Soccer and one GoalKeeper
 
-       i = 11 -> Goalkeeper;
-
-       ...
+* ...
 
 # Player's Generation:
 
-* In the real world, the couch organizes the team in the configuration's game.
+* In the real world, the couch organizes the team in the configuration's 
+game.
 
 
-    For this, we split the image field in one matrix, each column and row has the width
-    and height of the player's soccer. With this, we can put the player in locations specifics.
+For this, we split the image field in one matrix, each column and
+row has the width and height of the player's soccer. With this, we
+can put the players in locations specifics.
 
-    For example:
-        
-        players_location = {
-            {
-                // Time A
-                {a_0, b_0}, 
-                {a_1, b_1},
-                ...
-            },
-            {
-                // Time B
-                ...
-            }
-        }
+For example:
     
-    For pratices, we can use random locations for while.
-	
-# Player's Interations:
-	We divide one thread for each team, in fact this improves the performance.
-	
-	We will divide the develop in some develop lines:
-	
-		First -> Without Interations Between Player's Soccer
-		
-			Each thread calculates the result force/impulse in the ball.
-			After this, sum up the result in the ball movement.
-			
-			Observation:
-				Do this for not using the mutex, because the mutex would not
-				allow the parallel programming.
-			
-			In this field, despite allow the interation with the ball, there's
-			only one player in the field soccer and the user will control him.
-            Of course we will test more players.
-			
-		Second -> Allow Interations Between Player's Soccer
-		
-			In this field, despite allow the interation with the ball, there's
-			only one player in the field soccer and the user will control him.
-            Of course we will test more players.
-		
-		Third -> 'Smart' Players
 
-            Finally, we put all the players in the field soccer and eliminates the control's user.
-            
-            We separates the third develop line in sections of AI.
+````C
+players_location = {
+    {
+        // Time A
+        {x_0, y_0}, 
+        {x_1, y_1},
+        ...
+    },
+    {
+        // Time B
+        ...
+    }
+}
+````
+
+In the future, we ideally want to have a new interface asking the 
+user to enter the appropriate desired locations.
+
+# Player's Interations:
+
+We divide one thread for each team, to improve the performance.
+
+We will divide to develop in some develop phases:
+
+### Without Interations Between Player's Soccer: v0_C
+
+* Each thread calculates the respective result force/impulse in the
+ball. After this, sum up the result in the ball's movement.
+
+
+* In this field, despite allow the interation with the ball, there's
+only one player in the field soccer and the user will control him.
+Of course, we will test more players.
+
+### Allow Interations Between Player's Soccer (?)
+
+* In the real world, the field is too big and interactions between
+players away from the ball become minimal.
+
+
+* Players focus on the ball and run towards it in order to take 
+control of it from other players. In addition, other possible
+interactions are marking between players from opposing teams and 
+fouls, but these are beyond our current objectives.
+
+
+### 'Smart' Players
+
+* Finally, we put all the players in the field soccer and eliminates
+the control's user.
+
+* We separate the third phase in sections of AI.
 
 # Smart Players
 
-* We divide the sections in folders. Each folder has initially the basic setup feature,
-in another words, the first and second develop lines.
+* We divide the versions in folders. Each folder has initially the
+basic setup feature, Pure version, which has no input's user.
 
-  * First Section: **Random Actions**
-  * Second Section: **Neural Network**
-  * Third Section: **(Deep?) Neural Network**
-			
-		
-			
-	
-	
-	
-	
-	
-	
-	
+* We will focus in to three types of intelligence:
 
+  1. **Random Actions**
+  2. **Neural Network**
+  3. **(Deep?) Neural Network**
+  
+
+* As the project grows and other developers join, more forms of 
+intelligence will be used and other methods of enhancement will also
+be tested.

@@ -1,25 +1,25 @@
 # Coach Threads
 
-> Refers to the threads that manage players.
+* Refers to the threads that manage players.
 
 # Purpose
 
 * Standby (0)
 
-> At First:
-> 
->   * To ensure that before applying, all players have been created.
->
-> Others:
->   * For thread synchronization.
+  * At First:
+ 
+    * To ensure that before applying, all players have been created.
+
+  * Others:
+    * For thread synchronization.
 
 * Standby (1)
 
-> Allow main to receive and update values that will be used by the coach threads.
+  * Allow main to receive and update values that will be used by the coach threads.
 
 * Standby (2)
 
-> Allows coach threads to calculate, update and draw players.
+  * Allows coach threads to calculate, update and draw players.
 
 
 # Flow
@@ -33,13 +33,15 @@
 >   * Receives input from the user;
 >   * Get ready for timelapse.
 > 
+> 
 >* Main thread release coach threads that are in standby (1). Main goes to standby (2).
 
 >* While Main thread is waiting in standby (2):
 >   * Calculates each interation between players and ball;
 >   * Calculates the moviment each player;
 >   * Under mutex, draw each player on the screen.
->   * 
+>
+> 
 >* Coach threads releases main thread from standby (2). These go to standby (0).
 
 >* Main thread update and render ball. After, releases the standby (0).
