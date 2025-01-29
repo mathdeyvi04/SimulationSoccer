@@ -107,3 +107,46 @@ verify_goal(){
 }
 
 
+////////////////////////////////////////////////
+/// The Goal
+////////////////////////////////////////////////
+
+int 
+get_decision_player(
+	Player *playable
+){
+	/*
+	Description:
+		Function responsible for representing the player's decision criteria.
+
+		Each decision will have its own return integer.
+	*/
+	
+	if(
+		close_enough(
+			playable
+		)
+	){
+		return 1;
+	}
+	
+	return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

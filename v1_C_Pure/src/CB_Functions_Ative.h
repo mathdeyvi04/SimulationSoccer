@@ -16,4 +16,9 @@ kick_ball(
 int 
 verify_goal();
 
+int 
+get_decision_player(
+	Player*
+);
+
 #endif

@@ -426,7 +426,6 @@ managing_team(
 		};	
 	}
 	
-	
 	while(
 		*(coach_info.simulation_indicator)
 	){
@@ -453,9 +452,29 @@ managing_team(
 			(i / 2) < NUMBER_OF_PLAYERS_IN_EACH_TEAM;
 			i = i + 2
 		){
-			// Calculates each interation between players e the ball.
+			///////////////////////////////////////////////////
+			/// Calculates the Decision
+			///////////////////////////////////////////////////
 			
-			// Calculates the moviment each player.
+			int decision = get_decision_player(
+				playables + coach_info.team_indicator + i		
+			);
+			
+			printf(
+				"\nPlayer %d is about to %d",
+				coach_info.team_indicator + i,
+				decision
+			);
+			
+			///////////////////////////////////////////////////
+			///  Calculates each interation between players e the ball.
+			///////////////////////////////////////////////////
+			
+			
+			///////////////////////////////////////////////////
+			/// the boring stuff
+			///////////////////////////////////////////////////
+			
 			secure_player(
 				playables + coach_info.team_indicator + i
 			);
@@ -495,10 +514,6 @@ managing_team(
 	free(arg);
 	pthread_exit(0);
 }
-
-
-
-
 
 
 
