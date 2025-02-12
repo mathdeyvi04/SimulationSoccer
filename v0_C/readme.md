@@ -37,7 +37,11 @@ Para abrir a aplicação no DevC++, você deve abrir o .dev que há dentro da pa
 # Decisão
 Desenvolveremos o restante da aplicação em C mesmo devido à velocidade e custo de processamento.
 
+# Imagem desta Versão
 
+<div align="center">
+<img src="https://github.com/user-attachments/assets/b5b1218a-a211-44a1-9e12-f91083e81fda" width="1000"/>
+</div>
 
 
 
