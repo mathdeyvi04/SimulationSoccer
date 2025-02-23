@@ -1,11 +1,8 @@
-# Descrição
-
-A partir da iniciativa RoboIME, nasceu no IME a necessidade
-de uma simulação de uma partida de futebol 2D e 3D.
-
-Sendo assim, guardo aqui neste repositório toda minha construção sobre o problema 2D.
-
-# Desenvolvimento
-
-Ao invés de _branches_, desenvolveremos as versões em pastas.
-Cada versão terá seu próprio readme.md explicando suas novidades e características.
+>##  Sobre o Passado
+> Infelizmente, devido à ignorância, foi pensado que a 
+> competição se tratava de construir um simulador de 
+> futebol com maior acurácia possível. Sendo assim, 
+> a pasta [_Passado_](Passado) contém o código desenvolvido 
+> por mim sobre um simulador 2D de futebol.
+> 
+> 

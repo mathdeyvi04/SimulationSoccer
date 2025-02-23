@@ -8,7 +8,8 @@ of the controller.
 * Since it is clean, it will not be able to do anything yet. We 
 will use it to fill it with automated control models.
 
-#### For more, see the _readme.md_ in the v0_C 
+
+* For more, see the [_readme.md_ in the v0_C](../v0_C/readme.md)
 
 
 
