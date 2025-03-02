@@ -10,7 +10,7 @@
 
 ### Escritos Por Outros Demais
 
-* [Documentação Extremamente Completa Sobre Absolutamente TUDO](https://courses.ms.wits.ac.za/~branden/RoboCup/index.html)
+* [Documentação Extremamente Completa Sobre Absolutamente TUDO](https://gitlab.com/robocup-sim/SimSpark/-/wikis/home)
   * Tem realmente tudo, apesar de ser inglês.
 
 * [Página de Ajuda da Liga 3D](https://ssim.robocup.org/3d-simulation/3d-tools/)
