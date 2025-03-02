@@ -8,9 +8,6 @@
 * [Sobre Simulação e Setup da Competição](Sobre_Setup.md)
   * Descrição sobre como a simulação funciona e como instalá-la.
 
-* [Sobre a Comunicação](Sobre_Comunicacao.md)
-  * Descrição de como os agentes, o servidor e a simulação se comunicam e funcionam.
-
 ### Escritos Por Outros Demais
 
 * [Documentação Extremamente Completa Sobre Absolutamente TUDO](https://courses.ms.wits.ac.za/~branden/RoboCup/index.html)

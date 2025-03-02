@@ -22,6 +22,10 @@ Aqui, faremos o possível para tornar o processo mais acessível possível.
 <img src="https://github.com/user-attachments/assets/286d84cc-d0e3-4846-a80c-17485a32eb7f" width="400"/>
 </div>
 
+> [!IMPORTANT]
+> 
+> O tutorial a seguir está focado no Sistema Operacional Ubuntu 24.04
+
 # Sumário
 
 * [Instalando SimSpark e RCSServer3D](#instalando-simspark-e-rcsserver3d)
