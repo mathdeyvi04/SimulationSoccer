@@ -15,7 +15,8 @@ O site que a hospedava foi desativado e agora só há resquícios. Por isso, fez
 
 # Sobre Connection
 
-Apenas configurações de conexão, nada tão importante dado que o RoboViz e o RCSSSimSpark.
+Apenas configurações de conexão, nada tão importante dado que o RoboViz e o RCSSSimSpark, em meu caso, estão rodando na mesma máquina.
+Mas caso não seja seu caso, é interessante verificar as portas de conexão, por definição SimSpark se comunica com RoboViz usando a porta 3200.
 
 # Sobre Server
 
