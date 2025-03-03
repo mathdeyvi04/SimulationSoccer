@@ -4,6 +4,10 @@
 
 Perceba que é necessário rodar 22 jogadores independentes e um main simulador, o qual calculará todas as colisões e visões possíveis. Por este motivo, é realmente complicado para um computador ser capaz de rodar sozinho, logo é extremamente sugerido que seja usado pelo menos 2 computadores, um para o servidor e outro para os times, no mínimo. No caso ideal, outro computador para outro time seria excelente.
 
+* Por que apenas não copiar o diretório que tem tudo  instalado?
+
+Pois a instalação não é apenas os arquivos, mas variáveis de caminho por exemplo dentre outros aspectos que não seriam cobertos apenas com os arquivos.
+
 * Tutoriais Disponíveis
 
 Os tutoriais que existem são puramente inglês e possuem foco em instalação em Linux.
@@ -15,6 +19,9 @@ Aqui, faremos o possível para tornar o processo mais acessível possível.
 
 * [Tutorial](https://gitlab.com/robocup-sim/SimSpark/-/wikis/Installation-on-Linux) de instalação pela equipe que construiu os softwares usados pela competição.
 
+<br>
+
+* [Tutorial](https://www.youtube.com/watch?v=024bRKC5XnA) de instalação pela equipe BahiaRT.
 
 * Segue a arquitetura do que iremos instalar.
 
@@ -34,8 +41,9 @@ Aqui, faremos o possível para tornar o processo mais acessível possível.
   * [Certificando SyncMode](#certificando-o-syncmode)
   * [Instalando MagmaProxy](#instalando-magmaproxy)
   * [Ligando ServidorProxy](#ligando-o-servidorproxy)
-  * [Para Futuros Procedimentos](#para-futuros-procedimentos)
 * [Testando Time FC Portugal](#time-referente-ao-fc-portugal)
+* [Futuros Procedimentos](#recapitulando)
+
 
 # Instalando SimSpark e RCSServer3D
 
@@ -92,10 +100,7 @@ Para que algo seja exibido, ele pedirá por isso, ligue o servidor principal, vu
 
 ### Certificando o syncMode
 
-Antes de poder usar o ServidorProxy, você precisa configurar
-o RCSServer3D para rodar em modo de sincronização.
-Altere o atributo agentSyncMode no arquivo de configuração
-do servidor ```.../.simspark/spark.rb``` para _true_.
+Antes de poder usar o ServidorProxy, você precisa configurar o RCSServer3D para rodar em modo de sincronização. Altere o atributo agentSyncMode no arquivo de configuração do servidor ```.../.simspark/spark.rb``` para _true_.
 
 ### Instalando MagmaProxy
 
@@ -117,8 +122,6 @@ Nada vai acontecer, à vista nu, e estará tudo bem. (não ironicamente)
 
 ### Ligando o ServidorProxy
 
-Tenha certeza que o syncMode está como _true_ no servidor.
-
 * Host IP do Servidor RCSServer3D
 
 Aqui, iremos rodar tudo no mesmo computador, logo usaremos o mesmo IP. Entretanto, caso usasse outra máquina, deve-se usar o IP correspondente à máquina que está rodando o servidor.
@@ -132,7 +135,7 @@ ifconfig
 Provavelmente surgirá duas possibilidades, _eno1_ e _lo_.
 Como faremos tudo na mesma máquina, o que devemos focar é
 _lo_ e usar o parâmetro do lado de _inet_. Em meu caso é:
-_localhost_.
+_127.0.0.1_.
 
 * Server Agent
 
@@ -140,7 +143,7 @@ Por definição da competição, deve ser 3100.
 
 * Inicializando
 
-Devemos informar outro parâmetro: a porta do servidor proxy, a partir da qual os respectivos times logarão.
+Devemos informar outro parâmetro: a porta do servidor proxy, a partir da qual os respectivos times logarão em seus respectivos servidores proxy.
 
 Por exemplo:
 
@@ -148,7 +151,7 @@ Por exemplo:
 ./start.sh 127.0.0.1 3100 3500
 ```
 
-Este último parâmetro é importante para um dos times que deverá entrar por este ServidorProxy. Mais à frente será mais detalhado o que deve ser feito.
+O processo de login do time ao servidor será detalhado mais adiante.
 
 Surgirá algo como:
 
@@ -158,11 +161,6 @@ Proxy server listening on port 3500
 ```
 
 Em teoria, não faça nada, além disso. Este terminal servirá como acesso para controle do servidor. **Você deve abrir outro terminal agora.**
-
-### Para futuros procedimentos.
-
-Refaça os processos no terminal a partir da pasta magmaproxy,
-a qual contém o start.sh referente ao ServidorProxy.
 
 > [!WARNING]
 > 
@@ -177,7 +175,7 @@ a qual contém o start.sh referente ao ServidorProxy.
 Usaremos para **teste** o código de uma equipe chamada FC Portugal.
 Escolhi-a, pois maior parte de seu código-fonte é em Python além 
 de que sua [documentação](https://docs.google.com/document/d/1aJhwK2iJtU-ri_2JOB8iYvxzbPskJ8kbk_4rb3IK3yc/edit?tab=t.0)
-é extremente boa.
+é extremamente boa.
 
 Experimente:
 
@@ -194,13 +192,13 @@ pip3 install numpy pybind11 psutil
 
 Seguinte: Eu tive um trabalho **ABSURDO**, pois ler a documentação
 dos desenvolvedores infelizmente não foi a primeira coisa que
-fiz:
+fiz. Na mesma pasta do repositório, execute
 
 ```
 python Run_Utils.py
 ```
 
-Este comando deve construir algumas bibliotecas em C++ que
+Este comando constrói algumas bibliotecas em C++ que
 serão usadas no código python.
 
 > [!IMPORTANT]
@@ -208,6 +206,9 @@ serão usadas no código python.
 > Caso surja uma mensagem de erro relacionada ao GBLICXX e
 > sua versão, apenas tente fazer o que é citado neste
 > [link](https://stackoverflow.com/questions/76974555/glibcxx-3-4-32-not-found-error-at-runtime-gcc-13-2-0).
+> 
+> Em meu caso que estou usando Anaconda, o que funcionou especificamente foi a última sugestão.
+
 
 > [!TIP]
 > 
@@ -215,8 +216,57 @@ serão usadas no código python.
 > 
 > ```export OMP_NUM_THREADS=1```
 
-//// Alguns avisos a mais sobre como rodar o time
+Agora para executar o time:
+
+```
+./start.sh 127.0.0.1 3500
+```
+
+Perceba como especificamos o localhost e a porta do ServidorProxy.
 
 # Recapitulando
 
-* Sequência de Comando Para fazer iniciar tudo 
+### Ligando Servidor
+
+```
+rcssserver3d
+```
+
+Conforme a partida for ocorrendo, no terminal do servidor RCSSServer3D surgirão mensagens específicas de colisões que estão ocorrendo dentro da simulação.
+
+> [!TIP]
+> 
+> Caso não saiba se há servidores ligados ou ocorra um [erro especifico](https://github.com/m-abr/FCPCodebase/issues/37), execute:
+>
+> ```pkill rcssserver3d -e -9; pkill simspark -e -9```
+
+
+### Ligando ServidorProxy
+
+* Para cada time, um servidor proxy com porta diferente, não esqueça. 
+
+* Deve estar dentro da pasta que contém os arquivos do magmaproxy.
+
+```
+./start.sh 127.0.0.1 3100 3500
+```
+
+### Ligando RoboViz
+
+* Dentro da pasta que contém os arquivos do RoboViz.
+
+```
+./roboviz.sh
+```
+
+### Conectando Time
+
+* Dentro da pasta que contém os arquivos de código.
+
+```
+./start.sh 127.0.0.1 3500
+```
+
+Com isso, tudo deve funcionar. 
+
+* Experimente orar por mim como agradecimento, pois tudo isso foi realmente complicado de fazer.
