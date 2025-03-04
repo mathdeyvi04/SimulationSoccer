@@ -12,5 +12,6 @@
      * [Liga 2D](Liga%202D)
      * [Liga 3D](Liga%203D)
 
+* Segue um Conjunto de [Instruções de Documentos](Instrucoes_de_Documentos.md) para Inscrição de Equipes nas Competições
 
 
