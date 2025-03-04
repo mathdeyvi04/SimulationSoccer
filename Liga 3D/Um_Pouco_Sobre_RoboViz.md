@@ -66,6 +66,12 @@ O próprio RoboViz tem uma ferramenta de captura de tela, pois a padrão faria c
 
 Este ponto é chave para **depuração** de como o time está pensando. A partir desta ferramente há inúmeras possibilidades.
 
+Demonstração:
+
+<div align="center">
+<img src="https://github.com/user-attachments/assets/5ce716a9-56f3-4843-bcd7-6fe6848bf1ca" width="400"/>
+</div>
+
 Neste [artigo](https://github.com/user-attachments/files/19061754/um_pouco_sobre_desenhos_no_roboviz.pdf), há uma explicação completa e detalhada sobre como fazer esses desenhos.
 
 ### Toggle Full Screen
