@@ -8,10 +8,8 @@
 # Sobre A Competição Real
 
 * Divide-se em ligas de 2D e de 3D. 
-* Cada liga possui seu próprio simulador, servidor e regras. Por isso, faz-se necessário grandes explicações.
+* Cada liga possui seu próprio simulador, servidor e regras. Por isso, faz-se necessário grande explicações.
      * [Liga 2D](Liga%202D)
      * [Liga 3D](Liga%203D)
 
 * Segue um Conjunto de [Instruções de Documentos](Instrucoes_de_Documentos.md) para Inscrição de Equipes nas Competições
-
-
