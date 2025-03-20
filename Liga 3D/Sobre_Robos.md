@@ -29,6 +29,26 @@ Informações Importantes:
 * Agentes são representados pelo simulador/servidor e se comunicam com ele. 
 	* A partir de mensagens trocadas com servidor, os agentes realizam suas ações. 
 
+## Tipos de NAO
+
+**COLOCAR IMAGENS DOS RESPECTIVOS NAO's**
+
+* Tipo 0
+  * NAO Padrão, 22 juntas.
+
+* Tipo 1
+  * Pernas e braços mais longos, 22 juntas.
+
+* Tipo 2
+  * Velocidade linear mais rápida e velocidade 
+  de rotação mais lenta no tornozelo.
+
+* Tipo 3
+  * Pernas e braços mais longos possíveis e quadril mais largo.
+
+* Tipo 4
+  * NAO Padrão com pés, de 24 juntas.
+
 # Arquitetura dos Agentes
 
 <div align="center">

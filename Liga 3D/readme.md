@@ -11,7 +11,7 @@
 * [Sobre RoboViz](Sobre_RoboViz.md)
   * Uma pequena documentação sobre as funções disponíveis do RoboViz, software usado como monitor para a simulação SimSpark.
 
-* [Aprendizado A Partir do Time da Equipe FC Portugal](Referente%20à%20FC%20Portugal)
+* [Estudo Dirigido sobre a Equipe FC Portugal](Referente%20à%20FC%20Portugal/readme.md)
   * Condução de estudo, testes e relatórios sobre conhecimentos adquiridos a partir da habilidade deste time.
 
 <br>

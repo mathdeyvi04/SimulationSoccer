@@ -1,4 +1,11 @@
->##  Sobre o Passado
+
+<div align="center">
+<img src="https://github.com/user-attachments/assets/6b3d3c58-339e-43e3-b2c2-1141fdc3904a" width="400"/>
+</div>
+
+
+
+> ##  Sobre o Passado
 > Infelizmente, devido à ignorância, foi pensado que a 
 > competição se tratava de construir um simulador de 
 > futebol com maior acurácia possível. Sendo assim, 

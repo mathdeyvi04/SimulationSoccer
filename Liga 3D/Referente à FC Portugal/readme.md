@@ -5,21 +5,18 @@ de outra equipe configura inválidez, dado o mau-caráter, além de roubo de pro
 intelectual da mesma.
 
 Portanto, afirma-se que o que será tratado neste local se trata apenas de um estudo
-dirigido, focado apenas no conhecimento disponibilizado publicamente pela equipe.
+dirigido, focado no conhecimento disponibilizado publicamente pela equipe e explicado, aprimorado e compreendido pelo mesmo que vós escreve.
 
-# Visão Geral
+# Documentação
 
-* [Documentação Disponbilizada pela Equipe](https://docs.google.com/document/d/1aJhwK2iJtU-ri_2JOB8iYvxzbPskJ8kbk_4rb3IK3yc/edit?tab=t.0)
+* [Disponbilizada pela Equipe](https://docs.google.com/document/d/1aJhwK2iJtU-ri_2JOB8iYvxzbPskJ8kbk_4rb3IK3yc/edit?tab=t.0)
 
-Em Inglês e escrita em Word.
+	* Em Inglês e escrita em Word.
 
-* [Documentação Traduzida e Explicada Por Mim para Você]()
+* [Traduzida e Explicada Por Mim para Você]()
 
-Em Português e escrita em LáteX.
+	* Explicação Base de Diversos Componentes Básicos da Aplicação.
 
-* [Código Construído pela Equipe](https://github.com/m-abr/FCPCodebase)
-
-Repositório da equipe responsável.
 
 
 
