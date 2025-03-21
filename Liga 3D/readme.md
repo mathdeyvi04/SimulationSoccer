@@ -21,7 +21,7 @@
 * [Documentação Extremamente Completa Sobre Absolutamente TUDO](https://courses.ms.wits.ac.za/~branden/RoboCup/index.html)
   * Tem realmente tudo, apesar de ser inglês.
 
-* [Página de Ajuda da Liga 3D](https://ssim.robocup.org/3d-simulation/3d-tools/)
+* [Página Oficial de Ajuda da Liga 3D](https://ssim.robocup.org/3d-simulation/3d-tools/)
   * Contém, inclusive, tutorias bem claros e organizados sobre diversos pontos, como a instalação.
 
 * [Sobre Kit de Ferramentas Desenvolvido Pela Equipe BahiaRT](https://youtu.be/h_s8rA2IS88)
