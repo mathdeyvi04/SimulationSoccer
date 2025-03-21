@@ -262,9 +262,31 @@ Cada classe _Base_Agent_ possui uma unidade de cada classe:
     * **localization.so**: Algoritmo de estimativa de posição 6D baseado em um 
     modelo probabilístico personalizado, (**algoritmo extremamente complexo sugiro buscar mais**)
 
+    * Draw: Classe para desenhar no RoboViz, desenha setas além de todas as
+    formas nativas e anotações de texto. Esta classe é acessível através do
+    objeto world, mas também pode ser criada independentemente de um agente,
+    como visto no utilitário Draw.
+  
+    * Other_Robot: informações sobre o estado dos companheiros de equipe ou
+    adversários.
 
+    * Robot: Estado interno do robô, incluindo informações sobre localização,
+    orientação, juntas, alvos de juntas, partes do corpo, sensores. Fornece
+    métodos para lidar com controle de juntas, computação IMU, cinemática direta,
+    transformações de pose (translação e orientação 3D). Robot_Specs são arquivos
+    XML com especificações de cada tipo de robô NAO.
+    
+* [Behavior]()
+  * Head
+    * Algoritmo que controla a orientação da cabeça.
+  
+  * Pose
+    * Uma pose é definida por um único quadro-chave (1 posição angular por articulação)
 
-
-
-
-
+  * Slot Engine
+    * Gerencia a execução de comportamentos específicos.
+    * Comportamento Específico - arquivos XML que definem 
+    comportamentos compostos de vários quadros-chave.
+    
+  * Custom_Skill
+    * Habilidades que necessitam de uma preparação e execuçao personalizada.
