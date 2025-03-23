@@ -268,4 +268,5 @@ Cada classe _Base_Agent_ possui uma unidade de cada classe:
   * Apenas uma forma estilizada de apresentação no terminal.
   
 * [Script](src/sobre_scripts/comuns/Script.py)
-
+  * Argumentos intrínsecos ao time estão disponíveis em [config.json](src/config.json).
+  * Responsável pela compilação de código cpp.

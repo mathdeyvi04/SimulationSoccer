@@ -2,6 +2,7 @@ from os import path, listdir, getcwd, cpu_count
 from os.path import join, dirname, isfile, isdir
 import json
 import sys
+from time import sleep
 
 # ISTO NÃO É TRIVIAL
 """
@@ -140,11 +141,370 @@ class Script:
         de programas no terminal e permitir o uso de argumentos.
     """
 
+    caminho_raiz = path.dirname(
+        path.dirname(
+            realpath(
+                join(
+                    getcwd(),
+                    dirname(__file__)
+                )
+            )
+        )
+    )
+
+    # Neste caso é: C:\Users\deyvi\Documents\ImperioPy\TheBigOnes\RoboCup_RoboIME\Liga 3D\Referente à FC Portugal\src
+
     def __init__(
             self,
             construtor_cpp=0
     ) -> None:
-        
+        #######################################################################
+        # Específicando variáveis e argumentos.
+
+        self.opcoes_disponiveis = {
+            # Para adicionar mais argumentos, basta incrementá-los aqui.
+            # Caso seja feito modificações, o arquivo config.json deve ser MANUALMENTE deletado.
+            # ID: (descrição, default)
+
+            'i': (
+                "Servidor IP",
+                "localhost"
+            ),
+
+            'p': (
+                "Porta dos Agentes",
+                "3100"
+            ),
+
+            'm': (
+                "Porta do Monitor",
+                "3200"
+            ),
+
+            't': (
+                "Nome do Time",
+                "RoboIME"
+            ),
+
+            'u': (
+                "Numero do Uniforme",
+                '1'
+            ),
+
+            'r': (
+                "Tipo do Robo",
+                '1'
+            ),
+
+            'P': (
+                "Disputa de Penaltis",
+                '0'
+            ),
+
+            # 'F': (
+            #     "magmaFatProxy",
+            #     '0'
+            # ),
+
+            'D': (
+                "Debug",
+                '1'
+            )
+        }
+
+        self.respectivos_tipos_e_possibilidades = {
+            'i': (
+                str,
+                None
+            ),
+
+            'p': (
+                int,
+                None
+            ),
+
+            'm': (
+                int,
+                None
+            ),
+
+            't': (
+                str,
+                None
+            ),
+
+            'u': (
+                int,
+                {i for i in range(1, 12)}
+            ),
+
+            'r': (
+                int,
+                {i for i in range(0, 5)}
+            ),
+
+            'P': (
+                int,
+                [0, 1]
+            ),
+
+            # 'F': (
+            #     int,
+            #     [0, 1]
+            # ),
+
+            'D': (
+                int,
+                [0, 1]
+            )
+        }
+
+        #######################################################################
+
+        self.ler_ou_criar_config()
+
+        # Ajustando mensagens
+        formatador = lambda prog: argparse.HelpFormatter(
+            prog, max_help_position=52
+        )
+        parser = argparse.ArgumentParser(
+            formatter_class=formatador
+        )
+
+        for chave in self.opcoes_disponiveis:
+            parser.add_argument(
+                f"-{chave}",
+                help=f"{self.opcoes_disponiveis[chave][0]:30}[{self.opcoes_disponiveis[chave][1]:20}]",
+                type=self.respectivos_tipos_e_possibilidades[chave][0],
+                nargs="?",
+                default=self.opcoes_disponiveis[chave][1],
+                metavar='x',
+                choices=self.respectivos_tipos_e_possibilidades[chave][1]
+
+            )
+
+        self.args = parser.parse_args()
+
+        if getattr(
+                sys,
+                'frozen',
+                False
+        ):
+            # Forçar o desligamento do modo debug quando
+            # estiver rodando em modo binário.
+
+            self.args.D = 0
+
+        # Lista de Jogadores Criados
+        self.jogadores = []
+
+        Script.construir_modulos_cpp()
+
+    def ler_ou_criar_config(
+            self
+    ) -> None:
+        """
+        Descrição:
+            Garantir que config.json esteja disponível.
+        """
+
+        # Caso não exista um arquivo base dos argumentos padrões
+        # devemos criá-lo.
+        if not path.isfile(
+                "config.json"
+        ):
+            with open(
+                    "config.json",
+                    'w'
+            ) as arquivo_de_arg_padroes:
+                json.dump(
+                    self.opcoes_disponiveis,
+                    arquivo_de_arg_padroes,
+                    indent=4
+                )
+        else:
+
+            # Existe a possibilidade de que, durante operações de inscrição ou
+            # de lançamento de agentes, este arquivo config esteja sendo manipulado
+            # e, por acaso, esteja vazio.
+            tempo_total_de_espera = 0
+            while path.getsize(
+                    "config.json"
+            ) == 0 and tempo_total_de_espera < 5:
+                print(
+                    f"Esperando que config.json não esteja vazio."
+                )
+
+                sleep(0.1)
+
+                tempo_total_de_espera += 0.1
+
+            if tempo_total_de_espera >= 5:
+                print(
+                    "O tempo de espera foi ultrapassado e o arquivo config.json ainda estava vazio. Verifique manualmente."
+                )
+
+            with open(
+                    "config.json",
+                    'r'
+            ) as arq:
+                # Pode ser que tenhamos feito modificações específicas nos argumentos padrões.
+                # Para isso, importamos direto do arquivo.
+                self.opcoes_disponiveis = json.loads(
+                    arq.read()
+                )
+
+    @staticmethod
+    def construir_modulos_cpp(
+            ambiente_especial: list = None,
+            saida_da_construcao: bool = False,
+    ):
+        """
+        Descrição:
+            Construir módulos C++ da pasta /sobre_cpp usando
+            o módulo Pybind11.
+
+        Parâmetros:
+            -> ambiente_especial
+                Comando de Prefixo para rodar um programa específico
+                em um determinado ambiente.
+
+                Útil para compilar c++ em diferentes interpretadores python.
+
+                Exemplo: ['conda', 'run', ...]
+
+                se Nada for dado, usa o interpretador padrão.
+
+            -> saida_da_construcao
+                Saída se há alguma coisa para construir.
+        """
+
+        if ambiente_especial is None:
+            ambiente_especial = []
+
+        caminho_cpp = Script.caminho_raiz + "/sobre_cpp/"
+        exclusoes = {"__pycache__", ".", ".."}
+
+        modulos_cpp_a_serem_construidos = [
+            modulo_cpp for modulo_cpp in listdir(caminho_cpp) if isdir(
+                join(
+                    caminho_cpp,
+                    modulo_cpp
+                )
+            ) and modulo_cpp not in exclusoes
+        ]
+
+        if not modulos_cpp_a_serem_construidos:
+            return None  # Não há nada para construir
+            pass
+
+        comando_relativo_ao_python = f"python{sys.version_info.major}.{sys.version_info.minor}"
+
+        # Em meu caso, python3.11
+
+        def iniciar_construcao() -> str:
+            """
+            Descrição:
+                Obtém os caminhos de inclusão, includes, para compilar o código C++.
+            """
+
+            print(
+                "-" * 100
+            )
+            print("Módulos C++ sendo construidos:", modulos_cpp_a_serem_construidos)
+
+            try:
+                # ISTO NÃO É TRIVIAL
+                """
+                Lembre-se de MultiProcessing e de programação não linear.
+                Cria um novo processo para executar um comando no sistema.
+                """
+
+                processo = subprocess.Popen(
+                    ambiente_especial + [
+                        comando_relativo_ao_python,
+                        "-m",
+                        "pybind11",
+
+                        # Executa o módulo pybind11 com o argumento --includes
+                        # que retorna os caminhos de inclusão necessários para
+                        # compilar extensões C++.
+                        "--includes"
+                    ],
+                    # Redireciona a saída padrão (stdout) do comando para um
+                    # pipe, permitindo que seja capturada no código Python.
+                    stdout=subprocess.PIPE
+                )
+
+                # Captura as saídas e erros do processo.
+                # Esse includes será bytes de informação
+                includes, error = processo.comunicate()
+
+                processo.wait()  # Aguarda o término do processo.
+
+            except Exception as Error:
+
+                print(
+                    f"Obtive {Error} ao executar '{python_cmd} -m pybind11 --includes'"
+                )
+
+                exit()
+
+            includes = includes.decode().rstrip()
+            print(
+                f"Usando Pybind11 os : '{includes}'"
+            )
+
+            # Esses são os caminhos de inclusão que o compilador C++
+            # precisa para encontrar os headers do PyBind11 e do
+            # Python.
+
+            return includes
+
+        n_proc = str(cpu_count())
+        zero_modulos = True
+
+        for modulo in modulos_cpp_a_serem_construidos:
+            caminho_modulo = join(
+                caminho_cpp,
+                modulo
+            )
+
+            # Pula o módulo se não há Makefile
+            if not isfile(
+                join(
+                    caminho_modulo,
+                    "Makefile"
+                )
+            ):
+                continue
+
+            if isfile(
+                join(
+                    caminho_modulo,
+                    modulo + ".so"
+                )
+            ) and isfile(
+                join(
+                    caminho_modulo,
+                    modulo + ".c_info"
+                )
+            ):
+                with open(
+                    join(
+                        caminho_modulo,
+                        modulo + ".c_info"
+                    ),
+                    'rb'
+                ) as arq:
+                    info = pickle.load(
+                        arq
+                    )
+
+                if info == comando_relativo_ao_python:
+                    code_mod_time = max(
+
+                    )
 
 
 
@@ -153,4 +513,12 @@ class Script:
 
 
 
+
+
+
+
+
+
+
+exemplo = Script()
 

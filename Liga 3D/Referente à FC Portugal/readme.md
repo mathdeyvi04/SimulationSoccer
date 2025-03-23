@@ -15,7 +15,8 @@ dirigido, focado no conhecimento disponibilizado publicamente pela equipe e expl
 
 * [Traduzida e Explicada Por Mim para Você](Uma_Visao_Geral.md)
 
-	* Explicação Base de Diversos Componentes Básicos da Aplicação.
+	* Explicação geral sobre a aplicação construída.
+    * A aplicação foi construída de tal forma que roda apenas em Linux Ubuntu.
 
 
 
