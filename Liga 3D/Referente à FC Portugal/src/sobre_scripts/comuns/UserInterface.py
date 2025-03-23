@@ -1,8 +1,4 @@
-# Módulo que fornece funções para trabalhar com iteradores
-# de forma eficiente. Neste caso, zip_longest é usada para
-# combinar iteráveis de comprimentos diferentes.
 from itertools import zip_longest
-from pprint import pprint
 from math import ceil
 from numpy import clip
 from shutil import get_terminal_size

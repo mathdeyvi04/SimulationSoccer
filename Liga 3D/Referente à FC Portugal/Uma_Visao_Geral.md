@@ -10,6 +10,7 @@
 * [Arquitetura do Base_Agent](#arquitetura-do-base_agent)
 
 * [Ordem de Hierarquia de Criação](#ordem-de-hierarquia-de-criação)
+
 # Instalando Dependências 
 
 Bibliotecas de manipulação de vetores e de dados.
@@ -19,14 +20,14 @@ sudo apt install libgsl-dev
 pip3 install numpy pybind11 psutil
 ```
 
-Entre na [pasta de código-fonte]() e execute:
+Entre na [pasta de código-fonte](src) e execute:
 
 ```
 cd src
 python3 Run_Utils.py
 ```
 
-Na primeira execução, isso compilará o código C++ e possibilita o uso das funções construídas
+Na primeira execução, compilará o código C++ e possibilita o uso das funções construídas
 nessa linguagem. Em seguida, um menu surgirá com diversas possibilidades de ações.
 Explicações serão posteriormente fornecidas.
 
@@ -263,4 +264,8 @@ Cada classe _Base_Agent_ possui uma unidade de cada classe:
 
 # Ordem de Hierarquia de Criação
 
-[UserInterface](src/sobre_scripts/comuns/UserInterface.py)
+* [UserInterface](src/sobre_scripts/comuns/UserInterface.py)
+  * Apenas uma forma estilizada de apresentação no terminal.
+  
+* [Script](src/sobre_scripts/comuns/Script.py)
+
