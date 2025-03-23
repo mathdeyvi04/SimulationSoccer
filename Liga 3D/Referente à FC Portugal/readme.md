@@ -13,7 +13,7 @@ dirigido, focado no conhecimento disponibilizado publicamente pela equipe e expl
 
 	* Em Inglês e escrita em Word.
 
-* [Traduzida e Explicada Por Mim para Você]()
+* [Traduzida e Explicada Por Mim para Você](Uma_Visao_Geral.md)
 
 	* Explicação Base de Diversos Componentes Básicos da Aplicação.
 
