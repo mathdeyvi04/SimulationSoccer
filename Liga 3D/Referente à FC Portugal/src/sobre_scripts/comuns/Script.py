@@ -503,7 +503,7 @@ class Script:
 
                 if info == comando_relativo_ao_python:
                     code_mod_time = max(
-
+                        
                     )
 
 
