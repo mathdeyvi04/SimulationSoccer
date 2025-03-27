@@ -1,6 +1,10 @@
 # Desenvolvido por:
 #   Matheus Deyvisson, 2025
 #
+# Descrição:
+#     Código responsável por gerenciar comunicação e execução do código com terminal
+#     e construir módulos cpp.
+
 
 from os import path, listdir, getcwd, cpu_count
 from os.path import join, dirname, isfile, isdir

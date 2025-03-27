@@ -1,6 +1,9 @@
 # Desenvolvido por:
 #   Matheus Deyvisson, 2025
 #
+# Descrição:
+#       Código responsável por prover ferramentas de visualização
+#       em terminal
 
 from itertools import zip_longest
 from math import ceil
