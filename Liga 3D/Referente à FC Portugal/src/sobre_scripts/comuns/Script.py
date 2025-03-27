@@ -1,8 +1,13 @@
+# Desenvolvido por:
+#   Matheus Deyvisson, 2025
+#
+
 from os import path, listdir, getcwd, cpu_count
 from os.path import join, dirname, isfile, isdir
 import json
 import sys
 from time import sleep
+from sobre_scripts.comuns.UserInterface import UserInterface
 
 # ISTO NÃO É TRIVIAL
 """
@@ -152,7 +157,7 @@ class Script:
         )
     )
 
-    # Neste caso é: C:\Users\deyvi\Documents\ImperioPy\TheBigOnes\RoboCup_RoboIME\Liga 3D\Referente à FC Portugal\src
+    # Em meu caso é: C:\Users\deyvi\Documents\ImperioPy\TheBigOnes\RoboCup_RoboIME\Liga 3D\Referente à FC Portugal\src
 
     def __init__(
             self,
@@ -263,7 +268,7 @@ class Script:
 
         self.ler_ou_criar_config()
 
-        # Ajustando mensagens
+        # Ajustando o padrão de mensagens, não se preocupe.
         formatador = lambda prog: argparse.HelpFormatter(
             prog, max_help_position=52
         )
@@ -280,7 +285,6 @@ class Script:
                 default=self.opcoes_disponiveis[chave][1],
                 metavar='x',
                 choices=self.respectivos_tipos_e_possibilidades[chave][1]
-
             )
 
         self.args = parser.parse_args()
@@ -299,6 +303,47 @@ class Script:
         self.jogadores = []
 
         Script.construir_modulos_cpp()
+
+        if self.args.D:
+            # Se quisermos rodar em modo debug
+
+            try:
+                print(
+                    "\nDICA: Se quiser ajuda, rode:",
+                    f"python {__main__.__file__} -h",
+                    sep=" "
+                )
+            except:
+                pass
+
+            colunas = [
+                [],
+                [],
+                []
+            ]
+
+            for chave, valor in vars(
+                    self.args
+            ).items():
+                colunas[0].append(
+                    self.opcoes_disponiveis[chave][0]
+                )
+                colunas[1].append(
+                    self.opcoes_disponiveis[chave][1]
+                )
+                colunas[2].append(
+                    valor
+                )
+
+            UserInterface.apresentar_tabela(
+                colunas,
+                [
+                    "Argumento",
+                    "Padrão em config.json",
+                    "Ativar"
+                ],
+                alinhamento=["<", "^", "^"]
+            )
 
     def ler_ou_criar_config(
             self
@@ -395,6 +440,7 @@ class Script:
         ]
 
         if not modulos_cpp_a_serem_construidos:
+            print("Não há nenhum módulo cpp a ser construído.")
             return None  # Não há nada para construir
             pass
 
@@ -438,7 +484,7 @@ class Script:
 
                 # Captura as saídas e erros do processo.
                 # Esse includes será bytes de informação
-                includes, error = processo.comunicate()
+                includes_, error = processo.comunicate()
 
                 processo.wait()  # Aguarda o término do processo.
 
@@ -450,19 +496,22 @@ class Script:
 
                 exit()
 
-            includes = includes.decode().rstrip()
+            includes_ = includes_.decode().rstrip()
             print(
-                f"Usando Pybind11 os : '{includes}'"
+                f"Usando Pybind11 os : '{includes_}'"
             )
 
             # Esses são os caminhos de inclusão que o compilador C++
             # precisa para encontrar os headers do PyBind11 e do
             # Python.
 
-            return includes
+            return includes_
 
-        n_proc = str(cpu_count())
-        zero_modulos = True
+        n_processadores = str(
+            # Número de CPUs, físicos e lógicos(Threads), disponíveis no sistema onde o código está sendo
+            # executado.
+            cpu_count()
+        )
 
         for modulo in modulos_cpp_a_serem_construidos:
             caminho_modulo = join(
@@ -470,20 +519,21 @@ class Script:
                 modulo
             )
 
-            # Pula o módulo se não há Makefile
+            # Pula o módulo se não houver Makefile
             if not isfile(
-                join(
-                    caminho_modulo,
-                    "Makefile"
-                )
+                    join(
+                        caminho_modulo,
+                        "Makefile"
+                    )
             ):
                 continue
 
+            # Cenário Específico
             if isfile(
-                join(
-                    caminho_modulo,
-                    modulo + ".so"
-                )
+                    join(
+                        caminho_modulo,
+                        modulo + ".so"
+                    )
             ) and isfile(
                 join(
                     caminho_modulo,
@@ -491,34 +541,110 @@ class Script:
                 )
             ):
                 with open(
-                    join(
-                        caminho_modulo,
-                        modulo + ".c_info"
-                    ),
-                    'rb'
+                        join(
+                            caminho_modulo,
+                            modulo + ".c_info"
+                        ),
+                        'rb'
                 ) as arq:
+                    # Vamos carregar informações em binário
+                    # a partir do arquivo .c_info.
                     info = pickle.load(
                         arq
                     )
 
                 if info == comando_relativo_ao_python:
-                    code_mod_time = max(
-                        
+                    maior_tempo_desde_ultima_modificacao_nos_arquivos = max(
+                        # Vamos procurar o arquivo de código que possui maior tempo
+                        # desde última modificação.
+                        getmtime(
+                            join(
+                                caminho_modulo,
+                                arquivo_de_codigo
+                            )
+                        ) for arquivo_de_codigo in listdir(
+                            caminho_modulo
+                        ) if arquivo_de_codigo.endswith(".cpp") or arquivo_de_codigo.endswith(".h")
                     )
 
+                    tempo_desde_ultima_modificacao_no_binario = getmtime(
+                        join(
+                            caminho_modulo,
+                            modulo + ".so"
+                        )
+                    )
 
+                    if (maior_tempo_desde_ultima_modificacao_nos_arquivos - tempo_desde_ultima_modificacao_no_binario) < 30:
+                        """
+                        Não buildar com uma margem de 30 segundos.
+                        Cenário descrito pela equipe:
+                        'we unzip the fcpy project, including the binaries, the modification times are all similar'
+                        
+                        """
 
+                        continue
 
+            if saida_da_construcao:
+                print(
+                    "Existem módulos a serem construídos. Este jogador não é permitido a ser construídor. Abortando..."
+                )
+                exit()
 
+            includes = iniciar_construcao()
 
+            print(
+                # Fazemos dessa forma devido ao parâmetro 40 que desejamos no print.
+                f"{f'Buildando: {modulo}.....':40}",
+                end='',
+                flush=True
+            )
 
+            processo = subprocess.Popen(
+                [
+                    "make",
+                    f"-j{n_processadores}",  # Para usarmos os processadores de forma inteligente
+                    f"PYBIND_INCLUDES={includes}"
+                ],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                cwd=caminho_modulo
+            )
 
+            saida, erros = processo.communicate()
+            codigo_de_resultado = processo.wait()
 
+            if codigo_de_resultado == 0:
+                print(
+                    f"Construção do módulo {modulo} efetivada!"
+                )
+                with open(
+                        join(
+                            caminho_modulo,
+                            modulo + ".c_info"
+                        ),
+                        "wb"
+                ) as arq:
+                    pickle.dump(
+                        comando_relativo_ao_python,
+                        arq,
+                        protocol=4  # Rapaz, se eu te contar oq é isso...
+                    )
+            else:
+                print(
+                    f"Aborto! Construção do módulo {modulo} não foi concluída."
+                )
 
+                print(
+                    saida.decode(), erros.decode()
+                )
 
+                exit()
 
+            # Se chegou até aqui, está tudo bem.
+            print(
+                "Todos os módulos construídos!\n"
+            )
+            print("-" * 50)
 
-
-
-exemplo = Script()
+    # Os Demais Métodos São inerentes à importação 'import __main__'
 

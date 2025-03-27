@@ -1,3 +1,7 @@
+# Desenvolvido por:
+#   Matheus Deyvisson, 2025
+#
+
 from itertools import zip_longest
 from math import ceil
 from numpy import clip

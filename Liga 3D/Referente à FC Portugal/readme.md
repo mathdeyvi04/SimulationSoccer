@@ -21,7 +21,7 @@ dirigido, focado no conhecimento disponibilizado publicamente pela equipe e expl
 
 * [Código Construído por Mim]()
 
-	* Código construído a partir do estudo.x
+	* Código construído a partir do estudo dirigido.
 
 * [Código Completo Construído pela Equipe](https://github.com/m-abr/FCPCodebase)
 
