@@ -25,12 +25,13 @@ Alterar os seguintes parâmetros afetará substancialmente
 a perfomance:
 
 MAIOR_DISTANCIA -> Quanto de área devemos cobrir.
-PRECISAO -> Incremento de cada ponto que será considerado.
+PRECISAO_DE_PIXELS -> Incremento de cada ponto que será considerado.
 """
-MAIOR_DISTANCIA = 1
+MAIOR_DISTANCIA = 5
 LINHAS = 321
 COLUNAS = 221
-PRECISAO = 1
+PRECISAO_DE_PIXELS = 1
+PRECISAO_NUMERICA = 6
 
 caminho = join(
     getcwd(),
@@ -65,15 +66,20 @@ def criacao_da_tabela_de_possibilidades() -> tuple[dict, list, int]:
     possibilidades_ = {}
 
     for linha in range(
-            1 + pow(10, PRECISAO) * MAIOR_DISTANCIA
+            1 + pow(10, PRECISAO_DE_PIXELS) * MAIOR_DISTANCIA
     ):
         for coluna in range(
-                1 + pow(10, PRECISAO) * MAIOR_DISTANCIA
+                1 + pow(10, PRECISAO_DE_PIXELS) * MAIOR_DISTANCIA
         ):
 
             distancia = sqrt(
                 linha * linha + coluna * coluna
-            ) * pow(10, - PRECISAO)
+            ) * pow(10, - PRECISAO_DE_PIXELS)
+
+            distancia = round(
+                distancia,
+                PRECISAO_NUMERICA
+            )
             # Observe que estamos iterando usando range, forçando o uso de inteiros.
             # Dito isso, devemos lembrar de dividir por 10, para mantermos os floats.
 
@@ -138,9 +144,7 @@ def criacao_de_header_para_cpp() -> list[str]:
     """
     Descrição:
         Cria lista de strings que representará o header usado pelo algoritmo.
-
-	Este Header deverá ceder uma forma de visualização de pontos.
-	# Fale de como FC Portugal fez isso.
+        Este Header representará uma forma mais otimizada de se obter distâncias e posições.
     """
 
     """
@@ -158,19 +162,75 @@ def criacao_de_header_para_cpp() -> list[str]:
     )
 
     lista_de_strings_para_header = [
-        f"const int quantidade_de_pontos_disponiveis = {quantidade_de_pontos_totais_dentro_do_disco_de_possibilidades};\n",
+        f"const int quantidade_de_pontos_disponiveis = {quantidade_de_pontos_totais_dentro_do_disco_de_possibilidades};\n\n",
         f"const float aneis_e_pontos_disponiveis[{quantidade_de_pontos_totais_dentro_do_disco_de_possibilidades}] = {{"  # Esse {{ é para conseguirmos colocar o { na string.
     ]
 
-    # Desejamos criar 2 vetores agora.
-    # Um de linhas e outro de colunas, que representarão os pontos os quais
-    # geram as distâncias já colocadas.
+    respectivas_distancias = []
+    respectivas_linhas = []
+    respectivas_colunas = []
+    for distancia in raio_dos_aneis_crescentes:
+        for ponto in aneis_e_seus_pontos[distancia]:
+            respectivas_distancias.append(
+                distancia
+            )
+
+            respectivas_linhas.append(
+                ponto[0]
+            )
+
+            respectivas_colunas.append(
+                ponto[1]
+            )
+
+    respectivas_distancias = str(respectivas_distancias).replace(
+        "[",
+        ""
+    ).replace(
+        "]",
+        ""
+    )
+
+    respectivas_linhas = str(respectivas_linhas).replace(
+        "[",
+        ""
+    ).replace(
+        "]",
+        ""
+    )
+
+    respectivas_colunas = str(respectivas_colunas).replace(
+        "[",
+        ""
+    ).replace(
+        "]",
+        ""
+    )
+
+    lista_de_strings_para_header.append(
+        f"{respectivas_distancias}}};\n\nconst int linhas_de_cada_ponto[{quantidade_de_pontos_totais_dentro_do_disco_de_possibilidades}] = {{"
+    )
+    lista_de_strings_para_header.append(
+        f"{respectivas_linhas}}};\n\nconst int colunas_de_cada_ponto[{quantidade_de_pontos_totais_dentro_do_disco_de_possibilidades} = {{"
+    )
+    lista_de_strings_para_header.append(
+        f"{respectivas_colunas}}};\n"
+    )
+
+    return lista_de_strings_para_header
 
 
+colecao_do_header = criacao_de_header_para_cpp()
 
-
-
-
-
-
-criacao_de_header_para_cpp()
+with open(
+    join(
+        caminho,
+        "obtendo_possibilidades.h"
+    ),
+    "w"
+) as arq:
+    arq.write(
+        ''.join(
+            colecao_do_header
+        )
+    )

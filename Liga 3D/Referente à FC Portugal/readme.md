@@ -13,15 +13,11 @@ dirigido, focado no conhecimento disponibilizado publicamente pela equipe e expl
 
 	* Em Inglês e escrita em Word.
 
-* [Documentação Traduzida e Explicada Por Mim para Você]()
+* [Documentação Traduzida e Explicada Por Mim para Você](Uma_Visao_Geral.md)
 
 	* Explicação Base de Diversos Componentes Básicos da Aplicação.
 
 	# A partir deste, disponibilizar os demais!
-
-* [Código Construído por Mim]()
-
-	* Código construído a partir do estudo dirigido.
 
 * [Código Completo Construído pela Equipe](https://github.com/m-abr/FCPCodebase)
 
