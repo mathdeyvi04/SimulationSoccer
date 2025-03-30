@@ -8,7 +8,7 @@ Código desenvolvido por:
 
 struct Node{
     // Inerentes À Grafos
-    // Esses não tinha como colocar em português.
+    // Por favor né, algumas coisas devem sempre ser inglês.
     Node* left;
     Node* right;
     Node* up;

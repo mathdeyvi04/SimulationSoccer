@@ -270,3 +270,29 @@ Cada classe _Base_Agent_ possui uma unidade de cada classe:
 * [Script](src/sobre_scripts/comuns/Script.py)
   * Argumentos intrínsecos ao time estão disponíveis em [config.json](src/config.json).
   * Responsável pela compilação de código cpp.
+
+* [a_estrela](src/sobre_cpp/a_estrela)
+  * Biblioteca C++ focada no algoritmo A* criado em C++ para Python.
+    * [a_estrela.h](src/sobre_cpp/a_estrela/a_estrela.h)
+      * Iniciamos com coisas básicas.
+      
+    * [obtendo_possibilidades.py]()
+      * Obtemos uma área circular centrada no agente que representará
+      a área preferencial de cálculos para previsão de caminhos.
+      * Disponibiliza para _obtendo_possibilidades.h_ a área anteriormente citada, literalmente
+      para que o código não precise calcular todas as distâncias necessárias! EXCELENTE IDEIA.
+      * Alterar parâmetros presentes no arquivo afetará a otimização.
+      
+    * [a_estrela.cpp]()
+      * Super código de implementação do A* em C++. Tente experimentá-lo.
+
+
+
+
+
+
+
+
+
+
+
