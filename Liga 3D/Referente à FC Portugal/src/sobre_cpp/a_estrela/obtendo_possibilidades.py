@@ -211,7 +211,7 @@ def criacao_de_header_para_cpp() -> list[str]:
         f"{respectivas_distancias}}};\n\nconst int linhas_de_cada_ponto[{quantidade_de_pontos_totais_dentro_do_disco_de_possibilidades}] = {{"
     )
     lista_de_strings_para_header.append(
-        f"{respectivas_linhas}}};\n\nconst int colunas_de_cada_ponto[{quantidade_de_pontos_totais_dentro_do_disco_de_possibilidades} = {{"
+        f"{respectivas_linhas}}};\n\nconst int colunas_de_cada_ponto[{quantidade_de_pontos_totais_dentro_do_disco_de_possibilidades}] = {{"
     )
     lista_de_strings_para_header.append(
         f"{respectivas_colunas}}};\n"

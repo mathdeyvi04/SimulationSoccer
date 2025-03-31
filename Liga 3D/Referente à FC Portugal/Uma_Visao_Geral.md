@@ -274,7 +274,8 @@ Cada classe _Base_Agent_ possui uma unidade de cada classe:
 * [a_estrela](src/sobre_cpp/a_estrela)
   * Biblioteca C++ focada no algoritmo A* criado em C++ para Python.
     * [a_estrela.h](src/sobre_cpp/a_estrela/a_estrela.h)
-      * Iniciamos com coisas básicas.
+      * Inicialização de variáveis e structs básicas
+      * Criação de representação do campo, como uma matriz de obstáculos.
       
     * [obtendo_possibilidades.py]()
       * Obtemos uma área circular centrada no agente que representará
