@@ -10,16 +10,25 @@ Matheus Deyvisson, 2025
 ////////////////////////////////////////////////////////////////////////////
 
 struct Node{
-    // Inerentes a Grafos
+    // Inerentes a Grafos BST
     // Por favor nao, algumas coisas devem sempre ser inglÃªs.
-    Node* left;
-    Node* right;
-    Node* up;
+    Node* left = nullptr;
+    Node* right = nullptr;
+    Node* up = nullptr;
 
     // Inerentes ao algoritmo.
-    Node* parente;
-    float p_g;
-    float p_f;
+    Node* parente = nullptr;
+    float p_g = 0;
+    float valor = 0;
+    
+    
+    // Inicializações
+    Node(int valor) : valor(valor) {}
+	
+	Node(int valor, Node* left) : valor(valor), left(left) {}
+	
+	Node(int valor, Node* left, Node* right) : valor(valor), left(left), right(right) {}
+	
 };
 
 extern void a_estrela(
@@ -44,6 +53,10 @@ extern int tamanho_caminho_final;
 #define MAX_DIST 5  // Por exemplo, máxima distância à um alvo.
 #define NA_LINHA_DO_GOL 312  // Linha alvo quando a variável ir_ao_gol é verdadeira.
 
+////////////////////////////////////////////////////////////////////////////
+/// Representação do Campo
+////////////////////////////////////////////////////////////////////////////
+
 /*
 Map dimensions: 32m*22m 
 col 0  ...  col 220
@@ -55,22 +68,22 @@ col 0  ...  col 220
  |              |  line 317
  |              |  line 318
  -- their goal --  line 319
-                   line 320   
-
-// Esses números existem para representarmos as paredes e obstáculos estáticos.
-[(H)ard wall: -3, (S)oft wall: -2, (E)mpty: 0, 0 < Cost < inf]    
-
+                   line 320
 Não me atrevi a alterar isso.
 Créditos: Miguel Abreu.               
-*/
+*/  
 
 /*
+[(H)ard wall: -3, (S)oft wall: -2, (E)mpty: 0, 0 < Cost < inf] 
 As seguintes definições representam a matriz de pontos disponíveis do campo.
 Note que há -3, -2, 0, sendo respectivamente Hard Wall, Soft Wall e Empty.
+
+Parece e é confuso, entretanto, foque apenas no fato da representação e que fazemos
+assim para preservar a legibilidade.
 */
-#define H27 -3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3  // 27 elementos de Hard Wall
-#define S11 -2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2  // 11 elementos de SoftWall
-#define S19 S11,-2,-2,-2,-2,-2,-2,-2,-2  // 19 elementos de SoftWall
+#define H27 -3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3  // Elementos de Hard Wall
+#define S11 -2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2  // Elementos de SoftWall
+#define S19 S11,-2,-2,-2,-2,-2,-2,-2,-2  // Elementos de SoftWall
 #define S97 S11,S11,S11,S11,S11,S11,S11,S11,-2,-2,-2,-2,-2,-2,-2,-2,-2  //
 #define S98 S11,S11,S11,S11,S11,S11,S11,S11,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2
 #define S221 S98,S98,S11,S11,-2,-2,-2
