@@ -18,7 +18,7 @@ struct Node{
 
     // Inerentes ao algoritmo.
     Node* parente = nullptr;
-    float p_g = 0;
+    float custo_pontual = 0;
     float valor = 0;
     
     

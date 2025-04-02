@@ -23,6 +23,105 @@ using std::chrono::microseconds;
 using std::min;
 using std::max;
 
+/*
+Explicação do que significa 'inline'
+	Usada para sugerir ao compilador que uma função deve ser expandida
+	diretamente no local da chamada, em vez de realizar uma chamada de
+	função tradicional. De semelhante à funções lambda do Python.
+	
+	Mais precisamente, é parecido com o #define só que para função.
+*/
+inline int x_para_linha(
+	float x
+){
+	/*
+	Descrição:
+		Transformar de coordenada matemática x para coordenada de linha do campo.
+	*/
+	return int(
+		// Linhas e Colunas são inteiras.
+		fmaxf(
+			/*
+			Garantimos que a saída será 0 ou algo maior.
+			*/
+			0.f,
+			fminf(
+				/*
+				Garantimos que estará sob as 320 linhas totais.
+				*/
+				10 * x + 160,
+				320.f
+			)
+		) + 0.5f
+	);
+}
+
+inline int y_para_col(
+	float y
+){
+	return int(
+		// Linhas e Colunas são inteiras.
+		fmaxf(
+			/*
+			Garantimos que a saída será 0 ou algo maior.
+			*/
+			0.f,
+			fminf(
+				/*
+				Garantimos que estará sob as 220 colunas totais.
+				*/
+				10 * y + 110,
+				220.f
+			)
+		) + 0.5f
+	);
+}
+
+inline float distancia_diagonal(
+	bool ir_ao_gol,
+	int linha,
+	int coluna,
+	int linha_final,
+	int coluna_final
+){
+	/*
+	Descrição:
+		Oq está prestes é algo muito foda.
+		Sugiro que verifique o seguinte site explicatório: http://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html
+		
+		Basicamente, estamos escolhendo velocidade à precisão! Buscando
+		um caminho que seja bom o suficiente, mas o mais rápido possível.	
+	*/
+	
+	int delta_linha = 0;
+	int delta_coluna = 0;
+	
+	if(
+		ir_ao_gol
+	){
+		delta_linha = abs(
+			LINHA_DO_GOL - linha
+		);
+		
+		// OK, me rendi à forma que foi escrito no original.
+		if(coluna > 119)       { delta_coluna = coluna - 119; }
+		else if(coluna < 101)  { delta_coluna = 101 - coluna; }
+		else                   { delta_coluna = 0;			  }
+	}
+	else{
+		delta_linha  = abs( linha  - linha_final  );
+		delta_coluna = abs( coluna - coluna_final );
+	}
+	
+	/*
+	Aqui está o cerne da brincadeira. Sugiro que de verdade que verifique
+	o site apresentado na descrição. Alto Nível demais.
+	Esse número é um valor específico para o campo. Tome cuidado alterando-o.
+	*/
+	
+	return (delta_linha + delta_coluna) - 0.585786437626905f * min(delta_linha, delta_coluna);
+}
+
 // Assim como definimos um Terra em circuitos, definiremos um nó não expandido
 // que representará o menor custo total previsto.
 Node* min_node = nullptr;  
@@ -719,103 +818,116 @@ namespace noding{
 		return raiz;
 	}
 	
-}
-
-/*
-Explicação do que significa 'inline'
-	Usada para sugerir ao compilador que uma função deve ser expandida
-	diretamente no local da chamada, em vez de realizar uma chamada de
-	função tradicional. De semelhante à funções lambda do Python.
-	
-	Mais precisamente, é parecido com o #define só que para função.
-*/
-inline int x_para_linha(
-	float x
-){
-	/*
-	Descrição:
-		Transformar de coordenada matemática x para coordenada de linha do campo.
-	*/
-	return int(
-		// Linhas e Colunas são inteiras.
-		fmaxf(
-			/*
-			Garantimos que a saída será 0 ou algo maior.
-			*/
-			0.f,
-			fminf(
-				/*
-				Garantimos que estará sob as 320 linhas totais.
-				*/
-				10 * x + 160,
-				320.f
-			)
-		) + 0.5f
-	);
-}
-
-inline int y_para_col(
-	float y
-){
-	return int(
-		// Linhas e Colunas são inteiras.
-		fmaxf(
-			/*
-			Garantimos que a saída será 0 ou algo maior.
-			*/
-			0.f,
-			fminf(
-				/*
-				Garantimos que estará sob as 220 colunas totais.
-				*/
-				10 * y + 110,
-				220.f
-			)
-		) + 0.5f
-	);
-}
-
-inline float distancia_diagonal(
-	bool ir_ao_gol,
-	int linha,
-	int coluna,
-	int linha_final,
-	int coluna_final
-){
-	/*
-	Descrição:
-		Oq está prestes é algo muito foda.
-		Sugiro que verifique o seguinte site explicatório: http://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html
-		
-		Basicamente, estamos escolhendo velocidade à precisão! Buscando
-		um caminho que seja bom o suficiente, mas o mais rápido possível.	
-	*/
-	
-	int delta_linha = 0;
-	int delta_coluna = 0;
-	
-	if(
-		ir_ao_gol
+	Node*
+	expandir_filho(
+		Node* raiz_da_estrutura,  
+		float custo_para_chegar_ao_no_desejado,
+		float limite_para_qual_custo_eh_impossivel,
+		Node* node_atual_a_ser_expandido,
+		/*
+		Representação da grid do campo
+		*/
+		Node* quadro_de_possibilidades,
+		int posicao_do_node_no_quadro,
+		/*
+		0 - Explorado
+		1 - Lista Aberta
+		*/
+		int estado_atual_do_node, 
+		bool ir_ao_gol,
+		// Coordenadas do nó
+		int linha, int coluna,
+		// Coordenadas do nó final
+		int linha_final, int coluna_final,
+		// Array que armazenará estados dos nós
+		unsigned int* estado_dos_nodes,
+		// Custo Adicional para o movimento
+		float extra
 	){
-		delta_linha = abs(
-			LINHA_DO_GOL - linha
+		/*
+		Descrição:
+			Parte do algoritmo para busca de melhor caminho possível, 
+			expandindo e avaliando filhos durante busca.
+			
+			Fiz o possível para tentar decifrar o que acontece aqui.
+		*/
+		
+		if(
+			/*
+			Filho pode ser inacessível a partir do nó atual, para isso haverá um 
+			custo de penalidade para desencorajar caminhos impossíveis.
+			*/
+			custo_para_chegar_ao_no_desejado <= limite_para_qual_custo_eh_impossivel
+		){
+			
+			custo_para_chegar_ao_no_desejado = 100.f;
+		}
+		
+		float min_custo = (*node_atual_a_ser_expandido).custo_pontual + extra + std::fmaxf(
+			0.f,
+			custo_para_chegar_ao_no_desejado
+		);  // Max para garantimos que seja positivo.
+		
+		Node* filho = quadro_de_possibilidades + posicao_do_node_no_quadro;
+		
+		if(
+			// Caso o nó atual já esteja na lista aberta.
+			estado_atual_do_node
+		){
+			if(
+				/*
+				E o novo custo calculo não for melhor que o do nó atual,
+				o descartamos.
+				*/
+				min_custo >= (*node_atual_a_ser_expandido).custo_pontual
+			){
+				
+				return raiz_da_estrutura;
+			}
+			else{
+				/*
+				Houve uma melhora, devemos remover a referência do nó filho,
+				atualizá-lo e adicioná-lo na estrutura posteriormente.
+				*/
+				raiz_da_estrutura = noding::delete_node(
+					filho,
+					raiz_da_estrutura
+				);
+			}
+		}
+		else{
+			// Colocamos ele na lista.
+			estado_dos_nodes[
+				posicao_do_node_no_quadro
+			] = 1;
+		}
+		
+		/*
+		Preenchemos características do nó filho que está sendo analisado.
+		*/
+		float predicao_de_custo_para_atravessar_filho = min_custo + distancia_diagonal(
+			ir_ao_gol,
+			linha,
+			coluna,
+			linha_final,
+			coluna_final
 		);
 		
-		// OK, me rendi à forma que foi escrito no original.
-		if(coluna > 119)       { delta_coluna = coluna - 119; }
-		else if(coluna < 101)  { delta_coluna = 101 - coluna; }
-		else                   { delta_coluna = 0;			  }
-	}
-	else{
-		delta_linha  = abs( linha  - linha_final  );
-		delta_coluna = abs( coluna - coluna_final );
+		(*filho).custo_pontual = min_custo;
+		(*filho).valor = predicao_de_custo_para_atravessar_filho;
+		(*filho).parente = node_atual_a_ser_expandido;
+		
+		// Finalmente, o inserimos.
+		return noding::inserir(
+			filho,
+			raiz_da_estrutura
+		);
 	}
 	
-	// Aqui está o cerne da brincadeira. Sugiro que de verdade que verifique
-	// o site apresentado na descrição. Alto Nível demais.
-	
-	return (delta_linha + delta_coluna) - 0.585786437626905f * min(delta_linha, delta_coluna)
 }
+
+
+
 
 
 int main()
@@ -859,8 +971,26 @@ int main()
 
 	}
 	
-	float x = 10000;
-	std::cout << x_para_linha(x);
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
     return 0;
 }
