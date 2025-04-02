@@ -889,7 +889,7 @@ namespace noding{
 				Houve uma melhora, devemos remover a referência do nó filho,
 				atualizá-lo e adicioná-lo na estrutura posteriormente.
 				*/
-				raiz_da_estrutura = noding::delete_node(
+				raiz_da_estrutura = noding::remover_node(
 					filho,
 					raiz_da_estrutura
 				);
@@ -975,7 +975,7 @@ construir_caminho_final(
 	){
 		
 		ptr = (*ptr).parente;
-		quantidade_de_parentes++:
+		quantidade_de_parentes++;
 	}
 	
 	tamanho_do_caminho_final = min(
@@ -1018,9 +1018,9 @@ construir_caminho_final(
 			(ptr - quadro_de_possibilidades) % QUANT_COLUNAS
 		) / 10.f - 11.f;  // y
 		
-		caminho_Final[indice--] = (
+		caminho_final[indice--] = (
 			(ptr - quadro_de_possibilidades) / QUANT_COLUNAS
-		) / 10.f - 16.f  // x
+		) / 10.f - 16.f;  // x
 		
 		ptr = (*ptr).parente;
 	}
@@ -1036,9 +1036,12 @@ construir_caminho_final(
 		tamanho_do_caminho_final++
 	] = status;  
 		
+	/*
+	Informações sobre o custo completo do caminho.
+	*/
 	caminho_final[
 		tamanho_do_caminho_final++
-	] = (*melhor_node).custo_pontual / 10.f;
+	] = (*melhor_node).custo_pontual / 10.f; 
 }	
 
 
