@@ -50,9 +50,10 @@ extern int tamanho_caminho_final;
 #define SQRT_2 1.414213562373095f
 #define QUANT_LINHAS 321
 #define QUANT_COLUNAS 221
-#define MAX_DIST 5  // Por exemplo, máxima distância à um alvo.
+#define DIST_MAX 5  // Por exemplo, máxima distância à um alvo.
 #define LINHA_DO_GOL 312  // Linha alvo quando a variável ir_ao_gol é verdadeira.
 
+#define TAMANHO_DO_AMORTECIMENTO 6  // relacionado à função adicionar_espaco_de_amortecimento.
 ////////////////////////////////////////////////////////////////////////////
 /// Representação do Campo
 ////////////////////////////////////////////////////////////////////////////

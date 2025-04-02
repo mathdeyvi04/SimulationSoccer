@@ -1045,6 +1045,488 @@ construir_caminho_final(
 }	
 
 
+inline bool 
+se_a_linha_ab_intercepta_qualquer_gol(
+	float a_x,
+	float a_y,
+	float b_x,
+	float b_y
+){
+	/*
+	Descrição:
+		Objetivo da função é autoexplicativo.
+		
+		Assume que a e b são dois pontos fora da área inalcançável do gol.
+		Logo, linha ab, se for o caso, deve entrar e sair da área inalcançável.
+		
+		Para detectar isso, consideramos apenas a interseção da linha ab com as bordas
+		externas do gol.
+		
+		As bordas internas terão outras verificações.
+		
+		Os números usados aqui são específicos para as dimensões do gol.
+		Não razão para eles além de proporções geométricas.
+	*/
+	
+	
+	float delta_x = b_x - a_x;
+	float delta_y = b_y - a_y;
+	float coef_ang = 0;
+	
+	if(
+		// Verificar se linha ab e 'goal back' são não colineares.
+		delta_x != 0
+	){
+		/*
+		a_x + delta_x * coef_ang = 15.75.
+		*/
+		coef_ang = (
+			15.75 - a_x
+		) / delta_x;
+		
+		if(
+			(
+				coef_ang >= 0
+			) && (
+				coef_ang <= 1 
+			) && (
+				fabsf(  // Apenas pega o valor absoluto de floats.
+					a_y + delta_y * coef_ang 
+				) < 1.25
+			)
+		){
+			/*
+			Então há colisão.
+			*/
+			return true;
+		}
+		
+		coef_ang = (
+			- 15.75 - a_x
+		) / delta_x;
+		
+		if(
+			(
+				coef_ang >= 0
+			) && (
+				coef_ang <= 1 
+			) && (
+				fabsf(  // Apenas pega o valor absoluto de floats.
+					a_y + delta_y * coef_ang 
+				) < 1.25
+			)
+		){
+			/*
+			Então há colisão.
+			*/
+			return true;
+		}
+		
+	}
+	
+	if(
+		// Verificar se linha ab e 'goal sides' são não colineares.
+		delta_y != 0
+	){
+		/*
+		a_y + delta_y * coef_ang = 1.25
+		*/
+		
+		coef_ang = (
+			1.25 - a_y
+		) / delta_y;
+		if(
+			coef_ang >= 0 && coef_ang <= 1
+		){
+			
+			float intersecao_x = fabsf(
+				a_x + delta_x * coef_ang
+			);
+			
+			if(
+				intersecao_x >= 15 && intersecao_x <= 15.75
+			){
+				/*
+				Há colisão
+				*/
+				return true;
+			}
+		}
+		
+		coef_ang = (
+			- 1.25 - a_y
+		) / delta_y;
+		if(
+			coef_ang >= 0 && coef_ang <= 1
+		){
+			
+			float intersecao_x = fabsf(
+				a_x + delta_x * coef_ang
+			);
+			
+			if(
+				intersecao_x >= 15 && intersecao_x <= 15.75
+			){
+				/*
+				Há colisão
+				*/
+				return true;
+			}
+			
+		}
+	
+
+	}
+
+	return false;
+}
+
+
+inline void 
+adicionar_espaco_de_amortecimento(
+	// A sutileza é que não estamos fornecendo um ponteiro para array,
+	// mas o vetor. Note que apesar de serem trabalhados iguais no código,
+	// possuem valores semânticos diferentes.
+	float quadro_de_custo[]
+){
+	/*
+	Descrição:
+		Adiciona espaço de amortecimento perto das linhas centrais e finais
+		a fim de evitar colisões com as bordas do campo. 
+		
+		É como se estivessemos criando um campo de potencial a fim de permitir
+		comportamentos mais suaves.
+		
+		Objetivo: criar áreas de custo gradual ao redor das áreas citadas.
+		
+		TAMANHO_DO_AMORTECIMENTO trata-se da diminuição gradativa de 6 para 1,
+		onde 6 é o mais perto e 1 é o mais distante.
+	*/
+	
+	// linha do gol inimigo
+	for(
+		int i = 0;
+		i < TAMANHO_DO_AMORTECIMENTO;
+		i++
+	){
+		int ii = (i + 12) * QUANT_COLUNAS;
+		
+		for(
+			int j = 12 + i;
+			j < (209 - i);
+			j++
+		){
+			quadro_de_custo[
+				j + ii
+			] = TAMANHO_DO_AMORTECIMENTO - i;
+		}
+	}
+	
+	// Nosso gol
+	for(
+		int i = 0;
+		i < TAMANHO_DO_AMORTECIMENTO;
+		i++
+	){
+		int ii = (308 - i) * QUANT_COLUNAS;
+		
+		for(
+			int j = 12 + i;
+			j < 99;
+			j++
+		){
+			
+			quadro_de_custo[
+				j + ii
+			] = TAMANHO_DO_AMORTECIMENTO - i;
+			
+			quadro_de_custo[
+				220 + ii - j
+			] = TAMANHO_DO_AMORTECIMENTO - i;
+		}
+	}
+	
+	// Linhas laterais
+	for(
+		int i = 0;
+		i < TAMANHO_DO_AMORTECIMENTO;
+		i++
+	){
+		for(
+			int j = (13 + i) * QUANT_COLUNAS;
+			j < (308 - i) * QUANT_COLUNAS;
+			j += QUANT_COLUNAS
+		){
+			
+			quadro_de_custo[
+				i + j + 12	
+			] = TAMANHO_DO_AMORTECIMENTO - i;
+			
+			quadro_de_custo[
+				j - i + 208
+			] = TAMANHO_DO_AMORTECIMENTO - i;
+		}
+	}
+	
+	
+	
+}
+
+
+bool 
+se_caminho_esta_obstruido(
+	// Pontos
+	float start_x, float start_y,
+	float end_x, float end_y,
+	float obstaculos_dados[],
+	int   quantidade_de_obstaculos_dados,
+	bool  ir_ao_gol,
+	int   limite_para_qual_custo_eh_impossivel,
+	float quadro_de_custos[]
+){
+	/*
+	Descrição:
+		Verifica se um caminho completo está obstruído.
+		
+		O caminho está obstruído se intercepta qualquer circunferência 
+		HARD ou SOFT ou se começa dentro de circuferência HARD.
+		
+		Os números escolhidos não são aleatórios, tem haver com proporções
+		geométricas.
+	
+	Retorno:
+		False - Se não for necessário que A* resolva esse problema.
+	*/
+	
+	/////////////////////////////////////////////////////////////////////////
+	/// Definições Importantes
+	/////////////////////////////////////////////////////////////////////////
+	
+	start_x = max(
+		-16.f,
+		min(
+			start_x,
+			16.f
+		) // limita para que seja menor que 16.f
+	); // Limita para que seja maior que -16.f
+	
+	start_y = max(
+		-11.f,
+		min(
+			start_y,
+			11.f
+		)
+	);
+	
+	int start_x_linha  = x_para_linha( start_x );
+	int end_x_linha    = x_para_linha( end_x   );
+	int start_y_coluna = y_para_col  ( start_y );
+	int end_y_coluna   = y_para_col  ( end_y   );
+	
+	float start_custo = quadro_de_custos[
+		start_x_linha * QUANT_COLUNAS + start_y_coluna
+	];
+	
+	float end_custo   = quadro_de_custos[
+		end_x_linha   * QUANT_COLUNAS + end_y_coluna
+	];
+	
+	/////////////////////////////////////////////////////////////////////////
+	/// Aplicação de Algoritmo
+	/////////////////////////////////////////////////////////////////////////
+	
+	/*
+	Caso o caminho tenha start e end iguais ou adjacentes, será trivial.
+	*/
+	bool esta_perto = abs(
+		start_x_linha  - end_x_linha
+	) <= 1 and        abs(
+		start_y_coluna - end_y_coluna
+	) <= 1;
+	
+	/*
+	Permite que A* segure o abacaxi se a posição start é inacessível ou
+	fora dos limites de borda não é permitido ou está bem perto do limite 
+	de borda ou não
+	*/
+	if(
+		(
+			start_custo <= limite_para_qual_custo_eh_impossivel
+		) || (
+			!esta_perto and start_custo > 0
+		)
+	){
+		return true;
+	}
+	
+	/*
+	Se desejarmos ir ao gol, devemos verificar se há colisão com gol, usamos A*.
+	*/
+	if(
+		ir_ao_gol
+	){
+		
+		end_x = 15.2;
+		end_y = max(
+			-0.8f,
+			min(
+				start_y, 0.8f
+			)
+		);
+	}
+	else{
+		
+		/*
+		Restringimos para que o final esteja no mapa.
+		*/
+		end_x = max(
+			-16.f,
+			min(
+				start_y,
+				16.f
+			)
+		);
+		
+		end_y = max(
+			-11.f,
+			min(
+				start_y,
+				11.f
+			)
+		);
+		
+		// Mesmo motivo do if que é igual anteriormente.
+		if(
+			(
+				end_custo <= limite_para_qual_custo_eh_impossivel
+			) || (
+				!esta_perto and end_custo > 0
+			)
+		){
+			return true;
+		}		
+	}
+	
+	if(
+		se_a_linha_ab_intercepta_qualquer_gol(
+			start_x,
+			start_y,
+			end_x,
+			end_y
+		)
+	){
+		return true;
+	}
+		
+	float obstaculos[
+		quantidade_de_obstaculos_dados * 4 / 5 + 16
+	] = {
+		/*
+		Lista de todos os obstáculos
+			Traves do Gol + Obstáculos Dados
+			
+		Note que incluindo as traves do gol provemos nenhum espaço de 
+		amortecimento, o qual poderia ser necessário.
+		
+		Parâmetros como as numerações de obstáculos serão apresentados:
+			
+			Localização da Trava do Gol (x, y)
+			'''
+			Miguel Abreu:
+				Goal post location (tested in simulator, collision with robot,
+				robot is sideways to the goal post and arms are close to body)
+			'''
+			
+			raio_HARD:
+			'''
+			Miguel Abreu:
+				Hard radius (tested in the same way, robot collides when 
+				closer than 0.15m from goal post border)
+				post radius 0.02 + agent radius 0.15 = 0.17
+			'''
+			
+			maior_raio:
+			'''
+				largest radius (equivalent to hard radius, since there is no
+				soft radius).
+			'''
+		*/
+		 15.02,  1.07, 0.17, 0.17,
+		
+		 15.02, -1.07, 0.17, 0.17,
+		
+		-15.02,  1.07, 0.17, 0.17,
+		
+		-15.02, -1.07, 0.17, 0.17,
+	};  // x, y, raio_HARD, maior_raio
+	
+	int quantidade_de_obstaculos_totais = 16;
+	
+	for(
+		int index = 0;
+		index < quantidade_de_obstaculos_dados;
+		index += 5
+	){
+		obstaculos[
+			quantidade_de_obstaculos_totais++
+		] = obstaculos_dados[
+			index
+		]; // x
+		
+		obstaculos[
+			quantidade_de_obstaculos_totais++
+		] = obstaculos_dados[
+			index + 1
+		]; // y
+		
+		obstaculos[
+			quantidade_de_obstaculos_totais++
+		] = fmaxf(
+			0,
+			fminf(
+				obstaculos_dados[
+					index + 2
+				],
+				DIST_MAX
+			)
+		); // Raio Hard
+		
+		obtaculos[
+			quantidade_de_obstaculos_totais++
+		] = fmaxf(
+			0, 
+			fminf(
+				max(
+					obstaculos_dados[
+						index + 2
+					],
+					obstaculos_dados[
+						index + 3
+					]
+				),
+				DIST_MAX
+			)
+		);  // Maior Raio
+		
+		
+	}
+	
+	////////////////////////////////////////////////////////////////
+	
+	
+	
+	
+	
+	
+}
+
+
+
+
+
+
+
+
 int main()
 {
  	// Exemplo de BST para testarmos código de noding.
@@ -1085,27 +1567,6 @@ int main()
 //		);
 
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
     return 0;
 }
