@@ -1,5 +1,8 @@
 /*
 Matheus Deyvisson, 2025
+
+Deixo registrado mais uma vez o nível de profissionalismo do código original
+escrito por Miguel Abreu.
 */
 
 #include <iostream>  // Apenas para realizarmos testes.
@@ -27,43 +30,17 @@ Node* min_node = nullptr;
 namespace noding{
 	/*
 	Descrição:
-		Define um espaço de nomes (namespace) chamado open, que serve para 
-		organizar e agrupar funcionalidades (como classes, funções, variáveis)
-		em um escopo nomeado, evitando conflitos de nomes com outras partes do
-		programa ou bibliotecas externas.
+		Define um espaço de nomes (namespace), que serve para organizar e 
+		agrupar funcionalidades (como classes, funções, variáveis) em um escopo
+		nomeado, evitando conflitos de nomes com outras partes do programa ou 
+		bibliotecas externas.
 		
 		Acredito que foi feito assim pois Node não é exatamente um objeto,
 		mas uma estrutura de dados e, portanto, struct. E, por legibilidade,
 		não associamos classes<->structs, cada um no seu quadrado.
 		
 		Coloquei 'noding' porque queria relacionar com Node.
-		
-		A seguir, um exemplo de criação BST que você pode usar para testas
-		as funções criadas aqui.
-		
-			Node *node = new Node(1);
 			
-			Node *node_l = new Node(2);
-			(*node_l).up = node;
-			(*node).left = node_l;
-			
-			Node *node_r = new Node(3);
-			(*node_r).up = node;
-			(*node).right = node_r;
-			
-			Node *node_s = new Node(99);
-			(*node_s).up = node_r;
-			(*node_r).right = node_s;
-			
-			noding::apresentar(
-				node
-			);
-			
-			delete node_s;
-			delete node_l;
-			delete node_r;
-			delete node;
-				
 	Forma de Uso:
 		open::imprimir();
 		std::cout << open::valor;
@@ -83,7 +60,7 @@ namespace noding{
 			da função.
 		*/
 		const std::string& prefixo,
-		int se_eh_esquerdo
+		bool se_eh_esquerdo
 	){
 		/*
 			Apresentará propriamente a BST.
@@ -112,6 +89,7 @@ namespace noding{
 		);
 	}
 	
+	
 	int apresentar(
 		Node* raiz
 	){
@@ -126,6 +104,7 @@ namespace noding{
 			false
 		);
 	}
+	
 		
 	int liberar(
 		Node* node
@@ -153,6 +132,7 @@ namespace noding{
 		delete node;
 	}	
 	
+	
 	Node*
 	inserir(
 		Node* novo_node,
@@ -160,7 +140,10 @@ namespace noding{
 	){
 		/*
 		Descrição:
-			Obviamente pega um nó e o insere dentro de outra estrutura.
+			Insere um nó de maneira correta dentro da estrutura
+			
+		Retorno:
+			Raiz da estrutura.
 		*/
 		
 		(*novo_node).left = nullptr;
@@ -203,7 +186,7 @@ namespace noding{
 		}
 		/*
 		Mostremos um exemplo para caso a verificação anterior seja bem
-		sucedida.
+		sucedida, isto é, o novo node tem um valor menor que o nó mínimo.
 		
 		* Estrutura no Início:
 		
@@ -218,7 +201,7 @@ namespace noding{
 		* Ordem de Ações:
 		
 		Filho esquerdo do mínimo torna-se o novo nó.
-		O pai do novo nó torna-se o mínimo.
+		O pai do novo nó torna-se o mínimo atual, [1].
 		O novo nó torna-se o mínimo.
 		
 		* Estrutura na Saída:
@@ -229,7 +212,7 @@ namespace noding{
 		    /   \
 		  [1]    [4]
 		  /
-		[0] <- MIN
+		[0] <- Novo MIN
 		*/
 		
 		///////////////////////////////////////////////////////////////////
@@ -296,17 +279,21 @@ namespace noding{
 		return raiz;
 	}
 	
+	
 	Node*
-	pop_min(
+	remover_min(
 		Node* raiz
 	){
 		/*
 		Descrição:
-			Desejamos remover o menor elemento, que apesar de deveria ser
+			Desejamos remover o menor elemento, que apesar de que deveria ser
 			o último elemento, não necessariamente será.
 			
 			Note que o mínimo pode ter um filho, mas este necessariamente
 			será direito.
+			
+		Retorno:
+			Raiz da estrutura.
 		*/
 		
 		if(
@@ -430,35 +417,450 @@ namespace noding{
 		
 		return raiz;
 	}
-
+	
+	
+	Node*
+	remover_node(
+		Node* node_a_ser_removido,
+		Node* raiz
+	){
+		/*
+		Descrição:
+			Separa em casos de existência de filhos e remove nós desejados.
+			
+		Retorno:
+			Raiz da estrutura.
+		*/
+		
+		if(
+			node_a_ser_removido == min_node
+		){
+			return remover_min(
+				raiz
+			); // removerá o mínimo da estrutura.
+		}
+		
+		if(
+			// Caso o nó a ser removido não tenha filhos, logo também não é raiz.
+			(*node_a_ser_removido).left == nullptr && (*node_a_ser_removido).right == nullptr
+		){
+			/*
+			A partir do nó a ser removido, devemos retirar a conexão de descida do pai
+			para ele.
+			*/
+			if(
+				(*((*node_a_ser_removido).up)).left == node_a_ser_removido
+			){
+				(*((*node_a_ser_removido).up)).left = nullptr;
+			}
+			else{
+				(*((*node_a_ser_removido).up)).right = nullptr;
+			}
+			
+			delete node_a_ser_removido;
+			
+			return raiz;
+		}
+		
+		if(
+			// Caso tenha somente filho direito.
+			(*node_a_ser_removido).left == nullptr
+		){
+			// Redirecionamos conexões de subida do filho direito do nó a ser 
+			// removido para o pai do nó a ser removido.
+			(*((*node_a_ser_removido).right)).up = (*node_a_ser_removido).up;
+			
+			if(
+				(*((*node_a_ser_removido).up)).left == node_a_ser_removido		
+			){
+				/*
+				Já que estamos removendo um nó que tem filho direito, fazemos com que 
+				este seja o novo filho do pai do nó a ser removido, conservando o lado
+				deste.
+				*/
+				(*((*node_a_ser_removido).up)).left = (*node_a_ser_removido).right;
+			}
+			else{
+				(*((*node_a_ser_removido).up)).right = (*node_a_ser_removido).right;
+			}
+			
+			delete node_a_ser_removido;
+			
+			return raiz;
+			
+		}
+		
+		if(
+			// Caso somente tenha filho esquerdo
+			(*node_a_ser_removido).right == nullptr
+		){
+			
+			if(
+				/*
+				Além de ter somente filho esquerdo, ele é a raiz. Logo,
+				devemos desfazer a conexão de subida do filho esquerdo e 
+				torná-lo a nova raiz.
+				*/
+				node_a_ser_removido == raiz
+			){
+				
+				(*((*node_a_ser_removido).left)).up = nullptr;
+				
+				Node* nova_raiz = (*node_a_ser_removido).left;
+				
+				delete node_a_ser_removido;
+				
+				return nova_raiz; 
+			}
+			
+			// Como não é a raiz.
+			(*((*node_a_ser_removido).left)).up = (*node_a_ser_removido).up;
+			
+			if(
+				(*((*node_a_ser_removido).up)).left == node_a_ser_removido
+			){
+				(*((*node_a_ser_removido).up)).left = (*node_a_ser_removido).left;
+			}
+			else{
+				(*((*node_a_ser_removido).up)).right = (*node_a_ser_removido).left;
+			}
+			
+			delete node_a_ser_removido;
+			
+			return raiz;
+		}
+		
+		/*
+		Logo, tem filhos e não é o mínimo.
+		Vejamos o exemplo:
+		
+			   [5]
+		      /   \
+ (Removê-lo)[2]   [10]
+	   	   /   \
+		[1]    [4]
+		...		...
+		
+		*/
+		
+		/*
+		Como é BST, temos a garantia que o filho direito é maior que o 
+		filho esquerdo. 
+		
+		Caso o filho esquerdo do nó a ser removido substitua-o, este
+		será pai do filho direito do nó a ser removido, o que contradiz a BST.
+		
+		Portanto, o filho direito do nó a ser removido, [4], torna-se o
+		sucessor.
+		*/
+		Node* sucessor = (*node_a_ser_removido).right;
+		
+		if(
+			// Sucessor não tem filho esquerdo.
+			(*sucessor).left == nullptr
+		){
+			// Caso o sucessor não tenha filho esquerdo.
+			
+			/*
+			Filho esquerdo do nó a ser removido torna-se o filho esquerdo
+			do sucessor.
+			*/
+			(*sucessor).left = (*node_a_ser_removido).left; 
+			
+			/*
+			Pai do sucessor torna-se o pai do nó a ser removido.
+			*/
+			(*sucessor).up = (*node_a_ser_removido).up;
+			
+			/*
+			Pai do filho esquerdo torna-se o sucessor.
+			*/
+			(*((*node_a_ser_removido).left)).up = sucessor;
+			
+			if(
+				// Se for a raiz
+				node_a_ser_removido == raiz
+			){
+				delete node_a_ser_removido;
+				
+				return sucessor; // Este tornou-se a nova raiz
+			}
+			
+			// Se não for a raiz, alteramos o filho do pai do nó a ser removido.
+			if(
+				(*((*node_a_ser_removido).up)).left == node_a_ser_removido
+			){
+				
+				(*((*node_a_ser_removido).up)).left = sucessor;
+			}
+			else{
+				
+				(*((*node_a_ser_removido).up)).right = sucessor;
+			}
+		}
+		else{
+			// Sucessor tem filho esquerdo.
+			
+			while(
+				/*
+				Enquanto o sucessor tiver filho esquerdo, vamos
+				tornar este o novo sucessor.
+				*/
+				(*sucessor).left != nullptr
+			){
+				sucessor = (*sucessor).left;
+			}
+			
+			if(
+				/*
+				Pelo loop anterior, não há filho esquerdo.
+				Verificamos se não há filho direito.
+				*/
+				(*sucessor).right == nullptr
+			){
+				// Não há filhos direito e esquerdo no sucessor.
+				
+				/*
+				O pai desse sucessor não terá mais filho esquerdo. Por isso, nullptr.
+				Eliminamos a conexão de descida.
+				*/
+				(*((*sucessor).up)).left = nullptr;
+			}
+			else{
+				/*
+				O filho esquerdo do pai do sucessor, deve se tornar o único filho do sucessor.
+				*/
+				(*((*sucessor).up)).left = (*sucessor).right;
+				
+				/*
+				Apenas a conexão de subida referente à conexão de descida definida anteriormente.
+				*/
+				(*((*sucessor).right)).up = (*sucessor).up;
+			}
+			
+			/*
+			Alteramos todas as conexões do sucessor para substituir exatamente
+			o nó que desejamos remover.
+			*/
+			(*sucessor).left = (*node_a_ser_removido).left;
+			(*sucessor).right = (*node_a_ser_removido).right;
+			(*sucessor).up = (*node_a_ser_removido).up;
+			
+			/*
+			Atualizamos as conexões de subida dos filhos esquerdo e direito para
+			o substituto do nó a ser removido, vulgo sucessor.
+			*/
+			(*((*node_a_ser_removido).left)).up = sucessor;
+			(*((*node_a_ser_removido).right)).up = sucessor;
+			
+			if(
+				node_a_ser_removido == raiz
+			){
+				
+				delete node_a_ser_removido;
+				return sucessor;
+			}
+			
+			if(
+				/*
+				Apenas atualizamos a conexão de descida do pai do node a ser removido.
+				*/
+				(*((*node_a_ser_removido).up)).left == node_a_ser_removido
+			){
+				
+				(*((*node_a_ser_removido).up)).left = sucessor;
+			}
+			else{
+				
+				(*((*node_a_ser_removido).up)).right = sucessor;
+			}
+			
+			return raiz;
+		}
+		/*
+		Um exemplo completo do algoritmo referente ao último 
+		
+		Questão:
+		
+			L---5
+			    |---10
+			    L---2
+			        |---4
+			        |   |---5
+			        |   L---3
+			        L---1
+			
+			Desejamos remover o nó de valor 2.
+			
+		Solução:
+			
+			Sucessor torna-se nó 4.
+			
+			Este possui filho esquerdo, logo enquanto houver um filho esquerdo,
+			teremos garantia que este será menor que seu pai( Definição BST).
+			Iteramos atualizando o sucessor para cada filho esquerdo.
+			Note que mesmo que haja filhos direitos, temos a garantia de que
+			estes serão maiores que os respectivos filhos esquerdos(Definição BST).
+			Nó 3 torna-se o sucessor.
+			
+			
+			Neste caso, não há filho direito no sucessor. Como o sucessor vai sair, 
+			o pai dele ficará sem filhos.
+			Caso tivesse filho direito no sucessor, ele se tornaria o novo filho do 
+			pai do então sucessor.
+			
+			Atualizamos as conexões que partem do sucessor para que ele substitua
+			o nó que será removido.
+			Em seguida, atualizamos as atualizações dos filhos do nó que será removido
+			para apontarem para o substituto, vulgo sucessor.
+			Finalmente, atualizamos a conexão de descida do pai do nó que será removido
+			para apontar para o sucessor.
+		*/
+		return raiz;
+	}
+	
 }
+
+/*
+Explicação do que significa 'inline'
+	Usada para sugerir ao compilador que uma função deve ser expandida
+	diretamente no local da chamada, em vez de realizar uma chamada de
+	função tradicional. De semelhante à funções lambda do Python.
+	
+	Mais precisamente, é parecido com o #define só que para função.
+*/
+inline int x_para_linha(
+	float x
+){
+	/*
+	Descrição:
+		Transformar de coordenada matemática x para coordenada de linha do campo.
+	*/
+	return int(
+		// Linhas e Colunas são inteiras.
+		fmaxf(
+			/*
+			Garantimos que a saída será 0 ou algo maior.
+			*/
+			0.f,
+			fminf(
+				/*
+				Garantimos que estará sob as 320 linhas totais.
+				*/
+				10 * x + 160,
+				320.f
+			)
+		) + 0.5f
+	);
+}
+
+inline int y_para_col(
+	float y
+){
+	return int(
+		// Linhas e Colunas são inteiras.
+		fmaxf(
+			/*
+			Garantimos que a saída será 0 ou algo maior.
+			*/
+			0.f,
+			fminf(
+				/*
+				Garantimos que estará sob as 220 colunas totais.
+				*/
+				10 * y + 110,
+				220.f
+			)
+		) + 0.5f
+	);
+}
+
+inline float distancia_diagonal(
+	bool ir_ao_gol,
+	int linha,
+	int coluna,
+	int linha_final,
+	int coluna_final
+){
+	/*
+	Descrição:
+		Oq está prestes é algo muito foda.
+		Sugiro que verifique o seguinte site explicatório: http://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html
+		
+		Basicamente, estamos escolhendo velocidade à precisão! Buscando
+		um caminho que seja bom o suficiente, mas o mais rápido possível.	
+	*/
+	
+	int delta_linha = 0;
+	int delta_coluna = 0;
+	
+	if(
+		ir_ao_gol
+	){
+		delta_linha = abs(
+			LINHA_DO_GOL - linha
+		);
+		
+		// OK, me rendi à forma que foi escrito no original.
+		if(coluna > 119)       { delta_coluna = coluna - 119; }
+		else if(coluna < 101)  { delta_coluna = 101 - coluna; }
+		else                   { delta_coluna = 0;			  }
+	}
+	else{
+		delta_linha  = abs( linha  - linha_final  );
+		delta_coluna = abs( coluna - coluna_final );
+	}
+	
+	// Aqui está o cerne da brincadeira. Sugiro que de verdade que verifique
+	// o site apresentado na descrição. Alto Nível demais.
+	
+	return (delta_linha + delta_coluna) - 0.585786437626905f * min(delta_linha, delta_coluna)
+}
+
 
 int main()
 {
+ 	// Exemplo de BST para testarmos código de noding.
+ 	// Fiz usando // para poder usar o atalho.
+	{
+//		Node *node = new Node(5);			
+//		Node *node_l = new Node(2);
+//		(*node_l).up = node;
+//		(*node).left = node_l;
+//		
+//		Node *node_r = new Node(10);
+//		(*node_r).up = node;
+//		(*node).right = node_r;
+//		
+//		Node *node_ll = new Node(1);
+//		(*node_ll).up = node_l;
+//		(*node_l).left = node_ll;
+//		
+//		Node *node_lr = new Node(4);
+//		(*node_lr).up = node_l;
+//		(*node_l).right = node_lr;
+//		
+//		Node* node_lrl = new Node(3);
+//		(*node_lrl).up = node_lr;
+//		(*node_lr).left = node_lrl;
+//		
+//		Node* node_lrr = new Node(5);
+//		(*node_lrr).up = node_lr;
+//		(*node_lr).right = node_lrr;
+//		
+//		
+//		noding::apresentar(
+//			node
+//		);
+//		
+//		noding::liberar(
+//			node
+//		);
+
+	}
 	
-//	Node *node = new Node(5);
-//			
-//	Node *node_l = new Node(2);
-//	(*node_l).up = node;
-//	(*node).left = node_l;
-//	
-//	Node *node_r = new Node(8);
-//	(*node_r).up = node;
-//	(*node).right = node_r;
-//	
-//	Node *node_s = new Node(7);
-//	(*node_s).up = node_r;
-//	(*node_r).left = node_s;
-//	
-//	min_node = node_s;
-//	
-//	noding::apresentar(
-//		node
-//	);
-//	
-//	noding::liberar(
-//		node
-//	);
+	float x = 10000;
+	std::cout << x_para_linha(x);
 	
     return 0;
 }

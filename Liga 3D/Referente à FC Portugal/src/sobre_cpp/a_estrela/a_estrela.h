@@ -11,10 +11,10 @@ Matheus Deyvisson, 2025
 
 struct Node{
     // Inerentes a Grafos BST
-    // Por favor nao, algumas coisas devem sempre ser inglÃªs.
-    Node* left = nullptr;
-    Node* right = nullptr;
-    Node* up = nullptr;
+    // Por favor nao, algumas coisas devem sempre ser inglês.
+    Node* left = nullptr;  // Filho Esquerdo (Conexão de Descida)
+    Node* right = nullptr;  // Filho Direito (Conexão de Descida)
+    Node* up = nullptr;  // Pai (conexão de subida)
 
     // Inerentes ao algoritmo.
     Node* parente = nullptr;
@@ -51,7 +51,7 @@ extern int tamanho_caminho_final;
 #define QUANT_LINHAS 321
 #define QUANT_COLUNAS 221
 #define MAX_DIST 5  // Por exemplo, máxima distância à um alvo.
-#define NA_LINHA_DO_GOL 312  // Linha alvo quando a variável ir_ao_gol é verdadeira.
+#define LINHA_DO_GOL 312  // Linha alvo quando a variável ir_ao_gol é verdadeira.
 
 ////////////////////////////////////////////////////////////////////////////
 /// Representação do Campo
