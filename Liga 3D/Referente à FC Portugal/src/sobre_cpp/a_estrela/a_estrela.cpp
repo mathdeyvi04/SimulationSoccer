@@ -923,11 +923,123 @@ namespace noding{
 			raiz_da_estrutura
 		);
 	}
-	
+
 }
 
+float caminho_final[2050] = {0};
+int tamanho_do_caminho_final = 0;
 
-
+inline void
+construir_caminho_final(
+	/*
+	Observe essa diferença sutil, simplesmente genial Miguel Abreu.
+	
+	Node* const
+		Ponteiro para Node constante.
+		Objeto Node não pode ser modificado através do ponteiro.
+		Mas o ponteiro pode apontar para outro Node.
+	
+	Node* const
+		Ponteiro constante para Node
+		Ponteiro em si é constante, não pode apontar para outro Node.
+		Mas o objeto Node pode ser modificado.
+	*/
+	Node* const melhor_node,
+	const Node* quadro_de_possibilidades,
+	
+	float status,
+	/*
+	Ativa ou desativa a substituição das coordenadas finais discretas
+	por valores exatos.
+	
+	False - Coordenadas Discretas do Grid
+	True  - Substitui o último ponto do caminho por valores exatos em end_x e em end_y.
+	*/
+	const bool override_end=false,
+	/*
+	Especificam as coordenadas exatas do ponto final quando override está ativo.
+	*/
+	const float end_x=0, const float end_y=0
+){
+	/*
+	Descrição:
+		Função responsável por construir o melhor a partir da estrutura de 
+		nós fornecida.
+	*/
+	
+	Node* ptr = melhor_node;
+	
+	int quantidade_de_parentes = 0;
+	while(
+		ptr != nullptr
+	){
+		
+		ptr = (*ptr).parente;
+		quantidade_de_parentes++:
+	}
+	
+	tamanho_do_caminho_final = min(
+		/*
+		Limitamos o caminho final à quantidade de slots disponíveis.
+		*/
+		2 * quantidade_de_parentes,
+		2048
+	);
+	
+	/*
+	Voltamos ao melhor nó. 
+	Note que foi por isso que escrevemos o const, para preservar essa
+	propriedade. 
+	Completamente insano.
+	*/
+	ptr = melhor_node; 
+	int indice = tamanho_do_caminho_final - 1;
+	
+	if(
+		// Se ativado, atualiza o ponto final para coordenadas corretas
+		// ao invés de versão discreta.
+		override_end
+	){
+		/*
+		indice   - acessamos no indice.
+		indice-- - acessamos no indice e o decrementamos
+		*/
+		caminho_final[indice--] = end_y;
+		caminho_final[indice--] = end_x;
+		
+		ptr = (*ptr).parente;
+	}
+	
+	while(
+		indice > 0
+	){
+		// Não é um delta embaixo parece.
+		caminho_final[indice--] = (
+			(ptr - quadro_de_possibilidades) % QUANT_COLUNAS
+		) / 10.f - 11.f;  // y
+		
+		caminho_Final[indice--] = (
+			(ptr - quadro_de_possibilidades) / QUANT_COLUNAS
+		) / 10.f - 16.f  // x
+		
+		ptr = (*ptr).parente;
+	}
+	
+	/*
+	Atualizamos o status do caminho e acrescentamos a unidade do tamanho
+	
+	0 - sucesso
+	1 - tempo excedido
+	2 - impossível
+	*/
+	caminho_final[
+		tamanho_do_caminho_final++
+	] = status;  
+		
+	caminho_final[
+		tamanho_do_caminho_final++
+	] = (*melhor_node).custo_pontual / 10.f;
+}	
 
 
 int main()
