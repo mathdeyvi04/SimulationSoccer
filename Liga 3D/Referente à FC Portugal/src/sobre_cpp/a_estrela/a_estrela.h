@@ -54,6 +54,7 @@ extern int tamanho_caminho_final;
 #define LINHA_DO_GOL 312  // Linha alvo quando a variável ir_ao_gol é verdadeira.
 
 #define TAMANHO_DO_AMORTECIMENTO 6  // relacionado à função adicionar_espaco_de_amortecimento.
+
 ////////////////////////////////////////////////////////////////////////////
 /// Representação do Campo
 ////////////////////////////////////////////////////////////////////////////
@@ -105,32 +106,5 @@ assim para preservar a legibilidade.
 #define L309 S98,-2,-3,-3,E19,-3,-3,-2,S98  // Line 309: soft W, empty field, goal post, empty field, goal post,empty field, soft W
 #define L310 S98,-3,-3,-3,E19,-3,-3,-3,S98    // Line 310: soft W, goal post, inside goal, goal post, soft W
 #define L310_314 L310,L310,L310,L310,L310
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #endif // A_ESTRELA_H

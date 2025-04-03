@@ -9,9 +9,13 @@ escrito por Miguel Abreu.
 
 #include "a_estrela.h"
 #include "obtendo_possibilidades.h"
+
 #include <cmath>
 #include <algorithm>
 #include <chrono>
+
+using std::min;
+using std::max;
 
 /*
 Apenas para melhorarmos legibilidade.
@@ -20,8 +24,6 @@ using std::chrono::high_resolution_clock;
 using std::chrono::duration_cast;
 using std::chrono::microseconds;
 
-using std::min;
-using std::max;
 
 /*
 Explicação do que significa 'inline'
@@ -31,7 +33,8 @@ Explicação do que significa 'inline'
 	
 	Mais precisamente, é parecido com o #define só que para função.
 */
-inline int x_para_linha(
+inline int 
+x_para_linha(
 	float x
 ){
 	/*
@@ -56,7 +59,9 @@ inline int x_para_linha(
 	);
 }
 
-inline int y_para_col(
+
+inline int 
+y_para_col(
 	float y
 ){
 	return int(
@@ -77,7 +82,9 @@ inline int y_para_col(
 	);
 }
 
-inline float distancia_diagonal(
+
+inline float 
+distancia_diagonal(
 	bool ir_ao_gol,
 	int linha,
 	int coluna,
@@ -122,9 +129,11 @@ inline float distancia_diagonal(
 	return (delta_linha + delta_coluna) - 0.585786437626905f * min(delta_linha, delta_coluna);
 }
 
+
 // Assim como definimos um Terra em circuitos, definiremos um nó não expandido
 // que representará o menor custo total previsto.
 Node* min_node = nullptr;  
+
 
 namespace noding{
 	/*
@@ -1267,9 +1276,6 @@ adicionar_espaco_de_amortecimento(
 			] = TAMANHO_DO_AMORTECIMENTO - i;
 		}
 	}
-	
-	
-	
 }
 
 
@@ -1338,7 +1344,7 @@ se_caminho_esta_obstruido(
 	/*
 	Caso o caminho tenha start e end iguais ou adjacentes, será trivial.
 	*/
-	bool esta_perto = abs(
+	bool se_esta_perto = abs(
 		start_x_linha  - end_x_linha
 	) <= 1 and        abs(
 		start_y_coluna - end_y_coluna
@@ -1353,7 +1359,7 @@ se_caminho_esta_obstruido(
 		(
 			start_custo <= limite_para_qual_custo_eh_impossivel
 		) || (
-			!esta_perto and start_custo > 0
+			!se_esta_perto and start_custo > 0
 		)
 	){
 		return true;
@@ -1400,7 +1406,7 @@ se_caminho_esta_obstruido(
 			(
 				end_custo <= limite_para_qual_custo_eh_impossivel
 			) || (
-				!esta_perto and end_custo > 0
+				!se_esta_perto and end_custo > 0
 			)
 		){
 			return true;
@@ -1491,7 +1497,7 @@ se_caminho_esta_obstruido(
 			)
 		); // Raio Hard
 		
-		obtaculos[
+		obstaculos[
 			quantidade_de_obstaculos_totais++
 		] = fmaxf(
 			0, 
@@ -1511,15 +1517,172 @@ se_caminho_esta_obstruido(
 		
 	}
 	
-	////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////
+	/// Verificações de Obstrução
+	/////////////////////////////////////////////////////////////////////
 	
+	if(
+		// Caso Especial: Caminho é obstruído se começa ou termina em área HARD.
+		se_esta_perto
+	){
+		for(
+			int ob = 0;
+			ob < quantidade_de_obstaculos_totais;
+			ob += 4
+		){
+			float center_x = obstaculos[ ob     ];  // Centro_x
+			float center_y = obstaculos[ ob + 1 ];  // Centro_y
+			
+			float raio_hard = obstaculos[ ob +2 ]; 
+			
+			/*
+			Começo para Centro
+			*/
+			float sc_x = center_x - start_x;
+			float sc_y = center_y - start_y;
+			
+			/*
+			Final para Centro
+			*/
+			float ec_x = center_x -  end_x;
+			float ec_y = center_y -  end_y;
+			
+			if(
+				/*
+				Calculos se o inicio ou se o final está dentro da área.
+				Observe que não utilizamos sqrt.
+				*/
+				(
+					(sc_x * sc_x + sc_y * sc_y) <= raio_hard * raio_hard
+				) || (
+					(ec_x * ec_x + ec_y * ec_y) <= raio_hard * raio_hard
+				)
+			){
+				return true;
+			}
+			
+		}
+	}
+	else{
+		// Caso Normal: Caminho é obstruído se intercepta obstáculo
+		
+		for(
+			int ob = 0;
+			ob < quantidade_de_obstaculos_totais;
+			ob += 4
+		){
+			float center_x   = obstaculos[ ob    ];
+			float center_y   = obstaculos[ ob + 1];
+			float maior_raio = obstaculos[ ob + 3];
+			
+			/*
+			Começo para Centro
+			*/
+			float sc_x = center_x - start_x;
+			float sc_y = center_y - start_y;
+			
+			/*
+			Começo para Final
+			*/
+			float se_x = end_x    - start_x;
+			float se_y = end_y    - start_y;
+			
+			/*
+			escala = comprimento da projeção / comprimento do vetor alvo
+			*/
+			float proj_sc_escala = (
+				// produto escalar, vê?
+				sc_x * se_x + sc_y * se_y
+			) / (
+				// Módulo do vetor de começo -> final.
+				se_x * se_x + se_y * se_y
+			);
+			
+			/*
+			Projeção do vetor começo -> centro sob o vetor começo -> final.
+			*/
+			float proj_sc_x = se_x * proj_sc_escala;
+			float proj_sc_y = se_y * proj_sc_escala;
+			
+			// Fazemos isso para impedir divisões por 0.
+			float parametro = abs( se_x ) > abs( se_y ) ? proj_sc_x / se_x : proj_sc_y / se_y;
+			
+			if(
+				parametro <= 0
+			){
+				if(
+					// Verifica distância do centro do obstaculo e começo.
+					sc_x * sc_x + sc_y * sc_y <= maior_raio * maior_raio 
+				){
+					return true;
+				}
+			}
+			else{
+				if(
+					parametro >= 1
+				){
+					float ec_x = center_x - end_x;
+					float ec_y = center_y - end_y;
+					
+					if(
+						// Verifica distância do centro do obstáculo e final.
+						ec_x * ec_x + ec_y * ec_y <= maior_raio * maior_raio
+					){
+						return true;
+					}
+				}
+				else{
+					// Verificamos distância do centro e da projeção.
+					
+					float proj_c_x = center_x - ( proj_sc_x + start_x );
+					float proj_c_y = center_y - ( proj_sc_y + start_y );
+					
+					if(
+						proj_c_x * proj_c_x + proj_c_y * proj_c_y <= maior_raio * maior_raio
+					){
+						return true;
+					}
+				}
+			}
+		}
+	}
 	
+	float delta_x = end_x - start_x;
+	float delta_y = end_y - start_y;
 	
+	tamanho_do_caminho_final = 6;
+	caminho_final[ 0 ] = start_x;
+	caminho_final[ 1 ] = start_y;
+	caminho_final[ 2 ] =   end_x;
+	caminho_final[ 3 ] =   end_y;
+	caminho_final[ 4 ] =       3;  // Sem obstáculos.
+	/*
+	min. A* cost from start to end (e_cost is added even if start==end
+	to help debug cell costs)
+	*/
+	caminho_final[ 5 ] = sqrtf( delta_x * delta_x + delta_y * delta_y ) + max( 0.f, end_custo / 10.f );
 	
-	
-	
+	return false;  // Sem obstruções.
 }
 
+
+void 
+a_estrela(
+	float parametros[],
+	int quantidade_de_parametros
+){
+	/*
+	Descrição:
+		Responsável por computar o melhor caminho possível.
+	
+	Parâmetros:
+		parametros:
+			
+	*/
+
+
+
+}
 
 
 
@@ -1570,3 +1733,10 @@ int main()
 
     return 0;
 }
+
+
+
+
+
+
+
