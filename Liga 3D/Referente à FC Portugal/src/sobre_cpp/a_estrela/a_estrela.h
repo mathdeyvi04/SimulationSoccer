@@ -51,7 +51,7 @@ extern int tamanho_caminho_final;
 #define QUANT_LINHAS 321
 #define QUANT_COLUNAS 221
 #define DIST_MAX 5  // Por exemplo, máxima distância à um alvo.
-#define LINHA_DO_GOL 312  // Linha alvo quando a variável ir_ao_gol é verdadeira.
+#define LINHA_DO_GOL 312  // Linha alvo quando a variável ir_ao_gol é verdadeira, veja na função a_estrela()
 
 #define TAMANHO_DO_AMORTECIMENTO 6  // relacionado à função adicionar_espaco_de_amortecimento.
 

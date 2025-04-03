@@ -3,6 +3,15 @@ Matheus Deyvisson, 2025
 
 Deixo registrado mais uma vez o nível de profissionalismo do código original
 escrito por Miguel Abreu.
+
+Sim, eu sei que esse arquivo é grande. Entretanto:
+	
+	Não é possível a criação de outros arquivos .cpp, pois obrigaria 
+	a existência de um build aprimorado e não conseguiriamos criar o 
+	.so
+	
+	Determinadas funções estão usando parâmetros definidos no escopo global,
+	pois fazemos alterações nos ponteiros.
 */
 
 #include <iostream>  // Apenas para realizarmos testes.
@@ -1666,7 +1675,7 @@ se_caminho_esta_obstruido(
 }
 
 
-void 
+void
 a_estrela(
 	float parametros[],
 	int quantidade_de_parametros
@@ -1674,15 +1683,185 @@ a_estrela(
 	/*
 	Descrição:
 		Responsável por computar o melhor caminho possível.
-	
+		
 	Parâmetros:
 		parametros:
-			
+		
+			[start x][start y]
+			[allow out of bounds?][go to goal?]
+			[optional target x][optional target y]
+			[timeout]
+			[x][y][hard radius][soft radius][force]
 	*/
+	
+	//////////////////////////////////////////////////////////////////////
+	/// Extração de Informações dos Argumentos
+	//////////////////////////////////////////////////////////////////////
+	
+	// Auto permite que nós não nos importemos com o tipo fornecido.
+	// Pq apesar de saber que é uma unidade de tempo, o ngc é louco.
+	auto inicio = high_resolution_clock::now();
+	
+	const float start_x = parametros[ 0 ];
+	const float start_y = parametros[ 1 ];
+	
+	const bool permissao_para_ir_para_alem_dos_limites = parametros[2];
+	const int limite_para_qual_custo_eh_impossivel = permissao_para_ir_para_alem_dos_limites ? - 3 : - 2;
+		
+	const bool ir_ao_gol = parametros[ 3 ];
+	
+	const float alvo_opcional_x = parametros[ 4 ];
+	const float alvo_opcional_y = parametros[ 5 ];
+	
+	const int timeout = parametros[ 6 ];  // para limitarmos o tempo de busca.
+	
+	float *obstaculos = parametros + 7;  // Aritmética de Ponteiros
+	int quantidade_de_obstaculos = quantidade_de_parametros - 7;
+
+	float quadro_de_custo[
+		QUANT_LINHAS * QUANT_COLUNAS
+	] = {
+		/*
+		Definindo o campo de jogo.
+		Não ousei tentar compreender isso ainda, entretanto, é importante
+		pra caramba.
+		*/
+		L0_1,
+		L2_5,
+		L6_10,
+		L11,
+		LIN12_308,
+		L309,
+		L310_314,
+		L2_5,L0_1
+	};
+
+	if(
+		!permissao_para_ir_para_alem_dos_limites
+	){
+		adicionar_espaco_de_amortecimento(
+			quadro_de_custo
+		);
+	}
+	
+	if(
+		!se_caminho_esta_obstruido(
+			start_x,
+			start_y,
+			alvo_opcional_x,
+			alvo_opcional_y,
+			obstaculos,
+			quantidade_de_obstaculos,
+			ir_ao_gol,
+			limite_para_qual_custo_eh_impossivel,
+			quadro_de_custo
+		)
+	){
+		// Força retornar void
+		return;
+	}
+
+	const int start_linha = x_para_linha(
+		start_x
+	);
+	const int start_coluna = y_para_col(
+		start_y
+	);
+	const int start_pos = start_linha * QUANT_COLUNAS + start_coluna;
+	
+	////////////////////////////////////////////////////////////////////
+	/// Definimos objetivo.
+	////////////////////////////////////////////////////////////////////
+	int end_linha  = 0;
+	int end_coluna = 0;
+	if(
+		!ir_ao_gol
+	){
+		end_linha  = x_para_linha( alvo_opcional_x );
+		end_coluna = y_para_col  ( alvo_opcional_y );
+	}
+	else{
+		end_linha = LINHA_DO_GOL;
+	}
+	
+	////////////////////////////////////////////////////////////////////
+	/// Limites de Borda
+	////////////////////////////////////////////////////////////////////
+	
+	int linha_min = min( start_linha, end_linha );
+	int linha_max = min( start_linha, end_linha );
+	
+	int coluna_min = 0;
+	int coluna_max = 0;
+	
+	if(
+		ir_ao_gol
+	){
+		coluna_min = min( start_coluna,        119 );
+		coluna_max = max( start_coluna, 	   101 );
+	}
+	else{
+		coluna_min = min( start_coluna, end_coluna );
+		coluna_max = max( start_coluna, end_coluna );
+	}
+	
+	if(
+		/*
+		Devemos limitar mais caso não seja permitir sair, para desincentivar
+		ainda mais a saída.
+		*/
+		!permissao_para_ir_para_alem_dos_limites
+	){
+		linha_min  = min( linha_min,  306         );
+		linha_max  = max( 14,         linha_max   );
+		coluna_min = min( coluna_min, 206         );
+		coluna_max = max( 14,  		  coluna_max  );
+	}
+	
+	////////////////////////////////////////////////////////////////////
+	/// Alogritmo A*
+	////////////////////////////////////////////////////////////////////
+	
+	Node* raiz_da_estrutura = nullptr;
+	Node quadro_de_possibilidades[
+		QUANT_COLUNAS * QUANT_LINHAS
+	];
+	
+	unsigned int estado_dos_nodes[
+		QUANT_LINHAS * QUANT_COLUNAS
+	] = {
+		/*
+		0 -> Desconhecido
+		1 -> Aberto
+		2 -> Fechado
+		*/
+		0	
+	};  
+	
+	///////////////////////////////////////////////////////////////////
+	/// Populamos com obstáculos
+	
+	for(
+		int ob = 0;
+		ob < quantidade_de_obstaculos;
+		ob += 5
+	){
+		int linha = x_para_linha(obstaculos[ob]);
+		int coluna = y_para_linha(obstaculos[ob + 1])
+;	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 
+}	
 
-}
 
 
 
