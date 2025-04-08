@@ -8,10 +8,12 @@ Sim, eu sei que esse arquivo é grande. Entretanto:
 	
 	Não é possível a criação de outros arquivos .cpp, pois obrigaria 
 	a existência de um build aprimorado e não conseguiriamos criar o 
-	.so
+	.so trivialmente.
 	
 	Determinadas funções estão usando parâmetros definidos no escopo global,
-	pois fazemos alterações nos ponteiros.
+	pois fazemos alterações nos ponteiros. Usando mais arquivos, a lógica ficaria mais complexa.
+
+	Além disso, diversas linhas são apenas comentários para auxiliá-lo na compreensão.
 */
 
 #include <iostream>  // Apenas para realizarmos testes.
@@ -1713,7 +1715,7 @@ a_estrela(
 	const float alvo_opcional_x = parametros[ 4 ];
 	const float alvo_opcional_y = parametros[ 5 ];
 	
-	const int timeout = parametros[ 6 ];  // para limitarmos o tempo de busca.
+	const int tempo_limite = parametros[ 6 ];  // para limitarmos o tempo de busca.
 	
 	float *obstaculos = parametros + 7;  // Aritmética de Ponteiros
 	int quantidade_de_obstaculos = quantidade_de_parametros - 7;
@@ -1724,7 +1726,7 @@ a_estrela(
 		/*
 		Definindo o campo de jogo.
 		Não ousei tentar compreender isso ainda, entretanto, é importante
-		pra caramba.
+		pra caramba dado que explicita 
 		*/
 		L0_1,
 		L2_5,
@@ -1733,7 +1735,8 @@ a_estrela(
 		LIN12_308,
 		L309,
 		L310_314,
-		L2_5,L0_1
+		L2_5,
+		L0_1
 	};
 
 	if(
@@ -1772,6 +1775,7 @@ a_estrela(
 	////////////////////////////////////////////////////////////////////
 	/// Definimos objetivo.
 	////////////////////////////////////////////////////////////////////
+	
 	int end_linha  = 0;
 	int end_coluna = 0;
 	if(
@@ -1819,7 +1823,7 @@ a_estrela(
 	}
 	
 	////////////////////////////////////////////////////////////////////
-	/// Alogritmo A*
+	/// Algoritmo A*
 	////////////////////////////////////////////////////////////////////
 	
 	Node* raiz_da_estrutura = nullptr;
@@ -1840,34 +1844,631 @@ a_estrela(
 	
 	///////////////////////////////////////////////////////////////////
 	/// Populamos com obstáculos
+	///////////////////////////////////////////////////////////////////
 	
 	for(
 		int ob = 0;
 		ob < quantidade_de_obstaculos;
 		ob += 5
 	){
-		int linha = x_para_linha(obstaculos[ob]);
-		int coluna = y_para_linha(obstaculos[ob + 1])
-;	}
+		int linha = x_para_linha( obstaculos[ ob    ] );
+		int coluna = y_para_col ( obstaculos[ ob + 1] );
+		
+		float raio_hard = fmaxf(
+			0,
+			fminf(
+				obstaculos[ ob + 2 ],
+				DIST_MAX
+			)
+		);
+		float raio_soft = fmaxf(
+			0,
+			fminf(
+				obstaculos[ ob + 3 ],
+				DIST_MAX
+			)
+		);
+		
+		float forca = obstaculos[ ob + 4 ];
+		float forca_por_metro = forca / raio_soft;  // Rapaz, apenas para facilitar posteriores contas
+		
+		int raio_max = int(
+			fmaxf(
+				raio_hard,
+				raio_soft
+			) * 10.f + 1e-4
+			/*
+			A fim de aprimorar velocidade, não usaremos a função pow(10, -4).
+			
+			Oq esse valor significa?
+				É um delta para evitar possíveis erros em contas posteriores.	
+			*/
+		);
+		linha_min  = min( linha_min,  linha  - raio_max - 1 );
+		linha_max  = max( linha_max,  linha  + raio_max + 1 );
+		coluna_min = min( coluna_min, coluna - raio_max - 1 );
+		coluna_max = max( coluna_max, coluna + raio_max + 1 );
+		
+		
+		////////////////////////////////////////////////////////////////////
+		/// Custo a partir dos raios de contato.
+		////////////////////////////////////////////////////////////////////
+		
+		/*
+		Fazemos atualizações do custo a partir dos valores que estão em
+		obtendo_possibilidades.h
+		
+		Como acredito que você pode não ter visto o código referente à
+		obtendo_possibilidades.py, lhe darei outra explicação.
+		
+		quantidade_de_pontos_disponiveis
+			
+			quantidade de pontos que foram contabilizados ao redor do agente.
+		
+		aneis_e_pontos_disponiveis
+			
+			raio dos aneis de cada ponto disponível. Por exemplo, um ponto
+			(linha, coluna) possui o valor de sua distância registrada nesse 
+			array.
+			
+		linhas_de_cada_ponto
+		colunas_de_cada_ponto
+		
+			Respectivamente, as linhas e colunas de cada ponto em arrays 
+			unidimensionais.
+		*/
+		int index = 0;
+		while(
+			(
+				index < quantidade_de_pontos_disponiveis
+			) && (
+				aneis_e_pontos_disponiveis[index] <= raio_hard
+			)
+		){
+			int coef_linha  = linha  + linhas_de_cada_ponto [ index ];
+			int coef_coluna = coluna + colunas_de_cada_ponto[ index ];
+			
+			if(
+				(
+					coef_linha  >= 0
+				) && (
+					coef_coluna >= 0
+				) && (
+					coef_linha  <  QUANT_LINHAS
+				) && (
+					coef_coluna <  QUANT_COLUNAS
+				)
+			){
+				quadro_de_custo[
+					coef_linha * QUANT_COLUNAS + coef_coluna
+				] = - 3;
+			}
+			
+			index++;
+		}
+		
+		while(
+			(
+				index < quantidade_de_pontos_disponiveis
+			) && (
+				aneis_e_pontos_disponiveis[index] <= raio_soft
+			)
+		){
+			int coef_linha  = linha  + linhas_de_cada_ponto [ index ];
+			int coef_coluna = coluna + colunas_de_cada_ponto[ index ];
+			
+			float custo_anteriormente_calculado = quadro_de_custo[
+				coef_linha * QUANT_COLUNAS + coef_coluna
+			];
+			
+			// Apenas um fator para ver se vale a pena tocar pelo raio_soft
+			float fr = forca - (forca_por_metro * aneis_e_pontos_disponiveis[index]);
+			
+			if(
+				(
+					coef_linha  >= 0
+				) && (
+					coef_coluna >= 0
+				) && (
+					coef_linha  <  QUANT_LINHAS
+				) && (
+					coef_coluna <  QUANT_COLUNAS
+				) && (
+					custo_anteriormente_calculado > limite_para_qual_custo_eh_impossivel
+				) && (
+					custo_anteriormente_calculado < fr
+				)
+			){
+				quadro_de_custo[
+					coef_linha * QUANT_COLUNAS + coef_coluna
+				] = fr;
+			}
+			
+			index++;
+		}
+		
+	}
 	
+	///////////////////////////////////////////////////////////////////
+	/// Ajustes finos
+	///////////////////////////////////////////////////////////////////
 	
+	/*
+	Ajustamos limites de borda caso a área disponível esteja sobrepondo
+	área dos gols.
 	
+	Os valores a seguir são específicos da geometria do campo.
+	*/
+	if(
+		coluna_max > 96 and coluna_min < 124
+	){
+		
+		if(
+			// Caso nosso gol esteja sendo sobreposto
+			linha_max > 1 and linha_min < 12
+		){
+			linha_max  = max( 12,  linha_max  );
+			linha_min  = min( 1,   linha_min  );
+			coluna_max = max( 124, coluna_max );
+			coluna_min = min( 96,  coluna_min );
+		}
+		
+		if(
+			// Caso seja o gol deles.
+			linha_max > 308 and linha_min < 319
+		){
+			linha_max  = max( 319, linha_max  );
+			linha_min  = min( 308, linha_min  );
+			coluna_max = max( 124, coluna_max );
+			coluna_min = min( 96,  coluna_min );
+		}
+	}
 	
+	///////////////////////////////////////////////////////////////////
+	/// Adicionamos o objetivo
+	///////////////////////////////////////////////////////////////////
 	
+	/*
+	Caso o objetivo não esteja acessível, não adicionamos ao mapa.
+	Embora sua referência ainda exista.
 	
+	Portanto, nós saberemos o quão longe estamos da referência, apesar dela
+	ser inacessível. Mesmo se estivermos bem próximos ao objetivo, a ideia 
+	é se afastar para atingir o ponto válido mais próximo que permitirá a 
+	acessibilidade.
+	*/
 	
+	if(
+		!ir_ao_gol
+	){
+		float *custo_do_fim = &quadro_de_custo[
+			end_linha * QUANT_COLUNAS + end_coluna
+		];
+		
+		if(
+			*custo_do_fim > limite_para_qual_custo_eh_impossivel
+		){
+			
+			*custo_do_fim = -1;
+		}
+	}
+	else{
+		for(
+			int index = LINHA_DO_GOL * QUANT_COLUNAS + 101;
+			    index < LINHA_DO_GOL * QUANT_COLUNAS + 119;
+			    index++
+		){
+			if(
+				quadro_de_custo[index] > limite_para_qual_custo_eh_impossivel
+			){
+				quadro_de_custo[index] = -1;
+			}
+		}
+	}
 	
+	// Adicionamos novos limites de borda para restringir ainda mais espaço
+	linha_max  = min( 320, linha_max);
+	linha_min  = max( 0,   linha_min);
+	coluna_max = min( 220, coluna_max);
+	coluna_min = max( 0,   coluna_min);
 	
-
-
-}	
-
-
-
-
-
-
-
+	// Iniciamos o primeiro nó.
+	// Fazemos um mínimo para nos basear a partir dele
+	quadro_de_possibilidades[start_pos].custo_pontual = 0;
+	quadro_de_possibilidades[start_pos].parente = nullptr;  
+	raiz_da_estrutura = noding::inserir( &quadro_de_possibilidades[ start_pos ], raiz_da_estrutura );
+	Node* melhor_node = &quadro_de_possibilidades[start_pos];
+	float distancia_ao_melhor_node = std::numeric_limits<float>::max();  // Apenas dizemos que é a maior possível primeiro.
+	
+	/*
+	Caso ultrapasse essa medida, deve parar imediatamente e ficar com oq 
+	já tem.
+	*/
+	int medida_de_tempo_limite = 0;
+	
+	if(
+		quadro_de_custo[start_pos] > limite_para_qual_custo_eh_impossivel
+	){
+		
+		distancia_ao_melhor_node = distancia_diagonal(
+			ir_ao_gol,
+			start_linha,
+			start_coluna,
+			end_linha,
+			end_coluna
+		);
+	}
+	
+	////////////////////////////////////////////////////////////////////
+	/// Aplicação do Algoritmo
+	////////////////////////////////////////////////////////////////////
+	
+	while(
+		raiz_da_estrutura != nullptr
+	){
+		
+		// Procuramos o próximo melhor nó.
+		Node* node_atual = min_node;
+		
+		const int pos_atual = node_atual - quadro_de_possibilidades;
+		const int linha_atual = pos_atual / QUANT_COLUNAS; 
+		const int coluna_atual = pos_atual % QUANT_COLUNAS;
+		const float custo_atual = quadro_de_custo[pos_atual];
+		
+		medida_de_tempo_limite = (medida_de_tempo_limite + 1) % 31; // Checar o tempo a cada 32 iterações
+		if(
+			custo_atual > limite_para_qual_custo_eh_impossivel
+		){
+			float dist_diagonal = distancia_diagonal(
+				ir_ao_gol,
+				linha_atual,
+				coluna_atual,
+				end_linha,
+				end_coluna
+			);
+			
+			if(
+				// Achamos um novo melhor node
+				distancia_ao_melhor_node > dist_diagonal
+			){
+				
+				melhor_node = node_atual;
+				distancia_ao_melhor_node = dist_diagonal;
+			}
+		}
+		
+		raiz_da_estrutura = noding::remover_min( raiz_da_estrutura );
+		estado_dos_nodes[pos_atual] = 2;
+		
+		// Checamos se o objetivo foi atingido.
+		if(
+			custo_atual == -1
+		){
+			
+			construir_caminho_final(
+				melhor_node,
+				quadro_de_possibilidades,
+				0, // Significa sucesso
+				!ir_ao_gol,
+				alvo_opcional_x,
+				alvo_opcional_y
+			);
+			
+			return;
+		}
+		
+		if(
+			(
+				medida_de_tempo_limite == 0
+			) && (
+				duration_cast<microseconds>( high_resolution_clock::now() - inicio).count() > tempo_limite
+			)
+		){
+			
+			construir_caminho_final(
+				melhor_node,
+				quadro_de_possibilidades,
+				1 // Significa tempo excedido.
+			);
+			
+			return;
+		}
+		
+		/////////////////////////////////////////////////////////////////
+		/// Expandimos nodes filhos
+		/////////////////////////////////////////////////////////////////
+		bool rcol_ok = coluna_atual < coluna_max;
+		bool lcol_ok = coluna_atual > coluna_min;
+		
+		if(
+			linha_atual > linha_min
+		){
+			int linha  = linha_atual  - 1;
+			int coluna = coluna_atual - 1;
+			
+			int   posicao        = pos_atual - QUANT_COLUNAS - 1;
+			float custo          = quadro_de_custo [  posicao  ];
+			int   estado_do_node = estado_dos_nodes[  posicao  ];
+			
+			if(
+				/*
+				Checa se não é um obstáculo e se o node não está fechado.
+				*/
+				(
+					estado_do_node != 2
+				) && !(
+					custo <= limite_para_qual_custo_eh_impossivel and custo < custo_atual
+				) && (
+					lcol_ok
+				)
+				
+			){
+				raiz_da_estrutura = noding::expandir_filho(
+					raiz_da_estrutura,
+					custo,
+					limite_para_qual_custo_eh_impossivel,
+					node_atual,
+					quadro_de_possibilidades,
+					posicao,
+					estado_do_node,
+					ir_ao_gol,
+					linha,
+					coluna,
+					end_linha,
+					end_coluna,
+					estado_dos_nodes, 
+					SQRT_2 // Extra
+				);
+			}
+			
+			coluna++;
+			posicao++;
+			custo          = quadro_de_custo [ posicao ];
+			estado_do_node = estado_dos_nodes[ posicao ];
+			
+			if(
+				(
+					estado_do_node != 2
+				) && !(
+					custo <= limite_para_qual_custo_eh_impossivel and custo < custo_atual
+				)
+			){
+				raiz_da_estrutura = noding::expandir_filho(
+					raiz_da_estrutura,
+					custo,
+					limite_para_qual_custo_eh_impossivel,
+					node_atual,
+					quadro_de_possibilidades,
+					posicao,
+					estado_do_node,
+					ir_ao_gol,
+					linha,
+					coluna,
+					end_linha,
+					end_coluna,
+					estado_dos_nodes, 
+					1 // Extra
+				);
+			}
+			
+			coluna++;
+			posicao++;
+			custo          = quadro_de_custo [ posicao ];
+			estado_do_node = estado_dos_nodes[ posicao ];
+			
+			if(
+				(
+					estado_do_node != 2
+				) && !(
+					custo <= limite_para_qual_custo_eh_impossivel and custo < custo_atual
+				) && (
+					rcol_ok
+				)
+			){
+				raiz_da_estrutura = noding::expandir_filho(
+					raiz_da_estrutura,
+					custo,
+					limite_para_qual_custo_eh_impossivel,
+					node_atual,
+					quadro_de_possibilidades,
+					posicao,
+					estado_do_node,
+					ir_ao_gol,
+					linha,
+					coluna,
+					end_linha,
+					end_coluna,
+					estado_dos_nodes, 
+					SQRT_2 // Extra
+				);
+			}
+		}
+		
+		if(
+			linha_atual < linha_max
+		){
+			int linha   = linha_atual  + 1;
+			int coluna  = coluna_atual - 1;
+			
+			int   posicao        = pos_atual + QUANT_COLUNAS - 1;
+			float custo          = quadro_de_custo [  posicao  ];
+			int   estado_do_node = estado_dos_nodes[  posicao  ];
+			
+			if(
+				/*
+				Checa se não é um obstáculo e se o node não está fechado.
+				*/
+				(
+					estado_do_node != 2
+				) && !(
+					custo <= limite_para_qual_custo_eh_impossivel and custo < custo_atual
+				) && (
+					lcol_ok
+				)
+				
+			){
+				raiz_da_estrutura = noding::expandir_filho(
+					raiz_da_estrutura,
+					custo,
+					limite_para_qual_custo_eh_impossivel,
+					node_atual,
+					quadro_de_possibilidades,
+					posicao,
+					estado_do_node,
+					ir_ao_gol,
+					linha,
+					coluna,
+					end_linha,
+					end_coluna,
+					estado_dos_nodes, 
+					SQRT_2 // Extra
+				);
+			}
+			
+			coluna++;
+			posicao++;
+			custo          = quadro_de_custo [ posicao ];
+			estado_do_node = estado_dos_nodes[ posicao ];
+			
+			if(
+				(
+					estado_do_node != 2
+				) && !(
+					custo <= limite_para_qual_custo_eh_impossivel and custo < custo_atual
+				)
+			){
+				raiz_da_estrutura = noding::expandir_filho(
+					raiz_da_estrutura,
+					custo,
+					limite_para_qual_custo_eh_impossivel,
+					node_atual,
+					quadro_de_possibilidades,
+					posicao,
+					estado_do_node,
+					ir_ao_gol,
+					linha,
+					coluna,
+					end_linha,
+					end_coluna,
+					estado_dos_nodes, 
+					1 // Extra
+				);
+			}
+			
+			coluna++;
+			posicao++;
+			custo          = quadro_de_custo [ posicao ];
+			estado_do_node = estado_dos_nodes[ posicao ];
+			
+			if(
+				(
+					estado_do_node != 2
+				) && !(
+					custo <= limite_para_qual_custo_eh_impossivel and custo < custo_atual
+				) && (
+					rcol_ok
+				)
+			){
+				raiz_da_estrutura = noding::expandir_filho(
+					raiz_da_estrutura,
+					custo,
+					limite_para_qual_custo_eh_impossivel,
+					node_atual,
+					quadro_de_possibilidades,
+					posicao,
+					estado_do_node,
+					ir_ao_gol,
+					linha,
+					coluna,
+					end_linha,
+					end_coluna,
+					estado_dos_nodes, 
+					SQRT_2 // Extra
+				);
+			}
+		}
+		
+		int coluna  = coluna_atual - 1;
+		int posicao = pos_atual    - 1;
+		float custo          = quadro_de_custo [ posicao ];
+		int   estado_do_node = estado_dos_nodes[ posicao ];
+		
+		if(
+			/*
+			Checa se não é um obstáculo e se o node não está fechado.
+			*/
+			(
+				estado_do_node != 2
+			) && !(
+				custo <= limite_para_qual_custo_eh_impossivel and custo < custo_atual
+			) && (
+				lcol_ok
+			)
+			
+		){
+			raiz_da_estrutura = noding::expandir_filho(
+				raiz_da_estrutura,
+				custo,
+				limite_para_qual_custo_eh_impossivel,
+				node_atual,
+				quadro_de_possibilidades,
+				posicao,
+				estado_do_node,
+				ir_ao_gol,
+				linha_atual,
+				coluna,
+				end_linha,
+				end_coluna,
+				estado_dos_nodes, 
+				1 // Extra
+			);
+		}
+			
+		coluna  += 2;
+		posicao += 2;
+		custo          = quadro_de_custo [ posicao ];
+		estado_do_node = estado_dos_nodes[ posicao ];
+		
+		if(
+			/*
+			Checa se não é um obstáculo e se o node não está fechado.
+			*/
+			(
+				estado_do_node != 2
+			) && !(
+				custo <= limite_para_qual_custo_eh_impossivel and custo < custo_atual
+			) && (
+				rcol_ok
+			)
+			
+		){
+			raiz_da_estrutura = noding::expandir_filho(
+				raiz_da_estrutura,
+				custo,
+				limite_para_qual_custo_eh_impossivel,
+				node_atual,
+				quadro_de_possibilidades,
+				posicao,
+				estado_do_node,
+				ir_ao_gol,
+				linha_atual,
+				coluna,
+				end_linha,
+				end_coluna,
+				estado_dos_nodes, 
+				1 // Extra
+			);
+		}
+	}
+	
+	construir_caminho_final(
+		melhor_node,
+		quadro_de_possibilidades,
+		2
+	);
+	
+	return;
+}
 
 int main()
 {
@@ -1909,13 +2510,7 @@ int main()
 //		);
 
 	}
-
+	
     return 0;
 }
-
-
-
-
-
-
 

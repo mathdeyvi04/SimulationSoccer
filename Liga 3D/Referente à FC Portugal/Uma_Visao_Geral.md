@@ -285,10 +285,11 @@ Cada classe _Base_Agent_ possui uma unidade de cada classe:
       * Alterar parâmetros presentes no arquivo afetará a otimização.
       
     * [a_estrela.cpp]()
-      * Super código de implementação do A* em C++. Tente experimentá-lo.
+      * Super código de implementação do A* em C++. Tente lê-lo.
       * Criação de funções manipuladoras de grafos.
-      * Utilização de um algoritmo insano para calcular distâncias, criado exclusivamente para aprimorar a velocidade da busca pelo melhor caminho possível.
+      * Utilização de um algoritmo insano para calcular distâncias, criado e desenvolvido pela equipe de Portugal exclusivamente para aprimorar a velocidade da busca pelo melhor caminho possível.
       * Excelente demonstração de como codar como um Deus, agradeço à Miguel Abreu por ter criado essa obra de arte.
+      * Acredito que, para posteriores avanços, pode-se implementar métodos de testes automáticos a fim de apresentar e verificar o algoritmo e respectivos avanços.
 
 
 

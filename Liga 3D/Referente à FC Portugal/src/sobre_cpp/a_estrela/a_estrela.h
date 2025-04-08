@@ -11,23 +11,62 @@ Matheus Deyvisson, 2025
 
 struct Node{
     // Inerentes a Grafos BST
-    // Por favor nao, algumas coisas devem sempre ser inglês.
-    Node* left = nullptr;  // Filho Esquerdo (Conexão de Descida)
-    Node* right = nullptr;  // Filho Direito (Conexão de Descida)
-    Node* up = nullptr;  // Pai (conexão de subida)
+    
+    Node* left;   // Filho Esquerdo (Conexão de Descida)
+    Node* right;  // Filho Direito (Conexão de Descida)
+    Node* up;     // Pai (conexão de subida)
 
     // Inerentes ao algoritmo.
-    Node* parente = nullptr;
-    float custo_pontual = 0;
-    float valor = 0;
+    Node* parente;
+    float custo_pontual;
+    float valor;
     
     
     // Inicializações
-    Node(int valor) : valor(valor) {}
+    Node() :
+		left         ( nullptr ),
+		right        ( nullptr ),
+		up           ( nullptr ),
+		parente      ( nullptr ),
+		custo_pontual( 0       ),
+		valor        ( 0  	   )
+	{}
+    
+    Node(
+		int valor
+	) :
+		left         ( nullptr ),
+		right        ( nullptr ),
+		up           ( nullptr ),
+		parente      ( nullptr ),
+		custo_pontual( 0       ),
+		valor        ( valor   ) 
+	{}
 	
-	Node(int valor, Node* left) : valor(valor), left(left) {}
+	Node(
+		int valor,
+		Node* left
+	) : 
+		left         ( left    ),
+		right        ( nullptr ),
+		up           ( nullptr ),
+		parente      ( nullptr ),
+		custo_pontual( 0       ),
+		valor        ( valor   )
+	{}
 	
-	Node(int valor, Node* left, Node* right) : valor(valor), left(left), right(right) {}
+	Node(
+		int valor,
+		Node* left,
+		Node* right
+	) : 
+		left         ( left    ),
+		right        ( right   ),
+		up           ( nullptr ),
+		parente      ( nullptr ),
+		custo_pontual( 0       ),
+		valor        ( valor   )
+	{}
 	
 };
 
