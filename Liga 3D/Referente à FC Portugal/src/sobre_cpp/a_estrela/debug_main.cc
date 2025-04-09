@@ -18,7 +18,7 @@ using std::chrono::high_resolution_clock;
 using std::chrono::duration_cast;
 using std::chrono::microseconds;
 
-std::chrono::_V2::system_clock::time_point inicio,final;
+std::chrono::_V2::system_clock::time_point inicio, fim;
 
 float parametros[] = {
     /*
@@ -43,7 +43,7 @@ int main(){
 
     fim = high_resolution_clock::now();
 
-    std::cout << duration_cast<microseconds>(final - inicio).count() << "us (inclui valores de inicialização.\n";
+    std::cout << duration_cast<microseconds>(fim - inicio).count() << "us (inclui valores de inicialização.\n";
 
     ////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////
@@ -55,7 +55,7 @@ int main(){
 
     fim = high_resolution_clock::now();
 
-    std::cout << duration_cast<microseconds>(final - inicio).count() << "us.\n";
+    std::cout << duration_cast<microseconds>(fim - inicio).count() << "us.\n";
 
 }
 

@@ -71,6 +71,10 @@ struct Node{
 };
 
 extern void a_estrela(
+	/*
+	O retorno acontece na modificação do ponteiro 
+	do caminho final.
+	*/
     float parametros[],
     int quantidade_de_parametros
 );
