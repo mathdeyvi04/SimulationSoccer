@@ -126,7 +126,8 @@ void obter_previsao_cinematica(
 		double acel_y = vel_ball_y * vel_ball_y * coef_arrasto_quadratico_y + vel_ball_y * coef_arrasto_linear;
 		
 		double dx = vel_ball_x * delta_t + acel_x * delta_t_sq;
-		double dx = vel_ball_y * delta_t + acel_y * delta_t_sq;
+		double dy
+		 = vel_ball_y * delta_t + acel_y * delta_t_sq;
 		
 		pos_ball_x += dx;
 		pos_ball_y += dy;
