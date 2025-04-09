@@ -17,7 +17,7 @@ dirigido, focado no conhecimento disponibilizado publicamente pela equipe e expl
 
 	* Explicação Base de Diversos Componentes Básicos da Aplicação.
 
-	# A partir deste, disponibilizar os demais!
+# A partir deste, disponibilizar os demais!
 
 * [Código Completo Construído pela Equipe](https://github.com/m-abr/FCPCodebase)
 
