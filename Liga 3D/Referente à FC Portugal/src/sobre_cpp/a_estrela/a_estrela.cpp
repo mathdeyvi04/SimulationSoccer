@@ -2470,47 +2470,47 @@ a_estrela(
 	return;
 }
 
-int main()
-{
- 	// Exemplo de BST para testarmos código de noding.
- 	// Fiz usando // para poder usar o atalho.
-	{
-//		Node *node = new Node(5);			
-//		Node *node_l = new Node(2);
-//		(*node_l).up = node;
-//		(*node).left = node_l;
-//		
-//		Node *node_r = new Node(10);
-//		(*node_r).up = node;
-//		(*node).right = node_r;
-//		
-//		Node *node_ll = new Node(1);
-//		(*node_ll).up = node_l;
-//		(*node_l).left = node_ll;
-//		
-//		Node *node_lr = new Node(4);
-//		(*node_lr).up = node_l;
-//		(*node_l).right = node_lr;
-//		
-//		Node* node_lrl = new Node(3);
-//		(*node_lrl).up = node_lr;
-//		(*node_lr).left = node_lrl;
-//		
-//		Node* node_lrr = new Node(5);
-//		(*node_lrr).up = node_lr;
-//		(*node_lr).right = node_lrr;
-//		
-//		
-//		noding::apresentar(
-//			node
-//		);
-//		
-//		noding::liberar(
-//			node
-//		);
-
-	}
-	
-    return 0;
-}
+//int main()
+//{
+// 	// Exemplo de BST para testarmos código de noding.
+// 	// Fiz usando // para poder usar o atalho.
+//	{
+////		Node *node = new Node(5);			
+////		Node *node_l = new Node(2);
+////		(*node_l).up = node;
+////		(*node).left = node_l;
+////		
+////		Node *node_r = new Node(10);
+////		(*node_r).up = node;
+////		(*node).right = node_r;
+////		
+////		Node *node_ll = new Node(1);
+////		(*node_ll).up = node_l;
+////		(*node_l).left = node_ll;
+////		
+////		Node *node_lr = new Node(4);
+////		(*node_lr).up = node_l;
+////		(*node_l).right = node_lr;
+////		
+////		Node* node_lrl = new Node(3);
+////		(*node_lrl).up = node_lr;
+////		(*node_lr).left = node_lrl;
+////		
+////		Node* node_lrr = new Node(5);
+////		(*node_lrr).up = node_lr;
+////		(*node_lr).right = node_lrr;
+////		
+////		
+////		noding::apresentar(
+////			node
+////		);
+////		
+////		noding::liberar(
+////			node
+////		);
+//
+//	}
+//	
+//    return 0;
+//}
 

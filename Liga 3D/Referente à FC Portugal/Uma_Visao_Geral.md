@@ -317,6 +317,12 @@ Cada classe _Base_Agent_ possui uma unidade de cada classe:
     * [ponte_de_ligacao_entre_python_e.cpp](src/sobre_cpp/a_estrela/ponte_de_ligacao_entre_python_e.cpp)
       * Código responsável por prover ferramentos de conexão do ambiente Python com funções C++.
 
+* [ambientacao](src/sobre_cpp/ambientacao)
+  * Módulo responsável por ferramentas de localização e de visualização de mundo.
+  
+    * [Geometria.h](src/sobre_cpp/ambientacao/Geometria.h)
+      * Criação e Implementação de Classes Vetoriais de 2 Dimensões e de 3 Dimensões.
+      
 
 
 
