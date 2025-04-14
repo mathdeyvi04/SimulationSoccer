@@ -2,9 +2,16 @@
 Matheus Deyvisson, 2025
 
 Utilizei apenas um arquivo header a fim de evitar a repetição 
-inútil de vários arquivos. 
+desnecessária de vários arquivos.
+
+Inclui os arquivos:
+    -> Vector3f.cpp
+    -> Vector3f.h
+    -> Geometry.cpp
+    -> Geometry.h
 
 Fiz algumas modificações para aprimorar legibilidade.
+Testes já foram realizados.
 */
 #ifndef GEOMETRIA_H
 #define GEOMETRIA_H
@@ -15,7 +22,7 @@ Fiz algumas modificações para aprimorar legibilidade.
 
 using namespace std;
 
-#define EPSILON 1e-5  // No Original, era 1e-10, o que eu julgo desnecessariamente pequeno..
+#define EPSILON 1e-6  // No Original, era 1e-10, o que eu julgo desnecessariamente pequeno..
 #define PI 3.1415926535f
 
 /*
@@ -303,11 +310,10 @@ public:
 		
 	~Vetor3D() {} // Apenas o destrutor.
 	
-	/ 
-	friend ostream& operator<<(ostream& os, const Vetor3D& vetor){
-		os << "(" << vetor.x << ", " << vetor.y << ", " << vetor.z << ")";
-		return os;
-	}
+//	friend ostream& operator<<(ostream& os, const Vetor3D& vetor){
+//		os << "(" << vetor.x << ", " << vetor.y << ", " << vetor.z << ")";
+//		return os;
+//	}
 	
 	///////////////////////////////////////////////////////////////////////
 	/// Outros Métodos de Definição
@@ -337,7 +343,7 @@ public:
 				
 			default:
 				/*Houve um erro obviamente.*/
-				return 9999;
+				return 999999;
 		}
 	}
 	
@@ -375,9 +381,12 @@ public:
 						z - escalar
 					  );
 	} 
-	// Observe a semelhante com o anterior.
 	Vetor3D operator-() const {
-		return Vetor3D() - *this; 
+		return Vetor3D(
+						- x,
+						- y,
+						- z
+			   		  );
 	}
 	
 	
@@ -537,8 +546,8 @@ public:
 	}
 	
 	
-	Vetor3D obter_distancia( const Vetor3D& outro_vetor ) const {
-		return (*this - other).modulo();
+	float obter_distancia( const Vetor3D& outro_vetor ) const {
+		return (*this - outro_vetor).modulo();
 	}
 	
 	
