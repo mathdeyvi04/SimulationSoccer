@@ -1,6 +1,6 @@
 ##  Hierarquia
 
-Do arquivo / pasta mais profundo até o mais superficial.
+Do arquivo / pasta mais profundo, implementado mais cedo, até o mais superficial, último implementado.
 
 * [UserInterface](src/sobre_scripts/comuns/UserInterface.py)
   * Disponibilizar ferramentas de estilização de apresentação no terminal.
@@ -11,7 +11,7 @@ Do arquivo / pasta mais profundo até o mais superficial.
   * Em geral, responsável por providenciar ferramentas de execução em terminal.
 
 * [a_estrela](src/sobre_cpp/a_estrela)
-  * Módulo C++ focado no algoritmo A*, o qual foi criado em C++ para Python.
+  * Módulo C++ focado no algoritmo A*, o qual foi criado em C++ para ser usado em Python.
     
     * [a_estrela.h](src/sobre_cpp/a_estrela/a_estrela.h)
       * Inicialização de variáveis e structs básicas, como a árvore representante de caminhos.
@@ -58,9 +58,15 @@ Do arquivo / pasta mais profundo até o mais superficial.
 
 * [ambientacao](src/sobre_cpp/ambientacao)
   * Módulo responsável por ferramentas de localização e de visualização de mundo.
+    * [Singular.h](src/sobre_cpp/ambientacao/Singular.h)
+      * Criação e Implementação de Classe Abstrata que permitirá instâncias únicas de qualquer classe.
+      * Um show de genialidade.
   
     * [Geometria.h](src/sobre_cpp/ambientacao/Geometria.h)
       * Criação e Implementação de Classes Vetoriais de 2 Dimensões e de 3 Dimensões.
  
+    * [Matriz.h](src/sobre_cpp/ambientacao/Matriz.h)
+      * Criação e Implementação de Classe Matricial 4x4 que representará diversas transformações.
+      * Matemática mais profunda e divertida.
 
 

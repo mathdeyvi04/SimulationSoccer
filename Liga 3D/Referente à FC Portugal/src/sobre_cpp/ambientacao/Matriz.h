@@ -2,7 +2,6 @@
 #define MATRIZ_H
 
 #include "Geometria.h"
-#include <stdio.h>
 
 // Valores para um espaço tridimensional.
 #define M_LINHAS  4
@@ -12,17 +11,31 @@
 class Matriz {
 	/*
 	Descrição:
-		Não ironicamente apenas uma classe para representarmos 
-		operações matriciais, entretanto, de forma inteligente.
+		Classe responsável por representar matrizes em geral, em especial
+		matrizes 4x4 e providenciar ferramentas necessárias para
+		transformações de translação, rotação e escalamento.
 		
-		Pois usaremos uma matriz de 4 dimensões como um vetor!
-		Apesar dos autores terem construído de tal forma que seja para
-		4x4, vamos construir de forma mais genérica.
+		Apesar de ser uma matriz, usaremos um vetor para representá-la.
+				
+		Este código tratará de uma matemática mais profunda. Para isso:
 		
-		Trata-se de uma matemática mais profunda. Sugiro que verifique
-		o seguinte link para melhor embasamento: 
-	https://www.brainvoyager.com/bv/doc/UsersGuide/CoordsAndTransforms/SpatialTransformationMatrices.html
+		- Sugiro que verifique o seguinte link para melhor embasamento: 
+	    
+		Site explicando sobre essas transformações em matrizes 4x4:
+			https://www.brainvoyager.com/bv/doc/UsersGuide/CoordsAndTransforms/SpatialTransformationMatrices.html
 		
+		- Vídeo no Youtube explicando sobre porque utilizamos 4x4:
+			https://youtu.be/Do_vEjd6gF0
+		
+			Resposta: 
+				Matriz 3x3 conseguem representar perfeitamente transformações 
+				lineares como rotação e escalamento. Entretanto, não conseguem
+				representar transformações não lineares, como TRANSLAÇÃO.
+				Portanto, usamos 4x4 que conseguem ambos.
+		
+	Testes:
+		Foi criado um arquivo .cpp que executou cada uma das aplicações
+		implementas aqui. Caso novas atualizações sejam providenciadas, sugiro o mesmo.
 		
 	Créditos:
 	- @author Nuno Almeida (nuno.alm@ua.pt)
@@ -114,7 +127,7 @@ public:
 		Criará uma matriz, neste caso de 4 dimensões, a partir de um
 		vetor (tx, ty, tz).
 		
-		O que se procederá:
+		O que essa matriz será capaz de fazer:
 		
 		(Matriz)(vx, vy, vz, 1)^T = (vx + tx, vy + ty, vz + tz, 1)^T
 		*/
@@ -151,6 +164,23 @@ public:
 		}
 	}
 	
+	
+	// Outra forma de matriz de translação
+	static Matriz obter_matriz_de_translacao(
+		float tx,
+		float ty,
+		float tz
+	) {
+
+		const float temp[M_TAMANHO] = {
+								        1, 0, 0, tx,
+								        0, 1, 0, ty,
+								        0, 0, 1, tz,
+								        0, 0, 0,  1
+								   	  };
+								   	  
+		return Matriz(temp);
+	}
 	
     ~Matriz() {}
 	
@@ -615,8 +645,16 @@ public:
 	}
 	
 	
-	Matriz matriz_de_rotacao_x(
-		float ang_deg
+	/*
+	Por que escrevemos três matrizes e não apenas uma?
+		A multiplicação dessas matrizes 
+		NÃO SÃO COMUTATIVAS!
+		
+		Por exemplo, fazer uma rotação de X e em seguida em Y, não resultará
+		na mesma coisa que fazer primeiro em Y e dps em X.
+	*/
+	static Matriz matriz_de_rotacao_x(
+		float angle
 	){
 		/*
 		Providencia a matriz que representa a rotação do eixo x
@@ -632,24 +670,57 @@ public:
 		return Matriz(temp);
 	}
 	
-	Matriz matriz_de_rotacao_y(
-		float ang_deg
+	
+	static Matriz matriz_de_rotacao_y(
+		float angle
 	){
 		const float temp[M_TAMANHO] = {
-			1,              0,                0,      0,
-        	0, cos_deg(angle), - sin_deg(angle),      0,
-        	0, sin_deg(angle),   cos_deg(angle),      0,
-        	0,              0,                0,      1
-		};
+        cos_deg(angle),     0,   sin_deg(angle),      0,
+        			 0,     1,                0,      0,
+      - sin_deg(angle),     0,   cos_deg(angle),      0,
+                     0,     0,  	          0,      1
+    	};
 		
 		return Matriz(temp);
 	}
 
 
+	static Matriz matriz_de_rotacao_z(
+		float angle
+	){
+		const float temp[M_TAMANHO] = {
+        cos_deg(angle), - sin_deg(angle),     0,      0,
+        sin_deg(angle),   cos_deg(angle),     0,      0,
+                     0,                0,     1,      0,
+                     0,                0,     0,      1
+    	};
+		
+		return Matriz(temp);
+	}
+	
+	
+	static Matriz matriz_de_rotacao_em_torno_de_eixo(
+		Vetor3D eixo_representado_como_vetor_unitario,
+		float angle
+	){
+		/*
+		Obter matriz de rotação em torno de um eixo específico.
+		Este vetor TEM QUE SER UNITÁRIO.
+		*/
+		
+		float x = eixo_representado_como_vetor_unitario.x;
+		float y = eixo_representado_como_vetor_unitario.y;
+		float z = eixo_representado_como_vetor_unitario.z;
+		
+		const float temp[M_TAMANHO] = {
+	(x * x * (1 - cos_deg(angle)) +     cos_deg(angle)), (x * y * (1 - cos_deg(angle)) - z * sin_deg(angle)), (x * z * (1 - cos_deg(angle)) + y * sin_deg(angle)), 0,
+	(x * y * (1 - cos_deg(angle)) + z * sin_deg(angle)), (y * y * (1 - cos_deg(angle)) +     cos_deg(angle)), (y * z * (1 - cos_deg(angle)) - x * sin_deg(angle)), 0,
+	(x * z * (1 - cos_deg(angle)) - y * sin_deg(angle)), (y * z * (1 - cos_deg(angle)) + x * sin_deg(angle)), (z * z * (1 - cos_deg(angle)) +     cos_deg(angle)), 0,
+													  0,                                                   0,                                                   0, 1
+	    };
+	    
+	    return Matriz(temp);
+	}
 
-
-
-
-
-
+}
 #endif // Matriz_h

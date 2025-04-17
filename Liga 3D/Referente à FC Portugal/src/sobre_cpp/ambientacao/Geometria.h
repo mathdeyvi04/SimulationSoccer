@@ -19,6 +19,7 @@ Testes já foram realizados.
 #include <cmath>
 #include <math.h>
 #include <algorithm>
+#include <stdio.h>
 
 using namespace std;
 
@@ -93,11 +94,9 @@ public:
 		float valor_y
 	) : x(valor_x), y(valor_y) {}
 	
-//    // Não é tão necessário, mas se desejar realizar testes.
-//	friend ostream& operator<<(ostream& os, const Vetor2D& vetor){
-//		os << "(" << vetor.x << ", " << vetor.y << ")";
-//		return os;
-//	}
+	static void verificar(const Vetor2D& vetor){
+		printf("(%f, %f)", vetor.x, vetor.y);
+	}
 	
 	////////////////////////////////////////////////////////////////////////
 	/// Operadores de Aritmética
@@ -310,10 +309,9 @@ public:
 		
 	~Vetor3D() {} // Apenas o destrutor.
 	
-//	friend ostream& operator<<(ostream& os, const Vetor3D& vetor){
-//		os << "(" << vetor.x << ", " << vetor.y << ", " << vetor.z << ")";
-//		return os;
-//	}
+	static void verificar(const Vetor3D& vetor){
+		printf("(%f, %f, %f)", vetor.x, vetor.y, vetor.z);
+	}
 	
 	///////////////////////////////////////////////////////////////////////
 	/// Outros Métodos de Definição
@@ -399,9 +397,9 @@ public:
 	}
 	Vetor3D operator*( float escalar ) const {
 		return Vetor3D(
-						x - escalar,
-						y - escalar,
-						z - escalar
+						x * escalar,
+						y * escalar,
+						z * escalar
 					  );
 	}
 	
