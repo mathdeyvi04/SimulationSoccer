@@ -68,12 +68,12 @@ public:
 	/// Métodos de Cálculo Específico
 	//////////////////////////////////////////////////////////////////////
 	
-	Vetor3D ponto_na_linha_mais_perto_cart(
-		Vetor3D& ponto_qualquer_cart
+	Vetor3D ponto_na_reta_mais_perto_cart(
+		const Vetor3D& ponto_qualquer_cart
 	){
 		/*
-		A partir de um ponto qualquer, achará o ponto em (*this) linha
-		que está mais perto deste dado.
+		A partir de um ponto qualquer, achará o ponto na RETA INFINITA
+		definida pela linha, this.
 		
 		Álgebra Linear pura:
 			
@@ -96,6 +96,110 @@ public:
 		return inicio_c + (final_c - inicio_c) * param;
 	}
 
+	/*
+	No código original, esta função e outra posterior são utilizadas.
+	Entretanto, observe que ela força que a entrada da função anterior seja
+	um valor de cópia, não seja um valor de referência.
+	
+	Tal fato configura erro, por isso achou-se melhor não fazê-lo.
+	
+	Vetor3D ponto_na_linha_mais_perto_esf(
+		Vetor3D& ponto_qualquer_esf
+	){
+		
+		// Note que estamos recebendo em esf e retornaremos em cartesiana!!!
+		
+		return ponto_na_linha_mais_perto_cart(ponto_qualquer_esf.para_cartesiano());
+	}
+	*/
+	
+	float distancia_ate_ponto_cart(
+		const Vetor3D& ponto_qualquer_cart
+	){
+		/*
+		Distância de um ponto a uma linha. 
+		
+		Suponha B - A o segmento de linha pertencente à linha e 
+		Q o ponto qualquer.
+		
+		Note que:
+		
+		2 * Area = |(Q - inicio_c) X (Q - final_c)| = Base Altura
+		
+		Altura = |(Q - inicio_c) X (Q - final_c)| / |final_c - inicio_c|
+		*/
+		
+		return ((ponto_qualquer_cart - inicio_c).CrossProduct(ponto_qualquer_cart - final_c)).modulo() / comprimento;
+	}
+
+	/*
+	float distancia_ate_ponto_esf(
+		const Vetor3D ponto_qualquer_esf
+	){
+		return distancia_ate_ponto_cart(ponto_qualquer_esf.para_cartesiano());
+	}
+	*/
+	
+	
+	float distancia_ate_linha(
+		const Linha& linha
+	)  {
+		/*
+		Suponha duas retas definidas pelas linhas, (*this) e a dada.
+		De tal forma que:
+		
+		P = A + t(B - A)       		Q = N + r(M - N)
+		
+		São pontos quaisquer respectivamente nas mesmas. Se desejamos a
+		distância entre essas linhas, devemos buscar P - Q de tal forma
+		que essa linha seja perpendendicar à B - A e à M - N simutalneamente.
+		
+		< P - Q, B - A > = 0
+		< P - Q, M - N > = 0
+		
+		Em seguida, abrir:
+		
+		t< B - A, B - A > - r< M - N, B - A > = < N - A, B - A >
+		t< B - A, M - N > - r< M - N, M - N > = < N - A, M - N >
+		
+		Observe que temos um sistema linear. Há três opções.
+		
+		i) Não há solução.
+			
+			Como estamos dimensões no máximo tridimensionais, sempre haverá
+			pelo menos uma solução.
+		
+		ii) Infinitas soluções.
+			
+			Caso em que as retas estão paralelas. Há infinitos pontos que
+			satisfazem a perpendicularidade.
+			
+			Basta que o determinante da matriz dos coeficientes seja zero.
+			
+			Então basta escolher um ponto da linha dada como fixo, N por exemplo,
+			e obtermos a distância à esse ponto. Neste caso, a solução é trivial.
+		
+		iii) Uma única solução.
+		
+			Para facilitar, podemos denotar os coeficientes como parâmetros e
+			assim resolver o sistema 2x2.
+		*/
+
+		if(
+			// Verificar se são paralelas ou pelo menos QUASE paralelas
+			fabs(
+				(linha.final_c - linha.inicio_c).InnerProduct((*this).final_c - (*this).inicio_c)
+			) - ((*this).comprimento * linha.comprimento) < 1e-4			
+		){
+			
+			Vetor3D elemento_inicial = linha.inicio_c;
+			return distancia_ate_ponto_cart(elemento_inicial);
+		}
+		
+		return 1;
+		
+	}
+	
 	
 	
 };

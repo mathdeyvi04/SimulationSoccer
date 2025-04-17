@@ -5,7 +5,7 @@ de outra equipe configura inválidez, dado o mau-caráter, além de roubo de pro
 intelectual da mesma.
 
 Portanto, afirma-se que o que será tratado neste local se trata apenas de um estudo
-dirigido, focado no conhecimento disponibilizado publicamente pela equipe e explicado, aprimorado e compreendido pelo mesmo que vós escreve.
+dirigido, focado no conhecimento disponibilizado publicamente pela equipe e explicado, aprimorado e compreendido pelo mesmo que vos escreve.
 
 # Visão Geral do Código
 
