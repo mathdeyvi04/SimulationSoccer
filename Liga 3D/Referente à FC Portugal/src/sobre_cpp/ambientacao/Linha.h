@@ -157,7 +157,7 @@ public:
 		< P - Q, B - A > = 0
 		< P - Q, M - N > = 0
 		
-		Em seguida, abrir:
+		Em seguida, manipular algebricamente:
 		
 		t< B - A, B - A > - r< M - N, B - A > = < N - A, B - A >
 		t< B - A, M - N > - r< M - N, M - N > = < N - A, M - N >
@@ -185,20 +185,45 @@ public:
 			assim resolver o sistema 2x2.
 		*/
 
+		float prod_esc_entre_vet_diretores = (linha.final_c - linha.inicio_c).InnerProduct((*this).final_c - (*this).inicio_c);
+		
+		float Det = prod_esc_entre_vet_diretores * prod_esc_entre_vet_diretores - (*this).comprimento * (*this).comprimento * linha.comprimento * linha.comprimento; 
+		
 		if(
-			// Verificar se são paralelas ou pelo menos QUASE paralelas
-			fabs(
-				(linha.final_c - linha.inicio_c).InnerProduct((*this).final_c - (*this).inicio_c)
-			) - ((*this).comprimento * linha.comprimento) < 1e-4			
+			// Caso sejam paralelas ou pelo menos quase paralelas.
+			fabs(Det) < 1e-3
 		){
-			
-			Vetor3D elemento_inicial = linha.inicio_c;
-			return distancia_ate_ponto_cart(elemento_inicial);
+
+			return (*this).distancia_ate_ponto_cart(linha.inicio_c);
 		}
 		
-		return 1;
+		/*
+		Produto escalar entre posição relativa do segmento, N - A, e
+		vetor diretor da nossa linha, B - A.
+		*/
+		float g_this = (linha.inicio_c - (*this).inicio_c).InnerProduct((*this).final_c - (*this).inicio_c);
+		/*
+		Produto escalar entre posição relativa do segmento, N - A, e
+		vetor diretor da linha dada, M - N.
+		*/
+		float g_other = (linha.inicio_c - (*this).inicio_c).InnerProduct(linha.final_c - linha.inicio_c);
+	
+		// Respectivos Parâmetros:
+		float param_t = (
+			g_other * prod_esc_entre_vet_diretores - g_this * linha.comprimento * linha.comprimento
+		) / Det;
 		
-	}
+		float param_r = (
+			param_t * (*this).comprimento * (*this).comprimento - g_this
+		) / prod_esc_entre_vet_diretores;
+		
+		// Respectivos pontos de distância mínima.
+		Vetor3D P = inicio_c + (final_c - inicio_c) * param_t;
+		Vetor3D Q = linha.inicio_c + (linha.final_c - linha.inicio_c) * param_r;
+		
+		return P.obter_distancia(Q);
+	}	
+	
 	
 	
 	
