@@ -68,5 +68,9 @@ Do arquivo / pasta mais profundo, implementado mais cedo, até o mais superficial
     * [Matriz.h](src/sobre_cpp/ambientacao/Matriz.h)
       * Criação e Implementação de Classe Matricial 4x4 que representará diversas transformações.
       * Matemática mais profunda e divertida.
+    
+    * [Linha.h](src/sobre_cpp/ambientacao/Linha.h)
+      * Criação e Implementação de Classe de Linha, representando retas e segmentos de reta.
+      * Um show de Álgebra Linear, bem complexo matematicamente.
 
 

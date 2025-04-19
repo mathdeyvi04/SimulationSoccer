@@ -68,6 +68,11 @@ public:
 	/// Métodos de Cálculo Específico
 	//////////////////////////////////////////////////////////////////////
 	
+	/*
+	Atenção, existem funções que recebem parâmetros em esféricas e 
+	retornam pontos em cartesianas.
+	*/
+	
 	Vetor3D ponto_na_reta_mais_perto_cart(
 		const Vetor3D& ponto_qualquer_cart
 	){
@@ -95,23 +100,15 @@ public:
 		
 		return inicio_c + (final_c - inicio_c) * param;
 	}
-
-	/*
-	No código original, esta função e outra posterior são utilizadas.
-	Entretanto, observe que ela força que a entrada da função anterior seja
-	um valor de cópia, não seja um valor de referência.
-	
-	Tal fato configura erro, por isso achou-se melhor não fazê-lo.
-	
-	Vetor3D ponto_na_linha_mais_perto_esf(
+	Vetor3D ponto_na_reta_mais_perto_esf(
 		Vetor3D& ponto_qualquer_esf
 	){
 		
 		// Note que estamos recebendo em esf e retornaremos em cartesiana!!!
 		
-		return ponto_na_linha_mais_perto_cart(ponto_qualquer_esf.para_cartesiano());
+		return ponto_na_reta_mais_perto_cart(ponto_qualquer_esf.para_cartesiano());
 	}
-	*/
+	
 	
 	float distancia_ate_ponto_cart(
 		const Vetor3D& ponto_qualquer_cart
@@ -131,14 +128,11 @@ public:
 		
 		return ((ponto_qualquer_cart - inicio_c).CrossProduct(ponto_qualquer_cart - final_c)).modulo() / comprimento;
 	}
-
-	/*
 	float distancia_ate_ponto_esf(
 		const Vetor3D ponto_qualquer_esf
 	){
 		return distancia_ate_ponto_cart(ponto_qualquer_esf.para_cartesiano());
 	}
-	*/
 	
 	
 	float distancia_ate_linha(
@@ -191,7 +185,7 @@ public:
 		
 		if(
 			// Caso sejam paralelas ou pelo menos quase paralelas.
-			fabs(Det) < 1e-3
+			fabs(Det) < 1e-5
 		){
 
 			return (*this).distancia_ate_ponto_cart(linha.inicio_c);
@@ -213,7 +207,7 @@ public:
 			g_other * prod_esc_entre_vet_diretores - g_this * linha.comprimento * linha.comprimento
 		) / Det;
 		
-		float param_r = (
+		float param_r = (fabs(prod_esc_entre_vet_diretores) < 1e-5) ? - g_other / (linha.comprimento * linha.comprimento) : (
 			param_t * (*this).comprimento * (*this).comprimento - g_this
 		) / prod_esc_entre_vet_diretores;
 		
@@ -225,18 +219,257 @@ public:
 	}	
 	
 	
+	//////////////////////////////////////////////////////////////////
 	
+	
+	Vetor3D segment_ponto_na_reta_mais_perto_cart(
+		const Vetor3D& ponto_qualquer_cart
+	){
+		/*
+		Basicamente, mesma função que a anterior, entretanto, agora limitamos
+		os pontos possíveis para o segmento de reta definido por inicio_c e 
+		final_c.
+		*/
+		
+		float param = (ponto_qualquer_cart - inicio_c).InnerProduct(final_c - inicio_c) / (comprimento * comprimento);	
+		
+		// Ambas condições nunca serão verdadeiras ao mesmo tempo.
+		param += (param < 0) * ( - param ) + (param > 1) * (1 - param); // Simplesmente goat
+		
+		return inicio_c + (final_c - inicio_c) * param;
+	}
+	Vetor3D segment_ponto_na_reta_mais_perto_esf(
+		const Vetor3D& ponto_qualquer_esf
+	){
+		
+		return segment_ponto_na_reta_mais_perto_cart(ponto_qualquer_esf.para_cartesiano());
+	}
+	
+	
+	float segment_distancia_ate_ponto_cart(
+		const Vetor3D& ponto_qualquer_cart
+	){
+		/*
+		Mesma função que a nome semelhante, entretanto, não pensaremos mais
+		na reta infinita, e sim no segmento de reta.
+		
+		Imagine um ponto qualquer Q e um SEGMENTO DE RETA definido por B - A.
+		
+				  .B
+		Q.       /
+		       /
+			A.
+		
+		Caso Q esteja para "trás" de A, a distância |Q - A| representa a distância
+		mínima de Q ao segmento.
+		
+		Caso Q esteja para "frente" de B, a distância |Q - B| representa a distância
+		mínima de Q ao segmento.
+		
+		Caso Q esteja na região entre A e B, teremos o triângulo.
+		*/
+		
+		if(	
+			(ponto_qualquer_cart - (*this).inicio_c).InnerProduct((*this).final_c - (*this).inicio_c) <= 0
+		){
+			
+			return (*this).inicio_c.obter_distancia(ponto_qualquer_cart);
+		}
+		
+		if(
+			(ponto_qualquer_cart - (*this).final_c).InnerProduct((*this).final_c - (*this).inicio_c) >= 0
+		){
+			
+			return (*this).final_c.obter_distancia(ponto_qualquer_cart);
+		}
+		
+		return ((ponto_qualquer_cart - inicio_c).CrossProduct(ponto_qualquer_cart - final_c)).modulo() / comprimento;
+	}
+	float segment_distancia_ate_ponto_esf(
+		const Vetor3D& ponto_qualquer_esf
+	){
+		return segment_distancia_ate_ponto_cart(ponto_qualquer_esf.para_cartesiano());
+	}
+		
+	
+	float segment_distancia_ate_segment(
+		const Linha& linha
+	){
+		/*
+		Obter distância entre dois segmentos de reta definidos respectivamente
+		por B - A e M - N.
+		
+		Analisando o algoritmo da função imediatamente anterior e a ideia do
+		que esta função se propõe, podemos reutilizar o algoritmo das retas 
+		infinitas e verificar os valores dos parâmetros.
+		
+		Caso Não Sejam Parelalos:
+		
+		Trivialmente reutilizaremos o algoritmo da função semelhante
+		e analisaremos se os parâmetros são menores que 0 ou maiores
+		que 1.
+		
+		Caso sejam paralelos:
+		
+		M.
+		
+		
+		
+		N.
+		
+				.B
+				
+				.A
+		
+		Observe que se dependendo se M - N está "à frente" ou "à trás"
+		temos configurações diferentes de distâncias.
+		
+		Caso B não esteja esteja para trás de N e A não esteja para 
+		frente de M, teremos:
+		
+		M.
+			.B
+		
+			.A
+		N.
+		
+		Neste caso, teremos um trapézio.
+		
+		*/
+		
+		float prod_esc_entre_vet_diretores = (linha.final_c - linha.inicio_c).InnerProduct((*this).final_c - (*this).inicio_c);
+		
+		float Det = prod_esc_entre_vet_diretores * prod_esc_entre_vet_diretores - (*this).comprimento * (*this).comprimento * linha.comprimento * linha.comprimento; 
+		
+		if(
+			// Caso sejam paralelas ou pelo menos quase paralelas.
+			fabs(Det) < 1e-3
+		){
+			
+			if(
+				/*
+				Se B estiver para trás de N, a distância será |B - N|.
+				*/
+				((*this).final_c - linha.inicio_c).InnerProduct(linha.final_c - linha.inicio_c) <= 0
+			){
+				
+				return (*this).final_c.obter_distancia(linha.inicio_c);
+			}
+			
+			if(
+				/*
+				Se A estiver para frente de M, a distância será |A - M|.
+				*/
+				((*this).inicio_c - linha.final_c).InnerProduct(linha.final_c - linha.inicio_c) >= 1
+			){
+				
+				return (*this).inicio_c.obter_distancia(linha.final_c);
+			}
+			
+			/*
+			Obter altura a partir da área do trapézio formado pelas linhas.
+			*/
+			
+			float semi_triang_1 = (linha.inicio_c - (*this).inicio_c).CrossProduct((*this).final_c - (*this).inicio_c).modulo();
+			float semi_triang_2 = (linha.inicio_c -    linha.final_c).CrossProduct((*this).final_c -   linha.inicio_c).modulo();
+			
+			return (semi_triang_1 + semi_triang_2) / (linha.comprimento + (*this).comprimento);
+		}
+		
+		/*
+		Produto escalar entre posição relativa do segmento, N - A, e
+		vetor diretor da nossa linha, B - A.
+		*/
+		float g_this = (linha.inicio_c - (*this).inicio_c).InnerProduct((*this).final_c - (*this).inicio_c);
+		/*
+		Produto escalar entre posição relativa do segmento, N - A, e
+		vetor diretor da linha dada, M - N.
+		*/
+		float g_other = (linha.inicio_c - (*this).inicio_c).InnerProduct(linha.final_c - linha.inicio_c);
+	
+		// Respectivos Parâmetros:
+		float param_t = (
+			g_other * prod_esc_entre_vet_diretores - g_this * linha.comprimento * linha.comprimento
+		) / Det;
+		
+		float param_r = (fabs(prod_esc_entre_vet_diretores) < 1e-5) ? - g_other / (linha.comprimento * linha.comprimento) : (
+			param_t * (*this).comprimento * (*this).comprimento - g_this
+		) / prod_esc_entre_vet_diretores;
+		
+		// Correção para Segmentos de Reta.
+		param_t += (param_t < 0) * (- param_t) + (param_t > 1) * (1 - param_t);
+		
+		param_r += (param_r < 0) * (- param_r) + (param_r > 1) * (1 - param_r);
+		
+		// Respectivos pontos de distância mínima.
+		Vetor3D P = inicio_c + (final_c - inicio_c) * param_t;
+		Vetor3D Q = linha.inicio_c + (linha.final_c - linha.inicio_c) * param_r;
+		
+		return P.obter_distancia(Q);
+	}
+	
+	//////////////////////////////////////////////////////////////////////
+	/// Operador de Acesso
+	//////////////////////////////////////////////////////////////////////
+	
+	
+	Vetor3D obter_ponto_medio_cart() const {
+		return (inicio_c + final_c) / 2;
+	}
+	Vetor3D obter_ponto_medio_esf() const {
+		return (*this).obter_ponto_medio().para_esferica();
+	}
+	
+	const Vetor3D& obter_ponto_cart(const int index) const {
+		/*
+		O const no inicio e no final garantem que:
+		
+		O objeto Linha não seja modificado e os membros retornados
+		não sejam modificados.
+		*/
+		
+		if(
+			index == 0
+		){
+			
+			return inicio_c;
+		}
+		
+		return final_c
+	}
+	
+	const Vetor3D& obter_ponto_esf(const int index) const {
+		if(
+			index == 0
+		){
+			
+			return inicio_p;
+		}
+		
+		return final_p;
+	}
+	
+	Vetor3D obter_diretor_cart() const {
+		return final_c - inicio_c;
+	}
+	
+	Vetor3D obter_diretor_esf() const {
+		return final_p - inicio_p;
+	}
+	
+	//////////////////////////////////////////////////////////////////////
+	/// Operador de Condições
+	//////////////////////////////////////////////////////////////////////
+	
+	bool operator==(const Linha& outra_linha) const {
+		/*
+		O sistema nos fornecerá em esféricas. Acredito que seja melhor assim
+		para evitarmos erros de conta devido à operações, oq poderia tornar 
+		valores um pouco diferentes.
+		*/
+		return (inicio_p == outra_linha.inicio_p) && (final_p == outra_linha.final_p);
+	}
 	
 };
-
-
-
-
-
-
-
-
-
-
 
 #endif // LINHA_H
