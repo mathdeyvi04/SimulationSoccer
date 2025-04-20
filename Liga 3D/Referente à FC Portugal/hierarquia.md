@@ -57,7 +57,7 @@ Do arquivo / pasta mais profundo, implementado mais cedo, até o mais superficial
       * Código responsável por prover ferramentos de conexão do ambiente Python com funções C++.
 
 * [ambientacao](src/sobre_cpp/ambientacao)
-  * Módulo responsável por ferramentas de localização e de visualização de mundo.
+  * Módulo C++ responsável por ferramentas de localização e de visualização de mundo.
     * [Singular.h](src/sobre_cpp/ambientacao/Singular.h)
       * Criação e Implementação de Classe Abstrata que permitirá instâncias únicas de qualquer classe.
       * Um show de genialidade.
@@ -72,5 +72,10 @@ Do arquivo / pasta mais profundo, implementado mais cedo, até o mais superficial
     * [Linha.h](src/sobre_cpp/ambientacao/Linha.h)
       * Criação e Implementação de Classe de Linha, representando retas e segmentos de reta.
       * Um show de Álgebra Linear, bem complexo matematicamente.
-
+    
+    * [RobovizDraw.h](src/sobre_cpp/ambientacao/RobovizDraw.h)
+      * Criação e Implementação de funções esteticamente construídas em C que fornecem 
+      buffers de informações de desenho para o software RoboViz.
+      * Parâmetros alterados aqui influenciam como as coisas serão apresentadas 
+      nos desenhos do RoboViz.
 
