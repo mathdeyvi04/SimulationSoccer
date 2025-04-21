@@ -1,0 +1,15 @@
+#include "RobovizLogger.h"
+
+int main(){
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	return 0;
+}
+

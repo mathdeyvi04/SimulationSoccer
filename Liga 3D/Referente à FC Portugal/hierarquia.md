@@ -78,4 +78,7 @@ Do arquivo / pasta mais profundo, implementado mais cedo, até o mais superficial
       buffers de informações de desenho para o software RoboViz.
       * Parâmetros alterados aqui influenciam como as coisas serão apresentadas 
       nos desenhos do RoboViz.
-
+  
+    * [RobovizLogger.h]
+      * Header C++ extremamente mais complexo e focado em comunicação via protocolos.
+      * Discussão sobre destrutores comuns e virtuais.
