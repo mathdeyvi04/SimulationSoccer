@@ -29,12 +29,10 @@ Objetivo do Código:
 
 using namespace std;
 
-// Vá até a função escrever_float_no_buffer para compreender melhor
-#define QUANT_DE_CARACT_PARA_BUFFER_TEMPORARIO 7
-#define QUANT_DE_CARACT_PARA_PRECISAO_NO_FLOAT 6
-#define QUANT_DE_CARACT_PARA_PRECISAO_NO_FLOAT_ "%6f"
+#define QUANT_DE_CARAC_PARA_PRECISAO_DE_FLOATS 6
+#define FORMAT_PARA_SPRINTF "%6f"
 
-////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
 /// Funções Inline
 ////////////////////////////////////////////////////////////////////////////
 
@@ -73,14 +71,16 @@ escrever_float_no_buffer(
 	/*
 	Escrevemos o float que pode ser absolutamente qualquer coisa
 	em um buffer temporário.
-	Fazê-lo grande permite que abrangemos mais floats possíveis.
+	
+	** Tentei usar um buffer temporário maior, mas o maldito warning de 
+	overflow estava acabando comigo.
 	
 	Essa função faz o trabalho de formatação e de limitação do float.
 	*/
-	char temp[QUANT_DE_CARACT_PARA_BUFFER_TEMPORARIO];
+	char temp[16];
 	sprintf(
 		temp,
-		QUANT_DE_CARACT_PARA_PRECISAO_NO_FLOAT_,
+		FORMAT_PARA_SPRINTF,
 		valor
 	);
 	
@@ -90,10 +90,10 @@ escrever_float_no_buffer(
 	memcpy(
 		buffer, 
 		temp,
-		QUANT_DE_CARACT_PARA_PRECISAO_NO_FLOAT
+		QUANT_DE_CARAC_PARA_PRECISAO_DE_FLOATS 
 	);
 	
-	return QUANT_DE_CARACT_PARA_PRECISAO_NO_FLOAT;
+	return QUANT_DE_CARAC_PARA_PRECISAO_DE_FLOATS;
 }
 
 
@@ -187,7 +187,7 @@ diferentes e precisa armazená-las de forma inteligente.
 */
 
 unsigned char* 
-criar_novo_buffer(
+criar_buffer(
 	const string *string_buffer,
 	int          *tamanho_do_buffer
 ){
@@ -438,8 +438,8 @@ criar_anotacao(
 unsigned char*
 criar_anotacao_de_agente(
 	const string *texto,
-	 	   bool   left_team         // inglês é bem melhor
-	 	    int   numero_do_agente
+	 	   bool   left_team,         // inglês é bem melhor
+	 	    int   numero_do_agente,
 	const float  *cor,
 	        int  *tamanho_do_buffer
 ){
@@ -479,4 +479,3 @@ criar_anotacao_de_agente(
 }
 
 #endif //ROBOVIZDRAW_H
-

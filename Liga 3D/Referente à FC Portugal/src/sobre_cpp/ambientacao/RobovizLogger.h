@@ -1,20 +1,20 @@
 /*
-Manteremos os crÈditos por respeito.
+Manteremos os cr√©ditos por respeito.
 
  * Created on: 2013/06/24
  * Author: Rui Ferreira
  
 //////////////////////////////////////////////////////////////////////////
  
-AlteraÁıes foram feitas para aprimorar algoritmos e aumentar legibilidade.
+Altera√ß√µes foram feitas para aprimorar algoritmos e aumentar legibilidade.
 
-POSSÕVEL ERRO QUE VOC  OBTER:
+POSS√çVEL ERRO QUE VOC√ä OBTER:
 
-Bibliotecas usadas aqui est„o unicamente disponÌveis em sistemas UNIX.
-logo, se vocÍ estiver baixado o GNU GCC Compiler MinGW para windows,
-pode ter problema, j· que n„o vai encontrar as respectivas bibliotecas.
+Bibliotecas usadas aqui est√£o unicamente dispon√≠veis em sistemas UNIX.
+logo, se voc√™ estiver baixado o GNU GCC Compiler MinGW para windows,
+pode ter problema, j√° que n√£o vai encontrar as respectivas bibliotecas.
 
-Observe minha soluÁ„o para o problema:
+Observe minha solu√ß√£o para o problema:
 
 https://github.com/mathdeyvi04/RoboCup_RoboIME/issues/12
 
@@ -23,8 +23,8 @@ https://github.com/mathdeyvi04/RoboCup_RoboIME/issues/12
 #define ROBOVIZLOGGER_H
 
 /*
-As bibliotecas usada no original s„o as padrıes de C.
-Achei melhor aprimor·-las para C++.
+As bibliotecas usada no original s√£o as padr√µes de C.
+Achei melhor aprimor√°-las para C++.
 */
 #include <cstdlib>
 #include <cmath>
@@ -33,8 +33,8 @@ Achei melhor aprimor·-las para C++.
 
 /*///////////////////////////////////////////////////////////////////////////
 
-Bibliotecas a seguir s„o bem mais especÌficas e n„o possuem 
-suas respectivas versıes em C++.
+Bibliotecas a seguir s√£o bem mais espec√≠ficas e n√£o possuem 
+suas respectivas vers√µes em C++.
 
 *///////////////////////////////////////////////////////////////////////////
 
@@ -42,15 +42,15 @@ suas respectivas versıes em C++.
 Interface com Sistema Operacional LINUX, conseguindo lidar com:
 
 - chamadas diretas do sistema operacional;
-- operaÁıes de entrada e de saÌda;
+- opera√ß√µes de entrada e de sa√≠da;
 - controle de processos, sleep por exemplo;
-- acesso a diretÛrios.
+- acesso a diret√≥rios.
 */
 #include <unistd.h>  
 
 /*
-Para tiparmos vari·veis e ponteiros da melhor forma possÌvel.
-S„o struct amplamente desenvolvidas como:
+Para tiparmos vari√°veis e ponteiros da melhor forma poss√≠vel.
+S√£o struct amplamente desenvolvidas como:
 
 - pid_t: Para ID de processos da CPU;
 - size_t: Para dimensionar precisamente objetos;
@@ -60,64 +60,64 @@ S„o struct amplamente desenvolvidas como:
 
 /*//////////////////////////////////////////////////////////////////////////
 
-As bibliotecas a seguir s„o focadas em programaÁ„o de REDES em 
+As bibliotecas a seguir s√£o focadas em programa√ß√£o de REDES em 
 Sistemas UNIX/LINUX.
 
-Juntas elas formam a base para comunicaÁ„o TCP/UDP, permitindo desde simples
-clientes atÈ servidores complexos.
+Juntas elas formam a base para comunica√ß√£o TCP/UDP, permitindo desde simples
+clientes at√© servidores complexos.
 
 *///////////////////////////////////////////////////////////////////////////
 
 /*
-CriaÁ„o e gerenciamento de sockets, os quais s„o canais de comunicaÁ„o
+Cria√ß√£o e gerenciamento de sockets, os quais s√£o canais de comunica√ß√£o
 entre processos locais e/ou remotos.
 
 Focada em suportar protocolos:
 
 - TCP: 
-	Transmisson Control Protocol, comunicaÁ„o ideal para aplicaÁıes que exigem
+	Transmisson Control Protocol, comunica√ß√£o ideal para aplica√ß√µes que exigem
 	confiabilidade acima de velocidade.
 
 - UDP:
-	User Datagram Protocol, comunicaÁ„o ideal para aplicaÁıes
+	User Datagram Protocol, comunica√ß√£o ideal para aplica√ß√µes
 	que exigem velocidade acima de confiabilidade e integridade de dados.
 */
 #include <sys/socket.h>
 
 /*
-Header fundamental para programaÁ„o de redes via protocolo TCP.
-Sendo focado em sistemas UNIX, possui definiÁıes essenciais para 
-criaÁ„o de sockets e manipulaÁ„o de endereÁos de rede.
+Header fundamental para programa√ß√£o de redes via protocolo TCP.
+Sendo focado em sistemas UNIX, possui defini√ß√µes essenciais para 
+cria√ß√£o de sockets e manipula√ß√£o de endere√ßos de rede.
 
-ContÈm MUITAS definiÁıes essenciais para manipulaÁıes de endereÁos IP
+Cont√©m MUITAS defini√ß√µes essenciais para manipula√ß√µes de endere√ßos IP
 e portas, structs poderosas e constantes essenciais.
 
-Acredito que, por quest„o de curiosidade e de brio, vocÍ tambÈm 
+Acredito que, por quest√£o de curiosidade e de brio, voc√™ tamb√©m 
 deva pelo menos passar os olhos neste arquivo de alta complexidade.
 
-Caso esteja em Windows e n„o possa ver:
+Caso esteja em Windows e n√£o possa ver:
 	https://github.com/leostratus/netinet/blob/master/in.h
 
 */
 #include <netinet/in.h>
 
 /*
-Um pouco mais simples que a anterior, focada na convers„o de 
-endereÁos IP entre formatos legÌveis para humanos, como 192.172.0.1,
-e formatos bin·rios utilizados nas funÁıes que envolvem sockets.
+Um pouco mais simples que a anterior, focada na convers√£o de 
+endere√ßos IP entre formatos leg√≠veis para humanos, como 192.172.0.1,
+e formatos bin√°rios utilizados nas fun√ß√µes que envolvem sockets.
 
 
-Caso esteja em Windows e n„o possa ver, experimente:
+Caso esteja em Windows e n√£o possa ver, experimente:
 	https://github.com/openbsd/src/blob/master/include/arpa/inet.h
 */
 #include <arpa/inet.h>
 
 /*
-API de sockets em C, usada para resolver nomes de Host, serviÁos e
-endereÁos de rede, funcionando como uma interface entre nomes simbÛlicos
-e seus endereÁos n˙mericos, como "educa.ime.eb.br" -> "192.120.1.2".
+API de sockets em C, usada para resolver nomes de Host, servi√ßos e
+endere√ßos de rede, funcionando como uma interface entre nomes simb√≥licos
+e seus endere√ßos n√∫mericos, como "educa.ime.eb.br" -> "192.120.1.2".
 
-Caso esteja em Windows e n„o possa ver, experimente:
+Caso esteja em Windows e n√£o possa ver, experimente:
 	https://github.com/openbsd/src/blob/master/include/netdb.h
 */
 #include <netdb.h>
@@ -129,7 +129,7 @@ Caso esteja em Windows e n„o possa ver, experimente:
 
 /*//////////////////////////////////////////////////////////////////////////////
 
-As definiÁıes a seguir s„o bem restritas aos tÈcnicos, mas farei o possÌvel.
+As defini√ß√µes a seguir s√£o bem restritas aos t√©cnicos, mas farei o poss√≠vel.
 
 */////////////////////////////////////////////////////////////////////////////
 
@@ -149,21 +149,21 @@ private:
 	// Construtores
 	RobovizLogger() {}
 	RobovizLogger( const RobovizLogger& ) {}
-	RobovizLogger& operator=( const RobovizLogger& ) {}
+	RobovizLogger& operator=( const RobovizLogger& );
 	
 	// Destrutores
 	/*
-	Qual a diferenÁa entre usarmos:
+	Qual a diferen√ßa entre usarmos:
 	
 	-> ~ RobovizLogger();
 	
 	-> virtual ~ RobovizLogger();
 	
-	Est· no comportamento da destruiÁ„o de objetos em hierarquias de heranÁa.
+	Est√° no comportamento da destrui√ß√£o de objetos em hierarquias de heran√ßa.
 	
-	~classe(); È um destrutor comum, chamado automaticamente quando
-	um objeto da classe È destruÌdo, mas n„o garante a destruiÁ„o correta
-	de objetos derivados se for chamado atravÈs de um ponteiro para a
+	~classe(); √© um destrutor comum, chamado automaticamente quando
+	um objeto da classe √© destru√≠do, mas n√£o garante a destrui√ß√£o correta
+	de objetos derivados se for chamado atrav√©s de um ponteiro para a
 	classe base.
 	
 	Exemplo:
@@ -171,42 +171,40 @@ private:
 		delete ponteiroBase;
 		
 		+------------------+      
-		|   ClasseBase     |       < sÛ essa parte È deletada
+		|   ClasseBase     |       < s√≥ essa parte √© deletada
 		+------------------+
 		
 		+------------------+
-		| ClasseDerivada   |     < essa parte continua na memÛria!
+		| ClasseDerivada   |     < essa parte continua na mem√≥ria!
 		|  (camada extra)  |
 		+------------------+
 	
-	virtual ~classe(); È um destrutor virtual, que garante que,	ao deletar
+	virtual ~classe(); √© um destrutor virtual, que garante que,	ao deletar
 	um objeto derivado por meio de um ponteiro para a 	classe base, o 
 	estrutor do objeto derivado seja chamado corretamente, 	evitando 
-	azamento de memÛria ou destruiÁ„o incompleta.
+	azamento de mem√≥ria ou destrui√ß√£o incompleta.
 	
 	Exemplo:
 	
 		delete ponteiroBase;
 
 		+------------------+
-		| ClasseDerivada   |     ? primeiro essa parte È destruÌda
+		| ClasseDerivada   |     ? primeiro essa parte √© destru√≠da
 		+------------------+
 		
 		+------------------+
 		|   ClasseBase     |     ? depois essa aqui
 		+------------------+
 	*/
-	virtual ~RobovizLogger() {}
+	// virtual ~RobovizLogger(); Vamos precisar defini-la ap√≥s o a constru√ß√£o
+	// de outra fun√ß√£o.
 	
 	// Atributos
 	bool se_ja_esta_inicializada = false;
 	
-	/*
-	Depois que entendermos melhor o cÛdigo, devemos alterar oq s„o esses nomes.
-	*/
-	int socket_number;
-	struct addrinfo *p;
-	struct addrinfo *servinfo;
+	int socket_descriptor;   // ingl√™s √© bem mais bonito
+	struct addrinfo *elemento_do_servidor;
+	struct addrinfo *servidor;
 	
 	
 	// Amizades
@@ -214,49 +212,427 @@ private:
 	
 public:	
 	
-	static RobovizLogger* 
-	obter_instancia(){
+	static RobovizLogger& instanciar(){
 		/*
-		Criar uma inst‚ncia ˙nica da classe.
-		*/	
+		No original usava ponteiros e uma implementa√ß√£o sem a classe Singular.
+		Acredito que se deva √† constru√ß√£o de c√≥digo por diferentes pessoas ou 
+		em momentos diferentes.
+		*/
 		return Singular<RobovizLogger>::obter_instancia();
 	}
 	
+
 	int init(){
-		
+		/*
+		Descri√ß√£o:
+			Fun√ß√£o que inicializa o gerenciador de login.
+
+		Retorno:
+
+			0 -> Inicializa√ß√£o bem sucedida.
+			1 -> Fun√ß√£o addrinfo n√£o foi bem sucedida. Ela indircar√° o pr√≥prio erro.
+			2 -> Sem informa√ß√µes de socket dispon√≠veis.
+		*/
+
 		if(
-		// garantir que haja apenas uma inst‚ncia.
+			/*
+			Para impedir m√∫ltiplas inicializa√ß√µes.
+			*/
 			se_ja_esta_inicializada
 		){
 			return 0;
 		}
+
+		int retorno = 0;
+
+		struct addrinfo criterios_de_busca = {0};  // Apenas zeramos toda a informa√ß√£o.
+
+		/*
+		Permitir√° que o Sistema Operacional escolha automaticamente entre
+		IPv4 e/ou IPv6, isto √©, o dom√≠nio.
+		*/
+		criterios_de_busca.ai_family   =    AF_UNSPEC;
+
+		/*
+		Indica que o socket estar√° no padr√£o UDP, no qual 
+		haver√° prioridade na velocidade e sem garantia de
+		integridade.
+		*/  
+		criterios_de_busca.ai_socktype = SOCK_DGRAM;  // C
+
+		/*
+		Buscamos por resultados a partir desses crit√©rios e 
+		colocamos eles dentro do ponteiro de informa√ß√µes de servidor.
 		
-		struct addrinfo criterios_de_busca;
-		int rv;
-		int numbytes;
-		
-		criterios_de_busca = {0};
-		
-		
-		
-		
-		
+		Para mais informa√ß√µes desta princesa complexa:
+
+			https://pubs.opengroup.org/onlinepubs/009619199/getad.htm
+			(n√£o tem o L no final mesmo.)
+		*/
+		retorno = getaddrinfo(
+			ROBOVIZ_HOST,
+			ROBOVIZ_PORT,
+			&criterios_de_busca,
+			&servidor
+		);
+
+		if(
+			retorno != 0
+		){
+			fprintf(
+				/*
+				Apenas providenciamos melhor depura√ß√£o.
+				*/
+				stderr,
+				"Erro na inicializa√ß√£o do logger, getaddrinfo: %s",
+				gai_strerror(retorno)
+			);
+
+			return 1;
+		}
+
+		/*
+		Caso a fun√ß√£o anterior, getaddrinfo, tenha sido bem sucedida,
+		a localiza√ß√£o de servidor indicar√° uma lista linkada de addrinfo
+		structs.
+
+		Cada uma delas espec√≠fica um endere√ßo de socket e informa√ß√µes de como
+		criar um socket neste endere√ßo.
+
+		O funcionamento da fun√ß√£o garante que haver√° pelo menos um addrinfo struct.
+		*/
+		for(
+
+			elemento_do_servidor = servidor;
+
+			elemento_do_servidor != NULL;
+
+			elemento_do_servidor = (*elemento_do_servidor).ai_next
+
+		){	
+
+			/*
+			Para mais informa√ß√µes:
+				https://pubs.opengroup.org/onlinepubs/009695099/functions/socket.html
+			*/
+			socket_descriptor = socket(
+				(*elemento_do_servidor).ai_family,
+				(*elemento_do_servidor).ai_socktype,
+				(*elemento_do_servidor).ai_protocol
+			);
+
+ 			if(
+ 				/*
+				Caso algum resulte em erro, vamos apenas pul√°-lo e
+				procurar outro.
+ 				*/
+				socket_descriptor == -1
+			){
+
+				perror("socket");
+				continue;
+			}
+
+			/*
+			Vamos parar no primeiro que estiver em condi√ß√µes.
+			*/
+
+			break;
+		}
+
+		if(
+			/*
+			N√£o h√° socket dispon√≠vel.
+			*/
+			elemento_do_servidor == NULL
+		){
+
+			return 2;
+		}
+
+		se_ja_esta_inicializada = true;
+
+		return 0;
+	}
+
+
+	void destroy(){
+		/*
+		Devemos eliminar a mem√≥ria da maneira correta.
+		*/
+		freeaddrinfo(
+			servidor
+		);
+
+		servidor = NULL;
+
+		close(socket_descriptor);
+	}
+
+
+	void enviar_e_deletar(
+		unsigned char *buffer,
+		int tamanho_do_buffer
+	){
+		/*	
+		Descri√ß√£o:
+			Apenas focamos a responsabilidade de enviar e deletar para uma √∫nica fun√ß√£o.
+		*/
+
+
+		/*
+		Para mais informa√ß√µes sobre a fun√ß√£o sendto:
+			https://pubs.opengroup.org/onlinepubs/009695099/functions/sendto.html
+		*/
+		sendto(
+			socket_descriptor,
+			buffer,
+			tamanho_do_buffer,
+			0,
+			(*elemento_do_servidor).ai_addr,
+			(*elemento_do_servidor).ai_addrlen
+		);
+
+		// Depois de enviarmos, n√£o precisamos mais nos preocupar.
+		delete[] buffer;
+	}
+
+
+	void enviar_buffer_limpo(
+		const string *nome_a_ser_setado
+	){
+		/*
+		Descri√ß√£o:
+			Envia o buffer por meio do socket que √© representado
+			por seu socket_descriptor.
+		*/
+
+		int tamanho_do_buffer = 0;
+		unsigned char *buffer = criar_buffer( 
+											  nome_a_ser_setado, 
+											  &tamanho_do_buffer
+											);
+
+		enviar_e_deletar(
+			buffer,
+			tamanho_do_buffer
+		);
+	}
+
+
+	void desenhar_ponto(
+		float x,
+		float y,
+		float z,
+		float tam,
+		float cor_r,
+		float cor_g,
+		float cor_b,
+		const string *nome_a_ser_setado
+	){
+
+		float centro[3] =             {x, y, z};
+		float    cor[3] = {cor_r, cor_g, cor_b};
+
+		int tamanho_do_buffer = 0;
+		unsigned char* buffer = criar_ponto(
+											  centro,
+											  tam,
+											  cor,
+											  nome_a_ser_setado,
+											  &tamanho_do_buffer
+											);
+
+		enviar_e_deletar(
+			buffer,
+			tamanho_do_buffer
+		);
+	}
+
+
+	void desenhar_linha(
+		float x1,
+		float y1,
+		float z1,
+		float x2,
+		float y2,
+		float z2,
+		float grossura,
+		float cor_r,
+		float cor_g,
+		float cor_b,
+		const string *nome_a_ser_setado
+	){
+		float inicio[3] =          {x1, y1, z1};
+		float  final[3] =          {x2, y2, z2};
+		float    cor[3] = {cor_r, cor_g, cor_b};
+
+		int tamanho_do_buffer = 0;
+		unsigned char* buffer = criar_linha(
+											  inicio,
+											  final,
+											  grossura,
+											  cor,
+											  nome_a_ser_setado,
+											  &tamanho_do_buffer
+											);
+
+		enviar_e_deletar(
+			buffer,
+			tamanho_do_buffer
+		);
+	}
+
+
+	void desenhar_circulo(
+		float x,
+		float y,
+		float raio,
+		float grossura,
+		float cor_r,
+		float cor_g,
+		float cor_b,
+		const string *nome_a_ser_setado
+	){
+
+		float centro[2] =                {x, y};
+		float    cor[3] = {cor_r, cor_g, cor_b};
+
+		int tamanho_do_buffer = 0;
+		unsigned char* buffer = criar_circulo(
+											  centro,
+											  raio,
+											  grossura,
+											  cor,
+											  nome_a_ser_setado,
+											  &tamanho_do_buffer
+											);
+
+		enviar_e_deletar(
+			buffer,
+			tamanho_do_buffer
+		);
+	}
+
+
+	void desenhar_esfera(
+		float x,
+		float y,
+		float z,
+		float raio,
+		float cor_r,
+		float cor_g,
+		float cor_b,
+		const string *nome_a_ser_setado
+	){
+
+		float centro[3] =             {x, y, z};
+		float    cor[3] = {cor_r, cor_g, cor_b};
+
+		int tamanho_do_buffer = 0;
+		unsigned char* buffer = criar_esfera(
+											  centro,
+											  raio,
+											  cor,
+											  nome_a_ser_setado,
+											  &tamanho_do_buffer
+											);
+
+		enviar_e_deletar(
+			buffer,
+			tamanho_do_buffer
+		);
+	}
+
+
+	void desenhar_poligono(
+		const float *vertices,
+		int numero_de_vertices,
+		float cor_r,
+		float cor_g,
+		float cor_b,
+		float cor_a,  // transparencia
+		const string *nome_a_ser_setado
+	){
+
+		float cor[4] = {cor_r, cor_g, cor_b, cor_a};
+
+		int tamanho_do_buffer = 0;
+		unsigned char* buffer = criar_poligono(
+											  vertices,
+											  numero_de_vertices,
+											  cor,
+											  nome_a_ser_setado,
+											  &tamanho_do_buffer
+											);
+
+		enviar_e_deletar(
+			buffer,
+			tamanho_do_buffer
+		);
+	}
+
+
+	void desenhar_anotacao(
+		const string *texto,
+		float x, 
+		float y,
+		float z,
+		float cor_r,
+		float cor_g,
+		float cor_b,
+		const string *nome_a_ser_setado
+	){
+
+		float cor[3] = {cor_r, cor_g, cor_b};
+		float pos[3] =             {x, y, z};
+
+		int tamanho_do_buffer = 0;
+		unsigned char *buffer = criar_anotacao(
+												texto,
+												pos,
+												cor,
+												nome_a_ser_setado,
+												&tamanho_do_buffer
+											  );
+
+		enviar_e_deletar(
+			buffer,
+			tamanho_do_buffer
+		);
+	}
+
+
+	void desenhar_anotacao_de_agente(
+		const string *texto,
+		bool left_team,
+		int numero_de_agente,
+		float cor_r,
+		float cor_g,
+		float cor_b
+	){
+
+		float cor[3] = {cor_r, cor_g, cor_b};
+
+		int tamanho_do_buffer = 0;
+		unsigned char *buffer = criar_anotacao_de_agente(
+														  texto,
+														  left_team,
+														  numero_de_agente,
+														  cor,
+														  &tamanho_do_buffer
+														);
+
+		enviar_e_deletar(
+			buffer,
+			tamanho_do_buffer
+		);
 	}
 	
-	
-	
+private:
+	// Finalmente.
+	virtual ~RobovizLogger(){ destroy(); }
 	
 };
-
-
-
-
-
-
-
-
-
-
-
 
 #endif // ROBOVIZLOGGER_H
