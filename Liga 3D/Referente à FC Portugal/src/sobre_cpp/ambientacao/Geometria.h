@@ -321,28 +321,32 @@ public:
 	float obter_y() const { return y; }
 	float obter_z() const { return z; }
 	
-	float setar_x( float v_x ) { x = v_x; }
-	float setar_y( float v_y ) { y = v_y; }
-	float setar_z( float v_z ) { z = v_z; }
+	void setar_x( float v_x ) { x = v_x; }
+	void setar_y( float v_y ) { y = v_y; }
+	void setar_z( float v_z ) { z = v_z; }
 	
 	float operator[]( const int index ) const {
 		/*
 		Acessar elementos do vetor a partir de indexs de um array.
 		*/
+		float valor = 0;
 		switch ( index ){
 			case 0:
-				return x;
-			
+				valor = x;
+				break;
 			case 1:
-				return y;
-			
+				valor = y;
+				break;
 			case 2:
-				return z;
-				
+				valor = z;
+				break;
+
 			default:
 				/*Houve um erro obviamente.*/
-				return 999999;
+				break;
 		}
+
+		return valor;
 	}
 	
 	///////////////////////////////////////////////////////////////////////
@@ -515,8 +519,8 @@ public:
 		/*
 		Receberemos um vetor em coordenadas esfericas, o qual:
 			x -> distancia
-			y -> theta, em graus.
-			z -> phi, em graus.
+			y -> theta, em graus, ângulo horizontal segundo original.
+			z -> phi, em graus,   ângulo vertical   segundo original.
 		Para transformá-lo em cartesianas.
 		*/
 		return Vetor3D(

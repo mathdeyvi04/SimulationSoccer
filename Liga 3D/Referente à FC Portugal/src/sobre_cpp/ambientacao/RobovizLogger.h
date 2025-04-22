@@ -142,6 +142,11 @@ As definições a seguir são bem restritas aos técnicos, mas farei o possível
 //////////////////////////////////////////////////////////////////////////////
 
 class RobovizLogger {
+	/*
+	Classe responsável por gerenciar logins de entrada no RoboViz
+	e ser a interface intermediária que possibilitará o uso de desenhos
+	no mesmo.
+	*/
 	
 private:
 	// Desejamos impedir o uso indiscriminado.

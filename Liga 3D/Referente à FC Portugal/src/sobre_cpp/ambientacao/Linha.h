@@ -417,7 +417,7 @@ public:
 		return (inicio_c + final_c) / 2;
 	}
 	Vetor3D obter_ponto_medio_esf() const {
-		return (*this).obter_ponto_medio().para_esferica();
+		return (*this).obter_ponto_medio_cart().para_esferica();
 	}
 	
 	const Vetor3D& obter_ponto_cart(const int index) const {
@@ -435,7 +435,7 @@ public:
 			return inicio_c;
 		}
 		
-		return final_c
+		return final_c;
 	}
 	
 	const Vetor3D& obter_ponto_esf(const int index) const {
@@ -443,10 +443,10 @@ public:
 			index == 0
 		){
 			
-			return inicio_p;
+			return inicio_e;
 		}
 		
-		return final_p;
+		return final_e;
 	}
 	
 	Vetor3D obter_diretor_cart() const {
@@ -454,7 +454,7 @@ public:
 	}
 	
 	Vetor3D obter_diretor_esf() const {
-		return final_p - inicio_p;
+		return final_e - inicio_e;
 	}
 	
 	//////////////////////////////////////////////////////////////////////
@@ -467,7 +467,7 @@ public:
 		para evitarmos erros de conta devido à operações, oq poderia tornar 
 		valores um pouco diferentes.
 		*/
-		return (inicio_p == outra_linha.inicio_p) && (final_p == outra_linha.final_p);
+		return (inicio_e == outra_linha.inicio_e) && (final_e == outra_linha.final_e);
 	}
 	
 };

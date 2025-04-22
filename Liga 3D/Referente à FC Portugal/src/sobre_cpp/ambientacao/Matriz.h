@@ -722,5 +722,5 @@ public:
 	    return Matriz(temp);
 	}
 
-}
+};
 #endif // Matriz_h

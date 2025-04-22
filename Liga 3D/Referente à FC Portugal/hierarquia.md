@@ -58,6 +58,7 @@ Do arquivo / pasta mais profundo, implementado mais cedo, até o mais superficial
 
 * [ambientacao](src/sobre_cpp/ambientacao)
   * Módulo C++ responsável por ferramentas de localização e de visualização de mundo.
+    
     * [Singular.h](src/sobre_cpp/ambientacao/Singular.h)
       * Criação e Implementação de Classe Abstrata que permitirá instâncias únicas de qualquer classe.
       * Um show de genialidade.
@@ -79,6 +80,22 @@ Do arquivo / pasta mais profundo, implementado mais cedo, até o mais superficial
       * Parâmetros alterados aqui influenciam como as coisas serão apresentadas 
       nos desenhos do RoboViz.
   
-    * [RobovizLogger.h]
+    * [RobovizLogger.h](src/sobre_cpp/ambientacao/RobovizLogger.h)
       * Header C++ extremamente mais complexo e focado em comunicação via protocolos.
-      * Discussão sobre destrutores comuns e virtuais.
+      * Disponibiliza ferramentas de apresentação de desenhos no RoboVIz.
+      * Discussão interessante sobre destrutores comuns e virtuais.
+
+    * [World.h](src/sobre_cpp/ambientacao/World.h)
+      * Criação de variáveis e structs que serão utilizadas na visualização do mundo
+      externo.
+      * Parâmetros alterados aqui influenciam diretamente em como o robô visualiza
+      o mundo externo.
+
+    * [Ruido_de_Campo.h](src/sobre_cpp/ambientacao/World.h)
+      * Criação e Implementação de classe responsável por prover previsibilidade de erros
+      nos sensores.
+      * Possui caráter matemático forte e bem complexo.
+      * Parâmetros alterados aqui influenciam em medidas consideradas pelos agentes e,
+      consequentemente, em ações e cálculos gerais.
+
+
