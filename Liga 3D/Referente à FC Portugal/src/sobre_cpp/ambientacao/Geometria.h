@@ -320,7 +320,17 @@ public:
 	float obter_x() const { return x; }
 	float obter_y() const { return y; }
 	float obter_z() const { return z; }
-	
+
+	void setar_todos(
+		float v_x,
+		float v_y,
+		float v_z
+	){
+
+		x = v_x;
+		y = v_y;
+		z = v_z;
+	}
 	void setar_x( float v_x ) { x = v_x; }
 	void setar_y( float v_y ) { y = v_y; }
 	void setar_z( float v_z ) { z = v_z; }

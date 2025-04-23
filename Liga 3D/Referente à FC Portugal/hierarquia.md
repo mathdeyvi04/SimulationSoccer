@@ -58,6 +58,7 @@ Do arquivo / pasta mais profundo, implementado mais cedo, até o mais superficial
 
 * [ambientacao](src/sobre_cpp/ambientacao)
   * Módulo C++ responsável por ferramentas de localização e de visualização de mundo.
+  * Houve condensação de arquivos quando comparado com o original.
     
     * [Singular.h](src/sobre_cpp/ambientacao/Singular.h)
       * Criação e Implementação de Classe Abstrata que permitirá instâncias únicas de qualquer classe.
@@ -96,6 +97,7 @@ Do arquivo / pasta mais profundo, implementado mais cedo, até o mais superficial
       nos sensores.
       * Possui caráter matemático forte e bem complexo.
       * Parâmetros alterados aqui influenciam em medidas consideradas pelos agentes e,
-      consequentemente, em ações e cálculos gerais.
+      consequentemente, em ações e cálculos gerais. 
+      * Houve alteração de interpretação de lógicas a partir do original.
 
 
