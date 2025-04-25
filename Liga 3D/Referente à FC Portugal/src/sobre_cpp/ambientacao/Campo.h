@@ -39,6 +39,7 @@ public:
 
 	- Acredito que à necessidade de relacionar fielmente ao Campo.
 	- Necessidade do tempo de compilação, afinal, constexpr.
+	- É basicamente a mesma coisa que o define, só que com vantagens.
 
 	Não vou fazer nenhuma alteração, pois:
 
@@ -47,22 +48,22 @@ public:
 	- Desnecessário qualquer explicação complementar.
 	*/
 
-    static constexpr double cFieldLength = 30.0, cFieldWidth = 20.0, cPenaltyLength = 1.8, cPenaltyWidth = 6.0;
-	static constexpr double cGoalWidth   =  2.1, cGoalDepth  =  0.6, cGoalHeight    = 0.8;
+    static constexpr double cFieldLength       = 30.0, cFieldWidth = 20.0, cPenaltyLength = 1.8, cPenaltyWidth = 6.0;
+	static constexpr double cGoalWidth         = 2.10, cGoalDepth  = 0.60, cGoalHeight    = 0.8;
 
-	static constexpr double cHalfFieldLength  =  cFieldLength/2.0, cHalfFieldWidth    =    cFieldWidth/2.0;
-	static constexpr double cHalfGoalWidth    =    cGoalWidth/2.0, cHalfPenaltyLength = cPenaltyLength/2.0;
-	static constexpr double cHalfPenaltyWidth = cPenaltyWidth/2.0;
+	static constexpr double cHalfFieldLength   =  cFieldLength/2.0, cHalfFieldWidth    =    cFieldWidth/2.0;
+	static constexpr double cHalfGoalWidth     =    cGoalWidth/2.0, cHalfPenaltyLength = cPenaltyLength/2.0;
+	static constexpr double cHalfPenaltyWidth  = cPenaltyWidth/2.0;
 
-	static constexpr double cPenaltyBoxDistX = cHalfFieldLength - cPenaltyLength;
-    static constexpr double cRingLineLength  =                1.2360679774997897;
+	static constexpr double cPenaltyBoxDistX   = cHalfFieldLength - cPenaltyLength;
+    static constexpr double cRingLineLength    =                1.2360679774997897;
 
-    static constexpr float cHalfHorizontalFoV = 60;
-    static constexpr float cHalfVerticalFoV   = 60;
+    static constexpr float cHalfHorizontalFoV  = 60;
+    static constexpr float cHalfVerticalFoV    = 60;
 
-    static constexpr float stdev_distance      =       0.0965; //st. deviation of error ed  (distance error=d/100*ed)
-    static constexpr float var_distance        =   0.00931225; //     variance of error ed  (distance error=d/100*ed)
-    static constexpr float var_round_hundredth = 0.01*0.01/12; //variance of uniformly distributed random variable [-0.005,0.005]
+    static constexpr float stdev_distance      =            0.0965; //st. deviation of error ed  (distance error=d/100*ed)
+    static constexpr float var_distance        =        0.00931225; //     variance of error ed  (distance error=d/100*ed)
+    static constexpr float var_round_hundredth =      0.01*0.01/12; //variance of uniformly distributed random variable [-0.005,0.005]
 
 	/*//////////////////////////////////////////////////////////////////////
 	
@@ -75,7 +76,7 @@ public:
 
 	Original  ------ Aqui    ----- Convenção 
 	----------------------------------------
-	sVector3d ------ Vetor3D ----- pt_vet
+	sVector3d ------ sVetor3D ---- svet
 	sFieldPoint ---- sPonto  ----- spt
 	sFieldSegment -- sSegmento --- segm
 	sMarker -------- sMarcador --- smkr
@@ -85,27 +86,60 @@ public:
 	
 	*///////////////////////////////////////////////////////////////////////
 
-	/*
-	No original, é criado uma struct chamada sVector3d que possuem componentes em
-	double e 4 operações, montar um vector3f a partir dela, setar a partir de outro
-	sVector3d, setar a partir de vector3f e calcular distâncias.
+	struct sVetor3D  {
+		/*
+		Struct para representar a classe vetorial Vetor3D.
+		
+		Não podíamos apenas assumir que é apenas Vetor3D devido à necessidade
+		de escrevermos static constexpr, isso obriga que tenhamos apenas
+		tipos literais nas estruturas.
+		*/
 
-	Acredito que seja feito isso para reduzir carga de memória usada por uma classe com
-	tantos métodos. Entretanto, não será feito aqui.
-	*/
+		double x, y, z;
+
+		Vetor3D obter_vetor() const {
+
+			return Vetor3D(x, y, z);
+		}
+
+
+		void setar(
+			const sVetor3D& svet
+		){
+
+			x = svet.x;
+			y = svet.y;
+			z = svet.z;
+		}
+
+
+		void setar(
+			const Vetor3D& vetor 
+		){
+			x = vetor.x;
+			y = vetor.y;
+			z = vetor.z;
+		}
+	};
+
 
 	struct sPonto    {
 		/*
 		Responsável por representar pontos no campo.
 		*/
 
-		const Vetor3D pt_vet;
+		const sVetor3D svet;
 
 		/*
 		Para identificarmos o ponto ou apresentá-lo no 
 		Drawing do RoboViz pelo buffer, lembra?
 		*/
-		const char tag[10]; 
+		const char tag[10] = {0}; 
+
+		Vetor3D obter_vetor() const {
+
+			return svet.obter_vetor();
+		}
 	};
 
 
@@ -142,7 +176,7 @@ public:
 
 
 		/* Posição Absoluta Estimada pelo Robô */
-		Vetor3D pos_abs;
+		sVetor3D spos_abs;
 
 
 		/*
@@ -162,9 +196,9 @@ public:
 		Diversos Construtores Mínimos 
 		*//////////////////////////////////
 
-		sMarcador() : pos_abs     ( Vetor3D() ), 
-					  pos_rel_cart( Vetor3D() ),
-					  pos_rel_esf ( Vetor3D() )
+		sMarcador() : spos_abs     ({0, 0, 0}), 
+					  pos_rel_cart ( 0, 0, 0 ),
+					  pos_rel_esf  ( 0, 0, 0 )
 					  {};
 
 		/*
@@ -173,29 +207,39 @@ public:
 		nos dá apenas em esférica.
 		*/
 		sMarcador(
-			const Vetor3D& pos_abs_,
-			const Vetor3D& pos_rel_esf_
-		) : pos_abs     ( pos_abs_                      ),
-			pos_rel_esf ( pos_rel_esf_                  ),
-			pos_rel_cart( pos_rel_esf_.para_cartesiano())
+			const sVetor3D& spos_abs_,
+			const  Vetor3D& pos_rel_esf_
+		) : spos_abs     ( spos_abs_                     ),
+			pos_rel_esf  ( pos_rel_esf_                  ),
+			pos_rel_cart ( pos_rel_esf_.para_cartesiano())
 			{};
 
 
 		sMarcador(
 			const sPonto  *spt_,
 			const Vetor3D& pos_rel_esf_
-		) : pos_abs     ( (*spt).pt_vet  				),
-			spt         ( spt_           				),
-			pos_rel_esf ( pos_rel_esf_   				),
-			pos_rel_cart( pos_rel_esf_.para_cartesiano())
+		) : spos_abs     ( (*spt_).svet 				 ),
+			spt          ( spt_           				 ),
+			pos_rel_esf  ( pos_rel_esf_   				 ),
+			pos_rel_cart ( pos_rel_esf_.para_cartesiano())
 			{};
 
 
 		sMarcador(
 			const Vetor3D& pos_abs_,
-			const Vetor3D& pos_rel_esf_,
-			const Vetor3D& pos_rel_cart_
-		) : pos_abs     ( pos_abs_                     ),
+			const Vetor3D& pos_rel_esf_
+		) : spos_abs    (sVetor3D({pos_abs_.x, pos_abs_.y, pos_abs_.z}) ),
+			pos_rel_esf (pos_rel_esf_                   			    ),
+			pos_rel_cart(pos_rel_esf_.para_cartesiano()				    )
+			{};
+
+
+
+		sMarcador(
+			const sVetor3D& spos_abs_,
+			const Vetor3D&  pos_rel_esf_,
+			const Vetor3D&  pos_rel_cart_
+		) : spos_abs     ( spos_abs_                   ),
 			pos_rel_esf ( pos_rel_esf_                 ),
 			pos_rel_cart( pos_rel_cart_                )
 			{};
@@ -203,11 +247,11 @@ public:
 
 		sMarcador(
 			const sSegmento *segm_,
-			const Vetor3D& 	 pos_abs_,
+			const sVetor3D&  spos_abs_,
 			const Vetor3D& 	 pos_rel_esf_,
 			const Vetor3D& 	 pos_rel_cart_
 		) : segm        ( segm_                        ),
-			pos_abs     ( pos_abs_                     ),
+			spos_abs    ( spos_abs_                     ),
 			pos_rel_esf ( pos_rel_esf_                 ),
 			pos_rel_cart( pos_rel_cart_                )
 			{};
@@ -218,13 +262,14 @@ public:
 			const Vetor3D& pos_rel_esf_,
 			const Vetor3D& pos_rel_cart_
 		) : spt         ( spt_           ),
-			pos_abs     ( (*spt_).pt_vet ),
+			spos_abs    ( (*spt_).svet  ),
 			pos_rel_esf ( pos_rel_esf_   ),
 			pos_rel_cart( pos_rel_cart_  )
 			{};
 
-	// Fazemos isso para evitar cálculos desnecessários durante execuções.
 	};
+
+	// Fazemos isso para evitar cálculos desnecessários durante execuções.
 
 
 	struct sSegmMkr  {
@@ -281,36 +326,80 @@ public:
 		Usaremos essa sub classe para eles.
 
 		Lista constante de pontos.
+    	
+    	Após muito tempo tentando descobrir pq sPonto não era um tipo
+    	literal, descobri que era porque eu tentei cartear a struct sVetor3D
+    	para ser a classe Vetor3D, porém o constexpr obriga que seja literal.
+		
+		Note que apesar de inicializarmos assim, não há um construtor na struct sPonto, 
+		entretanto, lembre-se de como inicializávamos structs em C puro!
+		
+		Não iremos alterar nomes, pois:
 
-		Convenção:
+		- Desnecessário
+		- Um trabalho de risco, dada importância desses dados.
+		*/
 
-        * "PT1-.-PT2" midpoint between PT1 and PT2 (2D/3D)
-        * "PT1-PT2" point between PT1 and PT2 (in 2D only)
-    	*/
+		static constexpr array<sPonto,28> lista_de_pontos = {{
+            /* Traves dos Gols */
+            {-cHalfFieldLength,-cHalfGoalWidth, cGoalHeight,   "post--"}, {-cHalfFieldLength, cHalfGoalWidth, cGoalHeight, "post-+"}, /* Gol Esquerdo, x < 0 */
+            { cHalfFieldLength,-cHalfGoalWidth, cGoalHeight,   "post+-"}, { cHalfFieldLength, cHalfGoalWidth, cGoalHeight, "post++"}, /* Gol  Direito, x > 0 */
 
-    		/*Gera erro pq sPonto não é literal.*/
+			/* Cantos Extremos do Campo */
+            {-cHalfFieldLength,-cHalfFieldWidth,          0, "corner--"}, {-cHalfFieldLength, cHalfFieldWidth,0, "corner-+"}, /* Cantos Esquerdos do Campo, x < 0 */
+            { cHalfFieldLength,-cHalfFieldWidth,          0, "corner+-"}, { cHalfFieldLength, cHalfFieldWidth,0, "corner++"}, /* Cantos  Direitos do Campo, x > 0 */
+            
+            /* Retas Horizontais Limitantes */
+            {                0,-cHalfFieldWidth,          0, "halfway-"}, /* Ponto Que Define Reta Superior Limitante do Campo */
+            {                0, cHalfFieldWidth,          0, "halfway+"}, /* Ponto Que Define Reta Inferior Limitante do Campo */
+            
+			/* Áreas de Penalidade do Gol, as quais permitem penâlti, por exemplo */
+            {-cHalfFieldLength, -cHalfPenaltyWidth, 0, "boxBack--"}, {-cHalfFieldLength,  cHalfPenaltyWidth, 0, "boxBack-+"}, // Penalty box goal line corner x<0
+            { cHalfFieldLength, -cHalfPenaltyWidth, 0, "boxBack+-"}, { cHalfFieldLength,  cHalfPenaltyWidth, 0, "boxBack++"}, // Penalty box goal line corner x>0
+            {-cPenaltyBoxDistX, -cHalfPenaltyWidth, 0, "boxFrnt--"}, {-cPenaltyBoxDistX,  cHalfPenaltyWidth, 0, "boxFrnt-+"}, // Penalty box front corner x<0
+            { cPenaltyBoxDistX, -cHalfPenaltyWidth, 0, "boxFrnt+-"}, { cPenaltyBoxDistX,  cHalfPenaltyWidth, 0, "boxFrnt++"}, // Penalty box front corner x>0
 
-    	static constexpr std::array<sPonto,28> list {{
-            {-cHalfFieldLength,-cHalfGoalWidth, cGoalHeight, "post--"}, {-cHalfFieldLength, cHalfGoalWidth, cGoalHeight, "post-+"}, //Goalposts x<0
-            { cHalfFieldLength,-cHalfGoalWidth, cGoalHeight, "post+-"}, { cHalfFieldLength, cHalfGoalWidth, cGoalHeight, "post++"}, //Goalposts x>0
-            {-cHalfFieldLength,-cHalfFieldWidth,0, "corner--"}, {-cHalfFieldLength, cHalfFieldWidth,0, "corner-+"}, //Corners x<0
-            { cHalfFieldLength,-cHalfFieldWidth,0, "corner+-"}, { cHalfFieldLength, cHalfFieldWidth,0, "corner++"}, //Corners x>0
-            {0,-cHalfFieldWidth, 0, "halfway-"}, // Halfway line ending y<0
-            {0, cHalfFieldWidth, 0, "halfway+"}, // Halfway line ending y>0
-            {-cHalfFieldLength, -cHalfPenaltyWidth, 0, "boxBack--"}, {-cHalfFieldLength,  cHalfPenaltyWidth, 0, "boxBack-+"}, //Penalty box goal line corner x<0
-            { cHalfFieldLength, -cHalfPenaltyWidth, 0, "boxBack+-"}, { cHalfFieldLength,  cHalfPenaltyWidth, 0, "boxBack++"}, //Penalty box goal line corner x>0
-            {-cPenaltyBoxDistX, -cHalfPenaltyWidth, 0, "boxFrnt--"}, {-cPenaltyBoxDistX,  cHalfPenaltyWidth, 0, "boxFrnt-+"}, //Penalty box front corner x<0
-            { cPenaltyBoxDistX, -cHalfPenaltyWidth, 0, "boxFrnt+-"}, { cPenaltyBoxDistX,  cHalfPenaltyWidth, 0, "boxFrnt++"}, //Penalty box front corner x>0
-            {2, 0, 0, "r0"},                                       { 1.6180339887498948,   1.1755705045849463, 0, "r36" }, //(18,19) Ring 0/36 deg
-            {0.61803398874989485,  1.9021130325903071, 0, "r72" }, {-0.61803398874989485,  1.9021130325903071, 0, "r108"}, //(20,21) Ring 72/108 deg
-            {-1.6180339887498948,  1.1755705045849463, 0, "r144"}, {-2, 0, 0, "r180"},                                     //(22,23) Ring 144/180 deg
-            {-1.6180339887498948, -1.1755705045849463, 0, "r216"}, {-0.61803398874989485, -1.9021130325903071, 0, "r252"}, //(24,25) Ring 216/252 deg
-            {0.61803398874989485, -1.9021130325903071, 0, "r288"}, { 1.6180339887498948,  -1.1755705045849463, 0, "r324"}  //(26,27) Ring 288/324 deg
+            /* Pontos De Um Círculo de Raio 2, note as angulações específicas e em graus */
+            {                  2,                   0, 0,   "r0"}, { 1.6180339887498948,   1.1755705045849463, 0,  "r36"}, // Ring 0/36 deg
+            {0.61803398874989485,  1.9021130325903071, 0,  "r72"}, {-0.61803398874989485,  1.9021130325903071, 0, "r108"}, // Ring 72/108 deg
+            {-1.6180339887498948,  1.1755705045849463, 0, "r144"}, {                  -2,                   0, 0, "r180"}, // Ring 144/180 deg
+            {-1.6180339887498948, -1.1755705045849463, 0, "r216"}, {-0.61803398874989485, -1.9021130325903071, 0, "r252"}, // Ring 216/252 deg
+            {0.61803398874989485, -1.9021130325903071, 0, "r288"}, {  1.6180339887498948, -1.1755705045849463, 0, "r324"}  // Ring 288/324 deg
         }};
 
 
+        static constexpr const sFieldPoint &goal_mm = lista_de_pontos[0];   //Goalpost x<0 y<0
+        static constexpr const sFieldPoint &goal_mp = lista_de_pontos[1];   //Goalpost x<0 y>0
+        static constexpr const sFieldPoint &goal_pm = lista_de_pontos[2];   //Goalpost x>0 y<0
+        static constexpr const sFieldPoint &goal_pp = lista_de_pontos[3];   //Goalpost x>0 y>0
+
+        static constexpr const sFieldPoint &corner_mm = lista_de_pontos[4]; //Corner x<0 y<0
+        static constexpr const sFieldPoint &corner_mp = lista_de_pontos[5]; //Corner x<0 y>0
+        static constexpr const sFieldPoint &corner_pm = lista_de_pontos[6]; //Corner x>0 y<0
+        static constexpr const sFieldPoint &corner_pp = lista_de_pontos[7]; //Corner x>0 y>0
+
+        static constexpr const sFieldPoint &halfway_m = lista_de_pontos[8]; //Halfway line ending y<0
+        static constexpr const sFieldPoint &halfway_p = lista_de_pontos[9]; //Halfway line ending y>0
+
+        static constexpr const sFieldPoint &boxgoal_mm = lista_de_pontos[10]; //Penalty box goal line corner x<0 y<0
+        static constexpr const sFieldPoint &boxgoal_mp = lista_de_pontos[11]; //Penalty box goal line corner x<0 y>0
+        static constexpr const sFieldPoint &boxgoal_pm = lista_de_pontos[12]; //Penalty box goal line corner x>0 y<0
+        static constexpr const sFieldPoint &boxgoal_pp = lista_de_pontos[13]; //Penalty box goal line corner x>0 y>0
+
+        static constexpr const sFieldPoint &box_mm = lista_de_pontos[14]; //Penalty box front corner x<0 y<0
+        static constexpr const sFieldPoint &box_mp = lista_de_pontos[15]; //Penalty box front corner x<0 y>0
+        static constexpr const sFieldPoint &box_pm = lista_de_pontos[16]; //Penalty box front corner x>0 y<0
+        static constexpr const sFieldPoint &box_pp = lista_de_pontos[17]; //Penalty box front corner x>0 y>0
+
+        static constexpr const sFieldPoint *rings = &lista_de_pontos[18]; //iterator for 10 ring points
+    };
 
 
+    class cSegmentos {
+    	public:
+    	/*
+		
+    	*/
 
 
 
@@ -323,40 +412,7 @@ public:
 
 
 
-
-
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
