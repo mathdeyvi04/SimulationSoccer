@@ -1,5 +1,5 @@
 #include "RobovizField.h"
-#include "RobovizLogger.h"
+//#include "RobovizLogger.h"
 #include "World.h"
 
 #include <cstdio>
@@ -11,26 +11,29 @@
 O static garante que essa variável fique viva sempre, até a completa
 finalização do programa.
 
+Precisamos usar essas linhas a seguir para poder foçar a alocação, pois
+se fosse apenas no header, não haveria alocação.
+
 */////////////////////////////////////////////////////////////////////////
+
 static World& mundo_existente = Singular<World>::obter_instancia();
 
-decltype(RobovizField::cRingLineLength) constexpr RobovizField::cRingLineLength;
-decltype(RobovizField::cPenaltyBoxDistX) constexpr RobovizField::cPenaltyBoxDistX;
+decltype(RobovizField::cRingLineLength  ) constexpr RobovizField::cRingLineLength;
+decltype(RobovizField::cPenaltyBoxDistX ) constexpr RobovizField::cPenaltyBoxDistX;
 decltype(RobovizField::cHalfPenaltyWidth) constexpr RobovizField::cHalfPenaltyWidth;
-decltype(RobovizField::cHalfGoalWidth) constexpr RobovizField::cHalfGoalWidth;
-decltype(RobovizField::cHalfFielfLength) constexpr RobovizField::cHalfFielfLength;
-decltype(RobovizField::cGoalWidth) constexpr RobovizField::cGoalWidth;
-decltype(RobovizField::cGoalDepth) constexpr RobovizField::cGoalDepth;
-decltype(RobovizField::cGoalHeight) constexpr RobovizField::cGoalHeight;
-decltype(RobovizField::cFieldLength) constexpr RobovizField::cFieldLength;
-decltype(RobovizField::cFieldWidth) constexpr RobovizField::cFieldWidth;
-decltype(RobovizField::cPenaltyLength) constexpr RobovizField::cPenaltyLength;
-decltype(RobovizField::cPenaltyWidth) constexpr RobovizField::cPenaltyWidth;
-decltype(RobovizField::cFieldLineSegments::list) constexpr RobovizField::cFieldLineSegments::list;
-decltype(RobovizField::cFieldPoints::list) constexpr RobovizField::cFieldPoints::list;
+decltype(RobovizField::cHalfGoalWidth   ) constexpr RobovizField::cHalfGoalWidth;
+decltype(RobovizField::cHalfFieldLength ) constexpr RobovizField::cHalfFieldLength;
+decltype(RobovizField::cGoalWidth       ) constexpr RobovizField::cGoalWidth;
+decltype(RobovizField::cGoalDepth       ) constexpr RobovizField::cGoalDepth;
+decltype(RobovizField::cGoalHeight      ) constexpr RobovizField::cGoalHeight;
+decltype(RobovizField::cFieldLength     ) constexpr RobovizField::cFieldLength;
+decltype(RobovizField::cFieldWidth      ) constexpr RobovizField::cFieldWidth;
+decltype(RobovizField::cPenaltyLength   ) constexpr RobovizField::cPenaltyLength;
+decltype(RobovizField::cPenaltyWidth    ) constexpr RobovizField::cPenaltyWidth;
+decltype(RobovizField::cSegmentos::list ) constexpr RobovizField::cSegmentos::list;
+decltype(RobovizField::cPontos::list    ) constexpr RobovizField::cPontos::list;
 
-//non-constexpr definitions
-decltype(RobovizField::list_8_landmarks::list) RobovizField::list_8_landmarks::list;
+decltype(RobovizField::gMkrs::list      )           RobovizField::gMkrs::list;
 
 /////////////////////////////////////////////////////////////////////////////////////
 
@@ -78,11 +81,11 @@ void RobovizField::obter_marcadores_de_campo(){
 															   mundo_existente.pos_rel_do_ponto_de_contato[index_do_pe]
 															 );
 
-				lista_de_marcadores_de_chao.emplace_back(
-														  sVetor3D({0, 0, 0}), 
-													      mundo_existente.pos_rel_do_ponto_de_contato[index_do_pe].para_esferica(),
-													      mundo_existente.pos_rel_do_ponto_de_contato[index_do_pe]
-													    );
+					 lista_de_marcadores_de_chao.emplace_back(
+					 										   sVetor3D({0, 0, 0}), 
+					 									       mundo_existente.pos_rel_do_ponto_de_contato[index_do_pe].para_esferica(),
+					 									       mundo_existente.pos_rel_do_ponto_de_contato[index_do_pe]
+					 									     );
 			}
 		}
 	}
@@ -235,7 +238,6 @@ lista_de_marcadores_de_chao_pesados.clear();
 
 		}
 	}
-
 }
 
 

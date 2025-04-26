@@ -347,7 +347,7 @@ public:
 		- Um trabalho de risco, dada importância desses dados.
 		*/
 
-		static constexpr array<sPonto,28> lista_de_pontos = {{
+		static constexpr array<sPonto,28> list = {{
             /* Traves dos Gols 
 			
 				post-+           post++
@@ -417,29 +417,29 @@ public:
 
 
         // Tudo está em ordem para facilitar o encontro.
-        static constexpr const sPonto &goal_mm = lista_de_pontos[0];     //Goalpost x<0 y<0
-        static constexpr const sPonto &goal_mp = lista_de_pontos[1];     //Goalpost x<0 y>0
-        static constexpr const sPonto &goal_pm = lista_de_pontos[2];     //Goalpost x>0 y<0
-        static constexpr const sPonto &goal_pp = lista_de_pontos[3];     //Goalpost x>0 y>0
+        static constexpr const sPonto &goal_mm = list[0];     //Goalpost x<0 y<0
+        static constexpr const sPonto &goal_mp = list[1];     //Goalpost x<0 y>0
+        static constexpr const sPonto &goal_pm = list[2];     //Goalpost x>0 y<0
+        static constexpr const sPonto &goal_pp = list[3];     //Goalpost x>0 y>0
 
-        static constexpr const sPonto &corner_mm = lista_de_pontos[4];   //Corner x<0 y<0
-        static constexpr const sPonto &corner_mp = lista_de_pontos[5];   //Corner x<0 y>0
-        static constexpr const sPonto &corner_pm = lista_de_pontos[6];   //Corner x>0 y<0
-        static constexpr const sPonto &corner_pp = lista_de_pontos[7];   //Corner x>0 y>0
+        static constexpr const sPonto &corner_mm = list[4];   //Corner x<0 y<0
+        static constexpr const sPonto &corner_mp = list[5];   //Corner x<0 y>0
+        static constexpr const sPonto &corner_pm = list[6];   //Corner x>0 y<0
+        static constexpr const sPonto &corner_pp = list[7];   //Corner x>0 y>0
 
-        static constexpr const sPonto &halfway_m = lista_de_pontos[8];   //Halfway line ending y<0
-        static constexpr const sPonto &halfway_p = lista_de_pontos[9];   //Halfway line ending y>0
+        static constexpr const sPonto &halfway_m = list[8];   //Halfway line ending y<0
+        static constexpr const sPonto &halfway_p = list[9];   //Halfway line ending y>0
 
-        static constexpr const sPonto &boxgoal_mm = lista_de_pontos[10]; //Penalty box goal line corner x<0 y<0
-        static constexpr const sPonto &boxgoal_mp = lista_de_pontos[11]; //Penalty box goal line corner x<0 y>0
-        static constexpr const sPonto &boxgoal_pm = lista_de_pontos[12]; //Penalty box goal line corner x>0 y<0
-        static constexpr const sPonto &boxgoal_pp = lista_de_pontos[13]; //Penalty box goal line corner x>0 y>0
-        static constexpr const sPonto &box_mm = lista_de_pontos[14];     //Penalty box front corner x<0 y<0
-        static constexpr const sPonto &box_mp = lista_de_pontos[15];     //Penalty box front corner x<0 y>0
-        static constexpr const sPonto &box_pm = lista_de_pontos[16];     //Penalty box front corner x>0 y<0
-        static constexpr const sPonto &box_pp = lista_de_pontos[17];     //Penalty box front corner x>0 y>0
+        static constexpr const sPonto &boxgoal_mm = list[10]; //Penalty box goal line corner x<0 y<0
+        static constexpr const sPonto &boxgoal_mp = list[11]; //Penalty box goal line corner x<0 y>0
+        static constexpr const sPonto &boxgoal_pm = list[12]; //Penalty box goal line corner x>0 y<0
+        static constexpr const sPonto &boxgoal_pp = list[13]; //Penalty box goal line corner x>0 y>0
+        static constexpr const sPonto &box_mm = list[14];     //Penalty box front corner x<0 y<0
+        static constexpr const sPonto &box_mp = list[15];     //Penalty box front corner x<0 y>0
+        static constexpr const sPonto &box_pm = list[16];     //Penalty box front corner x>0 y<0
+        static constexpr const sPonto &box_pp = list[17];     //Penalty box front corner x>0 y>0
 
-        static constexpr const sPonto *rings = &lista_de_pontos[18];     //iterator for 10 ring points
+        static constexpr const sPonto *rings = &list[18];     //iterator for 10 ring points
     };
 
 
@@ -649,29 +649,28 @@ public:
 
         private:
             
-            static sFixedMkr marcadores_de_chao[8];
-            //static array<sFixedMkr, 8> marcadores_de_chao;
+            static sFixedMkr list[8];
 
             /* Observe que elementos dentro do privado são alteráveis,
             enquanto os públicos são constantes.*/
 
-            static constexpr sFixedMkr &_corner_mm = marcadores_de_chao[0];
-            static constexpr sFixedMkr &_corner_mp = marcadores_de_chao[1];
-            static constexpr sFixedMkr &_corner_pm = marcadores_de_chao[2];
-            static constexpr sFixedMkr &_corner_pp = marcadores_de_chao[3];
-            static constexpr sFixedMkr &_goal_mm   = marcadores_de_chao[4];
-            static constexpr sFixedMkr &_goal_mp   = marcadores_de_chao[5];
-            static constexpr sFixedMkr &_goal_pm   = marcadores_de_chao[6];
-            static constexpr sFixedMkr &_goal_pp   = marcadores_de_chao[7];
+            static constexpr sFixedMkr &_corner_mm = list[0];
+            static constexpr sFixedMkr &_corner_mp = list[1];
+            static constexpr sFixedMkr &_corner_pm = list[2];
+            static constexpr sFixedMkr &_corner_pp = list[3];
+            static constexpr sFixedMkr &_goal_mm   = list[4];
+            static constexpr sFixedMkr &_goal_mp   = list[5];
+            static constexpr sFixedMkr &_goal_pm   = list[6];
+            static constexpr sFixedMkr &_goal_pp   = list[7];
         public:
-            static constexpr const sFixedMkr &corner_mm = marcadores_de_chao[0];
-            static constexpr const sFixedMkr &corner_mp = marcadores_de_chao[1];
-            static constexpr const sFixedMkr &corner_pm = marcadores_de_chao[2];
-            static constexpr const sFixedMkr &corner_pp = marcadores_de_chao[3];
-            static constexpr const sFixedMkr &goal_mm   = marcadores_de_chao[4];
-            static constexpr const sFixedMkr &goal_mp   = marcadores_de_chao[5];
-            static constexpr const sFixedMkr &goal_pm   = marcadores_de_chao[6];
-            static constexpr const sFixedMkr &goal_pp   = marcadores_de_chao[7];
+            static constexpr const sFixedMkr &corner_mm = list[0];
+            static constexpr const sFixedMkr &corner_mp = list[1];
+            static constexpr const sFixedMkr &corner_pm = list[2];
+            static constexpr const sFixedMkr &corner_pp = list[3];
+            static constexpr const sFixedMkr &goal_mm   = list[4];
+            static constexpr const sFixedMkr &goal_mp   = list[5];
+            static constexpr const sFixedMkr &goal_pm   = list[6];
+            static constexpr const sFixedMkr &goal_pp   = list[7];
     };
 
 
