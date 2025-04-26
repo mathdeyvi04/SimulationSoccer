@@ -61,7 +61,7 @@ public:
 	Linhas e cantos.
 	*/
 
-	struct sLMark{
+	struct gMkr{ // ground markers
 		bool se_esta_na_vista;
 		bool se_eh_canto;
 
@@ -69,7 +69,7 @@ public:
 		Vetor3D pos_rel;
 	};
 
-	sLMark landmark[8];
+	gMkr marcadores_de_chao[8];
 
 
 	struct sLine {
