@@ -122,10 +122,8 @@ Caso esteja em Windows e não possa ver, experimente:
 */
 #include <netdb.h>
 
-
-#include "RobovizDraw.h"
 #include "Singular.h"
-
+#include "RobovizDraw.h"
 
 /*//////////////////////////////////////////////////////////////////////////////
 
@@ -216,16 +214,6 @@ private:
 	friend class Singular<RobovizLogger>;
 	
 public:	
-	
-	static RobovizLogger& instanciar(){
-		/*
-		No original usava ponteiros e uma implementação sem a classe Singular.
-		Acredito que se deva à construção de código por diferentes pessoas ou 
-		em momentos diferentes.
-		*/
-		return Singular<RobovizLogger>::obter_instancia();
-	}
-	
 
 	int init(){
 		/*

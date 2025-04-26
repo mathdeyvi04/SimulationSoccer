@@ -24,7 +24,7 @@ ou o modificado da RoboIME.
 
 	* Explicação Base de Diversos Componentes Básicos da Aplicação.
 
-	* [Hierarquia de Arquivos](hierarquia.md)
+	* [Hierarquia de Arquivos](Hierarquia_de_Arquivos.md)
     
 		* Como ocorre a distrbuição de arquivos e de módulos.
 

@@ -4,8 +4,8 @@ Créditos mantidos: Miguel Abreu, um gênio, (m.abreu@fe.up.pt)
 #ifndef WORLD_H
 #define WORLD_H
 
-#include "Geometria.h"
 #include "Singular.h"
+#include "Geometria.h"
 #include "Matriz.h"
 #include "Linha.h"
 #include <vector>
@@ -32,14 +32,16 @@ public:
 
 	0 -> Pé Esquerdo
 	1 -> Pé Direito
+
+	O pé pode tocar outras coisas além do chão.
 	*/
-	bool pe_esta_tocando_chao[2];
+	bool se_pe_esta_tocando[2];
 	/*
 	Observe que é posição relativa, ou seja, devemos utilizar 
 	um dado recebido do sistema, provavelmente coordenadas absolutas,
 	e realizar transformações.
 	*/
-	Vetor3D pos_rel_do_ponto_de_contato_com_chao[2]; 
+	Vetor3D pos_rel_do_ponto_de_contato[2]; 
 	/* Posição relativa do ponto de contato do pé com chão */
 
 
@@ -70,7 +72,6 @@ public:
 	};
 
 	gMkr marcadores_de_chao[8];
-
 
 	struct sLine {
 		Vetor3D inicio, final;

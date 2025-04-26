@@ -4,9 +4,8 @@ Manter créditos ao Miguel Abreu e à equipe FC Portugal
 #ifndef CAMPO_H
 #define CAMPO_H 
 
-//#include "RobovizLogger.h"
+#include "Singular.h"  
 #include "Geometria.h"
-#include "Singular.h"
 #include "Matriz.h"
 #include "Linha.h"
 #include <vector>  // Alocação Dinâmica
@@ -27,7 +26,6 @@ private:
 	RobovizField(){};
 
 	void obter_marcadores_de_campo();
-
 
 public:
 
@@ -62,6 +60,7 @@ public:
     static constexpr float cHalfHorizontalFoV  = 60;
     static constexpr float cHalfVerticalFoV    = 60;
 
+    /* Para nos auxiliar na confiabilidade das medidas */
     static constexpr float stdev_distance      =            0.0965; //st. deviation of error ed  (distance error=d/100*ed)
     static constexpr float var_distance        =        0.00931225; //     variance of error ed  (distance error=d/100*ed)
     static constexpr float var_round_hundredth =      0.01*0.01/12; //variance of uniformly distributed random variable [-0.005,0.005]
@@ -582,7 +581,7 @@ public:
 	como pertencentes a partes específicas do campo,
 	o que permite associá-los com seu nome e função real.
     */
-    vector<sSegmento> lista_de_segmentos_identificados;
+    vector<sSegmMkr> lista_de_segmentos_identificados;
     
     /*
 	Contém os pontos visíveis que estão em segmentos
@@ -639,7 +638,7 @@ public:
     vector<Linha> lista_de_todos_os_segmentos;
 
 
-    class gMrk{  // grounds markers -> marcadores de chão
+    class gMkrs{  // grounds markers -> marcadores de chão
     	/*
 		Classe representante dos 8 marcadores de chão totais,
 		para acelerar verificações, pois diferente de World.marcadores_de_chao
@@ -649,38 +648,130 @@ public:
         friend class RobovizField;  // Para acessarmos elementos privados desta  
 
         private:
-            static sMarcador marcadores_de_chao[8];
+            
+            static sFixedMkr marcadores_de_chao[8];
+            //static array<sFixedMkr, 8> marcadores_de_chao;
 
             /* Observe que elementos dentro do privado são alteráveis,
             enquanto os públicos são constantes.*/
 
-            static constexpr sMarcador &_corner_mm = marcadores_de_chao[0];
-            static constexpr sMarcador &_corner_mp = marcadores_de_chao[1];
-            static constexpr sMarcador &_corner_pm = marcadores_de_chao[2];
-            static constexpr sMarcador &_corner_pp = marcadores_de_chao[3];
-            static constexpr sMarcador &_goal_mm   = marcadores_de_chao[4];
-            static constexpr sMarcador &_goal_mp   = marcadores_de_chao[5];
-            static constexpr sMarcador &_goal_pm   = marcadores_de_chao[6];
-            static constexpr sMarcador &_goal_pp   = marcadores_de_chao[7];
+            static constexpr sFixedMkr &_corner_mm = marcadores_de_chao[0];
+            static constexpr sFixedMkr &_corner_mp = marcadores_de_chao[1];
+            static constexpr sFixedMkr &_corner_pm = marcadores_de_chao[2];
+            static constexpr sFixedMkr &_corner_pp = marcadores_de_chao[3];
+            static constexpr sFixedMkr &_goal_mm   = marcadores_de_chao[4];
+            static constexpr sFixedMkr &_goal_mp   = marcadores_de_chao[5];
+            static constexpr sFixedMkr &_goal_pm   = marcadores_de_chao[6];
+            static constexpr sFixedMkr &_goal_pp   = marcadores_de_chao[7];
         public:
-            static constexpr const sMarcador &corner_mm = marcadores_de_chao[0];
-            static constexpr const sMarcador &corner_mp = marcadores_de_chao[1];
-            static constexpr const sMarcador &corner_pm = marcadores_de_chao[2];
-            static constexpr const sMarcador &corner_pp = marcadores_de_chao[3];
-            static constexpr const sMarcador &goal_mm   = marcadores_de_chao[4];
-            static constexpr const sMarcador &goal_mp   = marcadores_de_chao[5];
-            static constexpr const sMarcador &goal_pm   = marcadores_de_chao[6];
-            static constexpr const sMarcador &goal_pp   = marcadores_de_chao[7];
+            static constexpr const sFixedMkr &corner_mm = marcadores_de_chao[0];
+            static constexpr const sFixedMkr &corner_mp = marcadores_de_chao[1];
+            static constexpr const sFixedMkr &corner_pm = marcadores_de_chao[2];
+            static constexpr const sFixedMkr &corner_pp = marcadores_de_chao[3];
+            static constexpr const sFixedMkr &goal_mm   = marcadores_de_chao[4];
+            static constexpr const sFixedMkr &goal_mp   = marcadores_de_chao[5];
+            static constexpr const sFixedMkr &goal_pm   = marcadores_de_chao[6];
+            static constexpr const sFixedMkr &goal_pp   = marcadores_de_chao[7];
     };
 
 
-    /*//////////////////////////////////////////////////////////////////////
+    sSegmMkr* obter_segmento_conhecido(
+    	const sSegmento& id_ptr
+    ){
+    	/*
+		Obtermos o elemento no vetor de segmentos identificados.
+    	*/
+
+    	for(
+    		sSegmMkr& ssegm_mkr : lista_de_segmentos_identificados
+    	){
+
+    		if(
+    			ssegm_mkr.segm == &id_ptr
+    		){
+
+    			return &ssegm_mkr;
+    		}
+    	}
+    }
+
+    /*/////////////////////////////////////////////////////////
 	
-	Métodos de Controle de Apresentação
 
-	*///////////////////////////////////////////////////////////////////////
+	Seguiremos apenas com a prototipação de métodos, pois faz-se
+	necessário o uso de um arquivo .cpp para:
 
-    static World& mundo_existente = Singular<World>::obter_instancia();
+	- Variáveis static não constexpr não podem ser inicializadas em .h
+
+    *//////////////////////////////////////////////////////////
+
+
+    /*////////////////////////////////////////////////////////
+
+    Métodos de Apresentação
+	
+    */////////////////////////////////////////////////////////
+
+
+    void atualizar_marcadores();
+
+
+    void atualizar_marcadores_a_partir_da_transformacao(
+    	const Matriz& matriz_de_transformacao
+    );
+
+
+    void atualizar_marcadores_desconhecidos_a_partir_da_transformacao(
+    	const Matriz& matriz_de_transformacao
+    );
+
+    /*
+	Desenhar todas as linhas, marcadores, posição do robô e a bola que estão vísiveis.
+    */
+    void desenhar_visiveis(
+    	const Matriz& Head_to_Field,  // -> Transformação de coordenadas da cabeça para o campo.
+    	bool  se_eh_lado_direito      // -> Times trocam de lado após intervalo, por isso devemos saber informações como esta.
+    ) const;
+
+    /*
+	Forçará o Roboviz a desenhar como se estivesse do outro lado do campo.
+    */
+    void desenhar_visiveis_trocados(
+    	const Matriz& Head_to_Field
+    ) const;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

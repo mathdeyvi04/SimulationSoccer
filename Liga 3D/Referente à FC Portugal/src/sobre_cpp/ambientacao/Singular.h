@@ -1,5 +1,10 @@
+/*
+Estava com um bug imenso, pois estava '#define SINGULAR',
+logo este header era importado duas vezes, oq causava erro de 
+definição.
+*/
 #ifndef SINGULAR_H
-#define SINGULAR
+#define SINGULAR_H
 
 /*
 Garantir que a classe possa ser usada para qualquer outra.
@@ -53,4 +58,4 @@ private:
 	
 };
 
-#endif  // SINGULAR
+#endif  // SINGULAR_H
