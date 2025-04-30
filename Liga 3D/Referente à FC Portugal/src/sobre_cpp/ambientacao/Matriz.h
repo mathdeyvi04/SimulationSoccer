@@ -356,7 +356,7 @@ public:
 	*/
 	Vetor3D operator*(
 		const Vetor3D& vetor
-	){
+	) const {
 		/*
 		Aplicação do algoritmo da matriz de translação.
 		Verifique:

@@ -156,7 +156,7 @@ public:
 		Não se pode alterar dados para os quais os ponteiros apontam.
 		Não se pode alterar o ponteiro para outro endereço.
 		*/
-		const sPonto * const spt[2];
+		const sPonto * const spts[2];
 
 		const double comprimento;
 
@@ -310,7 +310,7 @@ public:
 					  se_esta_visivel(false)
 					  {};
 
-		void setar_pos_rel(
+		void setar_pos_rel_a_partir_de_esf(
 			Vetor3D pos_rel_esf_
 		){
 			pos_rel_esf  = pos_rel_esf_;
@@ -537,7 +537,7 @@ public:
         static constexpr const sSegmento &goal_m = list[2]; // Goal line x<0
         static constexpr const sSegmento &goal_p = list[3]; // Goal line x>0
 
-        static constexpr const sSegmento &halfway = list[4]; //Halfway line
+        static constexpr const sSegmento &halfway = list[4];//Halfway line
 
         static constexpr const sSegmento &box_mm = list[5]; // Penalty box sideline x<0 y<0
         static constexpr const sSegmento &box_mp = list[6]; // Penalty box sideline x<0 y>0
@@ -547,7 +547,7 @@ public:
         static constexpr const sSegmento &box_m = list[9];  // Penalty box front line x<0
         static constexpr const sSegmento &box_p = list[10]; // Penalty box front line x>0
 
-        static constexpr const sSegmento *rings = &list[11]; //iterator for 10 ring lines
+        static constexpr const sSegmento *rings = &list[11];//iterator for 10 ring lines
     };
 
 
@@ -571,8 +571,8 @@ public:
 	ajudam diretamente na estimativa de posição e orientação.
     */
     vector<sMarcador> lista_de_corners_e_goalposts;
-    vector<sMarcador> 			lista_de_corners; 
-    vector<sMarcador> 		  lista_de_goalposts; 
+    vector<sMarcador> 			  lista_de_corners; 
+    vector<sMarcador> 		    lista_de_goalposts; 
     
     /*
 	Segmentos de linha do campo identificados.
@@ -672,27 +672,7 @@ public:
             static constexpr const sFixedMkr &goal_pm   = list[6];
             static constexpr const sFixedMkr &goal_pp   = list[7];
     };
-
-
-    sSegmMkr* obter_segmento_conhecido(
-    	const sSegmento& id_ptr
-    ){
-    	/*
-		Obtermos o elemento no vetor de segmentos identificados.
-    	*/
-
-    	for(
-    		sSegmMkr& ssegm_mkr : lista_de_segmentos_identificados
-    	){
-
-    		if(
-    			ssegm_mkr.segm == &id_ptr
-    		){
-
-    			return &ssegm_mkr;
-    		}
-    	}
-    }
+    
 
     /*/////////////////////////////////////////////////////////
 	
@@ -700,7 +680,7 @@ public:
 	Seguiremos apenas com a prototipação de métodos, pois faz-se
 	necessário o uso de um arquivo .cpp para:
 
-	- Variáveis static não constexpr não podem ser inicializadas em .h
+	- Variáveis static não-constexpr não podem ser inicializadas em .h
 
     *//////////////////////////////////////////////////////////
 
@@ -724,13 +704,22 @@ public:
     	const Matriz& matriz_de_transformacao
     );
 
+
+    // Responsável por apresentar na tela. As funções desenho abaixo apenas a chamam.
+    void artista(
+    	const Matriz& Head_to_Field,
+    	int decisor
+    );
+
+
     /*
 	Desenhar todas as linhas, marcadores, posição do robô e a bola que estão vísiveis.
     */
     void desenhar_visiveis(
     	const Matriz& Head_to_Field,  // -> Transformação de coordenadas da cabeça para o campo.
-    	bool  se_eh_lado_direito      // -> Times trocam de lado após intervalo, por isso devemos saber informações como esta.
+    	bool  se_esta_do_lado_certo   // -> Times trocam de lado após intervalo, por isso devemos saber informações como esta.
     ) const;
+
 
     /*
 	Forçará o Roboviz a desenhar como se estivesse do outro lado do campo.
@@ -740,40 +729,142 @@ public:
     ) const;
 
 
+    /*////////////////////////////////////////////////////////
+
+    Métodos de Aplicação Matemática
+	
+    */////////////////////////////////////////////////////////
+
+    // -> Me recuso a fazer alteração destas funções tão... pequenas.
+
+    /**
+     * Normalize angle between 2 lines
+     * @return angle between 0 and 90 deg
+     */
+    static inline float normalize_line_angle_deg(float deg){
+        return 90.f-fabsf(fmodf(fabsf(deg), 180.f) - 90.f);
+    }
+
+    /**
+     * Normalize angle between 2 lines
+     * @return angle between 0 and pi/2 rad
+     */
+    static inline float normalize_line_angle_rad(float rad){
+        return 1.57079633f-fabsf(fmod(fabsf(rad), 3.14159265f) - 1.57079633f);
+    }
+
+    /**
+     * Normalize angle between 2 vectors
+     * @return angle between 0 and 180 deg
+     */
+    static inline float normalize_vector_angle_deg(float deg){
+        return 180.f-fabsf(fmodf(fabsf(deg), 360.f) - 180.f);
+    }
+
+    /**
+     * Normalize angle between 2 vectors
+     * @return angle between 0 and pi rad
+     */
+    static inline float normalize_vector_angle_rad(float rad){
+        return 3.14159265f-fabsf(fmod(fabsf(rad), 6.28318531f) - 3.14159265f);
+    }
+
+    /*
+	Para mais informações acerca destes métodos a seguir, sugiro visitar o arquivo Linha.h
+    */
+
+    static float calcular_dist_segm_para_pt_c(
+    	const sSegmento& segm_de_linha,
+    	const Vetor3D& ponto_cart 
+    ){
+    	/*
+		Descrição:
+			Calcular distância 3D entre segmento de linha e ponto cartesiano.
+			Acontece que o segm está no plano z = 0, daí fica mais fácil e fazemos
+			direto por agora.
+    	*/
+
+    	// Vetor Representante da linha, vetor diretório final - inicio
+    	float comp_x = (*(segm_de_linha.spts[1])).svet.x - (*(segm_de_linha.spts[0])).svet.x;
+    	float comp_y = (*(segm_de_linha.spts[1])).svet.y - (*(segm_de_linha.spts[0])).svet.y;
+
+    	// Vetor Diretório inicio - ponto
+    	Vetor3D w1(
+    		ponto_cart.x - (*(segm_de_linha.spts[0])).svet.x,
+    		ponto_cart.y - (*(segm_de_linha.spts[0])).svet.y,
+    		ponto_cart.z
+    	);
+
+    	if(
+    		(w1.x * comp_x + w1.y * comp_y) <= 0
+    	){
+    		return w1.modulo();
+    	}
+
+    	Vetor3D w2(
+    		ponto_cart.x - (*(segm_de_linha.spts[1])).svet.x,
+    		ponto_cart.y - (*(segm_de_linha.spts[1])).svet.y,
+    		ponto_cart.z
+    	);
+
+    	if(
+    		(w2.x * comp_x + w2.y * comp_y) >= 0
+    	){
+    		return w2.modulo();
+    	}
+
+    	Vetor3D vetor_prod_vet_entre_segm_e_w1(
+    		                comp_y * w1.z,
+    					  - comp_x * w1.z,
+    		comp_x * w1.y - comp_y * w1.x 
+    	);
+
+    	return vetor_prod_vet_entre_segm_e_w1.modulo() / segm_de_linha.comprimento;
+    }
 
 
+    static float calcular_dist_segm_para_pt2_c(
+    	const sSegmento& segm_de_linha,
+    	const Vetor2D& ponto_cart_2d
+    ){
+    	/*
+		Descrição:
+			Mesmo que anterior, mas considerando agora que além do segmento,
+			o ponto também está em plano z = 0.
+    	*/
 
+    	const Vetor2D inicio(
+    		(*(segm_de_linha.spts[0])).svet.x,
+    		(*(segm_de_linha.spts[0])).svet.y 
+    	);
 
+    	const Vetor2D final(
+    		(*(segm_de_linha.spts[1])).svet.x,
+    		(*(segm_de_linha.spts[1])).svet.y
+    	);
 
+    	Vetor2D w1(ponto_cart_2d - inicio);
 
+    	if(
+    		w1.InnerProduct(final - inicio) <= 0
+    	){
 
+    		return w1.modulo();
+    	}
 
+    	Vetor2D w2(ponto_cart_2d - final);
 
+    	if(
+    		w2.InnerProduct(final - inicio) >= 0
+    	){
 
+    		return w2.modulo();
+    	}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    	return fabsf(
+    		(final - inicio).CrossProduct(w1) / segm_de_linha.comprimento 
+    	);
+    }
 
 };
 

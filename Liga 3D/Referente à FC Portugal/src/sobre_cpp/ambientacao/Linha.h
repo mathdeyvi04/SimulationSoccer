@@ -1,3 +1,4 @@
+
 #ifndef LINHA_H
 #define LINHA_H
 
@@ -224,7 +225,7 @@ public:
 	
 	Vetor3D segment_ponto_na_reta_mais_perto_cart(
 		const Vetor3D& ponto_qualquer_cart
-	){
+	) const {
 		/*
 		Basicamente, mesma função que a anterior, entretanto, agora limitamos
 		os pontos possíveis para o segmento de reta definido por inicio_c e 
@@ -240,7 +241,7 @@ public:
 	}
 	Vetor3D segment_ponto_na_reta_mais_perto_esf(
 		const Vetor3D& ponto_qualquer_esf
-	){
+	) const {
 		
 		return segment_ponto_na_reta_mais_perto_cart(ponto_qualquer_esf.para_cartesiano());
 	}
@@ -248,7 +249,7 @@ public:
 	
 	float segment_distancia_ate_ponto_cart(
 		const Vetor3D& ponto_qualquer_cart
-	){
+	) const {
 		/*
 		Mesma função que a nome semelhante, entretanto, não pensaremos mais
 		na reta infinita, e sim no segmento de reta.
@@ -287,10 +288,10 @@ public:
 	}
 	float segment_distancia_ate_ponto_esf(
 		const Vetor3D& ponto_qualquer_esf
-	){
+	) const {
 		return segment_distancia_ate_ponto_cart(ponto_qualquer_esf.para_cartesiano());
 	}
-		
+
 	
 	float segment_distancia_ate_segment(
 		const Linha& linha

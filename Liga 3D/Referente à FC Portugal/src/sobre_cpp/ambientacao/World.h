@@ -45,9 +45,9 @@ public:
 	/* Posição relativa do ponto de contato do pé com chão */
 
 
-	bool se_bola_esta_na_vista;
+	bool se_bola_esta_visivel;
 	/* Posição rel da bola em coordenadas cartesianas. */
-	Vetor3D pos_real_da_bola_cart;  
+	Vetor3D pos_rel_da_bola_cart;  
 
 	/*
 	O cheat é indicador que este valor não foi obtido pelos sensores
@@ -64,19 +64,19 @@ public:
 	*/
 
 	struct gMkr{ // ground markers
-		bool se_esta_na_vista;
+		bool se_esta_visivel;
 		bool se_eh_canto;
 
 		Vetor3D pos_abs;
-		Vetor3D pos_rel;
+		Vetor3D pos_rel_esf;  // Temos garantia que é esférica.
 	};
 
 	gMkr marcadores_de_chao[8];
 
-	struct sLine {
+	struct gLinha {
 		Vetor3D inicio, final;
 
-		sLine(
+		gLinha(
 			const Vetor3D& inicio,
 			const Vetor3D& final
 		) : inicio(inicio), final(final) {};
@@ -85,7 +85,7 @@ public:
 	/*
 	Apenas para organizarmos as linhas em coodernadas esféricas.
 	*/
-	vector<sLine> linhas_esfericas;
+	vector<gLinha> linhas_esfericas;
 };
 
 /* 

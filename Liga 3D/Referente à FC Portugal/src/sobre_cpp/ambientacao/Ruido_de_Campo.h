@@ -28,7 +28,57 @@ class RuidoCampo{
 private: 
 
 	RuidoCampo() {}; // Disabilitar construtor.
+	
 
+	// Documentação providenciada pela equipe
+	{
+        /**
+         * This function returns ln(1-sgn(a)*erf(a)), but sgn(a)*erf(a) = |erf(a)|, because sgn(a) == sgn(erf(a))
+         * So, it returns: ln(1-|erf(a)|), which is <=0
+         * 
+         * NOTE: condition to guarantee high precision: |a|>= 1
+         * 
+         * how to compute erf(a) ?
+         * 		erf(a) = sgn(a)(1-e^erf_aux(a))
+         * 
+         * how to compute erf(a)+erf(b) ? 
+         * 		erf(a)+erf(b) = sgn(a)(1-e^erf_aux(a)) + sgn(b)(1-e^erf_aux(b))
+         * 		assuming a<0 and b>0:
+         * 		              = e^erf_aux(a) -1 + 1 - e^erf_aux(b)
+         * 	                  = e^erf_aux(a) - e^erf_aux(b)
+         * 
+         * 		example: erf(-7)+erf(7.1)
+         * 			if we computed it directly:    
+         * 				erf(-7)+erf(7.1) = -0.9999999(...) + 0.9999999(...) = -1+1 = 0 (due to lack of precision, even if using double)
+         * 			if we use the proposed method: 
+         * 				e^erf_aux(-7) - e^erf_aux(7.1) = -1.007340e-23 - -4.183826e-23 = 3.176486E-23
+         * 
+         * how to compute ln(erf(a)+erf(b)) ?
+         * 		assuming a<0 and b>0:
+         * 		ln(erf(a)+erf(b)) = ln( exp(erf_aux(a)) - exp(erf_aux(b)) )
+         *                        = ln( exp(erf_aux(a)-k) - exp(erf_aux(b)-k) ) + k
+         * 		where k = min(erf_aux(a), erf_aux(b)) 
+         * 
+         * how to compute ln(erf(a)-erf(b)) ? (the difference is just the assumption)
+         *      assuming a*b >= 0
+         * 
+         *      ln(erf(a)-erf(b)) = ln( sgn(a)(1-e^erf_aux(a)) - sgn(a)(1-e^erf_aux(b)) ),   note that sgn(a)=sgn(b)
+         * 
+         *      rule: log( exp(a) - exp(b) ) = log( exp(a-k) - exp(b-k) ) + k
+         * 
+         *      if(a>0) 
+         *          ln(erf(a)-erf(b)) = ln( 1 - e^erf_aux(a) - 1 + e^erf_aux(b))
+         *                            = ln( exp(erf_aux(b)) - exp(erf_aux(a)) )
+         *                            = ln( exp(erf_aux(b)-erf_aux(b)) - exp(erf_aux(a)-erf_aux(b)) ) + erf_aux(b)
+         *                            = ln( 1 - exp(erf_aux(a)-erf_aux(b)) ) + erf_aux(b)
+         *      if(a<0)
+         *          ln(erf(a)-erf(b)) = ln( -1 + e^erf_aux(a) + 1 - e^erf_aux(b))
+         *                            = ln( exp(erf_aux(a)) - exp(erf_aux(b)) )
+         *                            = ln( exp(erf_aux(a)-erf_aux(a)) - exp(erf_aux(b)-erf_aux(a)) ) + erf_aux(a)
+         *                            = ln( 1 - exp(erf_aux(b)-erf_aux(a)) ) + erf_aux(a)
+         *   
+         */
+	}
 	static double 
 	erf_aux(
 		double valor
@@ -190,10 +240,10 @@ private:
 
 public: 
 
-	/*
+	/*////////////////////////////////////////////////////////////////////////////////////
 	Cada uma das três funções a seguir utilizam parâmetros específicos para otimização e para
 	validade dos resultados. Não altere eles sem saber oq está fazendo.
-	*/
+	*/////////////////////////////////////////////////////////////////////////////////////
 
 	static double
 	log_prob_r(
@@ -253,51 +303,7 @@ public:
 		double final  = ang_horizontal_de_ruido + 0.005 - ang_horizontal_phi;
 	
 		return log_prob_normal_distribution(0, 0.1480, inicio, final);
-
-
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #endif // RUIDO_DE_CAMPO_H

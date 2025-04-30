@@ -57,8 +57,9 @@ Do arquivo / pasta mais profundo, implementado mais cedo, até o mais superficia
       * Código responsável por prover ferramentos de conexão do ambiente Python com funções C++.
 
 * [ambientacao](src/sobre_cpp/ambientacao)
-  * Módulo C++ responsável por ferramentas de localização e de visualização de mundo.
-  * Houve condensação de arquivos quando comparado com o original.
+  * Módulo C++ responsável por ferramentas de localização, de visualização de mundo e de conexão
+  com RoboViz.
+  * Houve condensação de arquivos, quando comparado com o original, e alterações consideráveis em algumas lógicas.
     
     * [Singular.h](src/sobre_cpp/ambientacao/Singular.h)
       * Criação e Implementação de Classe Abstrata que permitirá instâncias únicas de qualquer classe.
@@ -72,18 +73,18 @@ Do arquivo / pasta mais profundo, implementado mais cedo, até o mais superficia
       * Matemática mais profunda e divertida.
     
     * [Linha.h](src/sobre_cpp/ambientacao/Linha.h)
-      * Criação e Implementação de Classe de Linha, representando retas e segmentos de reta.
+      * Criação e Implementação de Classe Linear, representando retas e segmentos de reta.
       * Um show de Álgebra Linear, bem complexo matematicamente.
     
     * [RobovizDraw.h](src/sobre_cpp/ambientacao/RobovizDraw.h)
       * Criação e Implementação de funções esteticamente construídas em C que fornecem 
       buffers de informações de desenho para o software RoboViz.
-      * Parâmetros alterados aqui influenciam como as coisas serão apresentadas 
-      nos desenhos do RoboViz.
+      * **Parâmetros alterados aqui influenciam como as coisas serão apresentadas 
+      nos desenhos do RoboViz.**
   
     * [RobovizLogger.h](src/sobre_cpp/ambientacao/RobovizLogger.h)
       * Header C++ extremamente mais complexo e focado em comunicação via protocolos.
-      * Disponibiliza ferramentas de apresentação de desenhos no RoboVIz.
+      * Disponibiliza ferramentas de apresentação de desenhos no RoboViz.
       * Discussão interessante sobre destrutores comuns e virtuais.
 
     * [World.h](src/sobre_cpp/ambientacao/World.h)
@@ -94,7 +95,7 @@ Do arquivo / pasta mais profundo, implementado mais cedo, até o mais superficia
     * [Ruido_de_Campo.h](src/sobre_cpp/ambientacao/Ruido_de_Campo.h)
       * Criação e Implementação de classe responsável por prover previsibilidade de erros
       nos sensores.
-      * Possui caráter matemático forte e bem complexo.
+      * Possui forte caráter matemático.
       * **Parâmetros alterados aqui influenciam no funcionamento global.**
       * Houve alteração de interpretação de lógicas a partir do original.
 
@@ -108,6 +109,5 @@ Do arquivo / pasta mais profundo, implementado mais cedo, até o mais superficia
       * Implementação de diversos métodos de visualização e de atualização de
       elementos no Roboviz.
       * **Parâmetros alterados aqui influenciam no funcionamento global.**
-      * Arquivo que converge todos os outros derivados de Roboviz.
-
-
+      * Arquivo que converge todos os outros derivados de Roboviz e World.h.
+      * Houve uma alteração significativa nas funções de desenho de elementos, sugiro comparação com Original.
