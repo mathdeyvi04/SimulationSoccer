@@ -90,24 +90,32 @@ Do arquivo / pasta mais profundo, implementado mais cedo, até o mais superficia
     * [World.h](src/sobre_cpp/ambientacao/World.h)
       * Criação de variáveis e structs que serão utilizadas na visualização do mundo
       externo.
-      * **Parâmetros alterados aqui influenciam na visualização externa.**
+      * **Parâmetros alterados aqui influenciam a visualização externa.**
 
     * [Ruido_de_Campo.h](src/sobre_cpp/ambientacao/Ruido_de_Campo.h)
       * Criação e Implementação de classe responsável por prover previsibilidade de erros
       nos sensores.
       * Possui forte caráter matemático.
-      * **Parâmetros alterados aqui influenciam no funcionamento global.**
+      * **Parâmetros alterados aqui influenciam o funcionamento global.**
       * Houve alteração de interpretação de lógicas a partir do original.
 
     * [RobovizField.h](src/sobre_cpp/ambientacao/RobovizField.h)
       * Criação de classe representadora do campo visualizado pelo Roboviz.
       * Diversas definições de constantes e de structs essenciais para representação de elementos do campo são implementadas aqui.
       * Sugiro a leitura calma deste arquivo, pois **parâmetros alterados aqui
-      influenciam no funcionamento global e na visualização externa.**.
+      influenciam o funcionamento global e na visualização externa.**.
 
     * [RobovizField.cpp](src/sobre_cpp/ambientacao/RobovizField.cpp)
       * Implementação de diversos métodos de visualização e de atualização de
       elementos no Roboviz.
-      * **Parâmetros alterados aqui influenciam no funcionamento global.**
+      * **Parâmetros alterados aqui influenciam o funcionamento global.**
       * Arquivo que converge todos os outros derivados de Roboviz e World.h.
       * Houve uma alteração significativa nas funções de desenho de elementos, sugiro comparação com Original.
+
+
+    * [LocalizerV2.h](src/sobre_cpp/ambientacao/LocalizerV2.h)
+      * Criação, definição e documentação do método de localização 3D utilizado e 
+      desenvolvimento pela equipe FC portugal.
+      * Código extremamente mais robusto e complexo.
+      * **Parâmetos alterados aqui influenciam o funcionamento global.**
+      * Há possibilidades de novas implementações.
