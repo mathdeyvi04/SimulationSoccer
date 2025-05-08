@@ -23,14 +23,233 @@ private:
 	/// Métodos Privados Principais
 	///////////////////////////////////////////////////////////////////////////////
 
-	/*
-	Conforme descrito na documentação acima deste 
-	*/
-	bool obter_orientacao_do_eixo_z();
+
+	void calcular_plano_do_chao_e_altura_do_agente(){
+		/*
+			- Estimar o melhor plano de chão baseado nos marcadores de chão.
+			
+			- Calcular a altura do agente baseado no centróide dos marcadores de chão.
+		*/
+
+		RobovizField& campo_existente = Singular<RobovizField>::obter_instancia();
+
+		const vector<RobovizField::sMarcador>& marcadores_de_chao_pesados = campo_existente.lista_de_marcadores_de_chao_pesados;
+		const int quantidade_de_marcadores = marcadores_de_chao_pesados.size();
+
+		// ---------------------------------------------------------------------------------
+
+		// Iniciar determinados vetores e matrizes
+		gsl_matrix *A, *V;
+		gsl_vector *S, *vec_aux;
+
+		A = gsl_matrix_alloc(
+			quantidade_de_marcadores,
+			3
+		);
+		V = gsl_matrix_alloc(
+			3,
+			3
+		);
+		S = gsl_vector_alloc(
+			3
+		);
+		vec_aux = gsl_vector_alloc(
+			3
+		);
+
+		// Obter centróide
+		Vetor3D centroide(0, 0, 0);
+		for(
+			const RobovizField::sMarcador& mkr_chao : marcadores_de_chao_pesados
+		){
+
+			centroide += mkr_chao.pos_rel_cart;
+		}
+
+		centroide /= (float) quantidade_de_marcadores;
+
+		// Inserir todos os marcadores dentro da matriz após subtrair do centróide
+		for(
+			int i = 0;
+				i < quantidade_de_marcadores;
+				i++
+		){
+
+			gsl_matrix_set( A, i, 0, marcadores_de_chao_pesados[i].pos_rel_cart.x - centroide.x );
+			gsl_matrix_set( A, i, 1, marcadores_de_chao_pesados[i].pos_rel_cart.y - centroide.y );
+			gsl_matrix_set( A, i, 2, marcadores_de_chao_pesados[i].pos_rel_cart.z - centroide.z );
+		}
+
+		/*
+		Utiliza a ferramenta SVD já disponível.
+
+		Decomporá a matriz A em U * S * V^(T), matrizes as quais:
+
+		U -> matriz ortogonal dos vetores próprios da matriz AA^(T)
+		S -> vetor com valores singulares
+		V -> matriz ortogonal dos vetores próprios da matriz A^(T)A
+		*/
+		gsl_linalg_SV_decomp( A, V, S, vec_aux);
+
+		// Capturar o plano ax + by + cy = d
+		double a = gsl_matrix_get( V, 0, 2 );
+		double b = gsl_matrix_get( V, 1, 2 );
+		double c = gsl_matrix_get( V, 2, 2 );
+		double d = a * centroide.x + b * centroide.y + c * centroide.z;
+
+		// Observe que |d| é caracterizado como uma estimativa da altura do agente.
+
+		gsl_matrix_free (A);
+		gsl_matrix_free (V);
+		gsl_vector_free (S);
+		gsl_vector_free (vec_aux);
+
+		// --------------------------------------------------------------------------------------
+
+		/*
+		Observe que não necessariamente o vetor normal (a, b, c) apontará para cima, sendo assim
+		devemos gerenciar as regiões nas quais temos certezas.
+
+		Sabe-se que:
+			
+			- ax + by + cz - d > 0  // SemiEspaço Superior
+			- ax + by + cz - d = 0  // Plano
+			- ax + by + cz - d < 0  // SemiEspaço Diminui
+
+		Já que o agente está sempre acima do chão, basta que determinemos que o agente está no 
+		mesmo semiespaço que o vetor normal.
+		Para fazer isso, checamos se a origem do sistema relativo de coordenadas, cabeça do agente,
+		retorna:
+
+			- ax + by + cz - d > 0
+			- - d > 0  // Cabeça do agente está em (0, 0, 0).
+			-   d < 0
+
+		Entretanto, caso o agente esteja caído, o plano otimizado pode estar deslocado. Sendo assim,
+		caso tiver um ponto de referência melhor, podemos usar.
+		*/
+
+		if(
+			! campo_existente.lista_de_goalposts.empty()
+		){
+
+			const Vetor3D& pt_aereo = campo_existente.lista_de_goalposts.front().pos_rel_cart;
+			if(
+				// Caso o gol esteja no semiespaço negativo, devemos inverter o vetor normal
+				a * pt_aereo.x + b * pt_aereo.y + c * pt_aereo.z < d 
+			){
+
+				a = -a;
+				b = -b;
+				c = -c;
+			}
+		}
+		else{
+
+			if(
+				// Caso não haja referências disponíveis, nos reta a cabeça do agente mesmo.
+				//
+				d > 0
+			){
+
+				a = -a;
+				b = -b;
+				c = -c;
+			}
+		}
+
+		// Salvamos a informação do vetor normal como nova orientação do vetor.
+		_Head_to_Field_Prelim.setar(2, 0, a);
+		_Head_to_Field_Prelim.setar(2, 1, b);
+		_Head_to_Field_Prelim.setar(2, 2, c);
+
+		// Calculamos a altura do agente
+		float altura = max(
+ 							- (centroide.x * a + centroide.y * b + centroide.z * c),
+ 							0.064
+						  );
+
+		_Head_to_Field_Prelim.setar(2, 3, altura);
+
+		// Setamos os pontos 
+		ultima_altura_conhecida = _final_z;
+		_final_z = altura;
+		_se_head_z_esta_pronta_para_atualizacao = true;
+	}
+
+	bool obter_orientacao_do_eixo_z(){
+		/*
+		Conforme descrito na documentação .md, vamos fazer o algoritmo demonstrado.
+		*/
+
+		RobovizField& campo_existente = Singular<RobovizField>::obter_instancia();
+
+		const int numero_de_traves_de_gol = campo_existente.lista_de_goalposts.size();
+
+		if(
+			campo_existente.quantidade_de_marcadores_de_chao_nao_colineares >= 3
+		){
+
+			// Basta então
+			calcular_plano_do_chao_e_altura_do_agente();
+
+			return true;
+		}
+
+		/*
+		Se chegamos neste ponto, há mais de 0 linhas. 
+
+		- Ter 1 linha, é o mais comum.
+		- Ter 2 linhas também é possível caso uma delas seja pequena demais para criar 2 marcadores.
+		- Ter 2 linhas pequenas também é uma possibilidade, oq é ruim para nós.
+
+		Sendo assim, devemos buscar a maior linha e verificar se ela é grande o suficiente.
+		*/
+
+		const Linha *linha_qualquer = &campo_existente.lista_de_todos_os_segmentos.front();
+		
+		if(
+			campo_existente.lista_de_todos_os_segmentos.size() > 1
+		){
+
+			for(
+				const Linha& outra_linha_qualquer : campo_existente.lista_de_todos_os_segmentos
+			){
+
+				if(
+					outra_linha_qualquer.comprimento > (*linha_qualquer).comprimento
+				){
+
+					// Há uma nova linha maior
+					linha_qualquer = &outra_linha_qualquer;
+				}
+			}
+		}
+
+		if(
+			// A maior linha é muito pequena para gerar pontos de referência.
+			(*linha_qualquer).comprimento < 1
+		){
+
+			atualizar_estado_do_sistema(FAILzLine);
+			return false;
+		}
+
+		if(	
+			// 1 extremidade e 1 linha ou 2 linhas pequenas
+			numero_de_traves_de_gol == 0
+		){
+
+			atualizar_estado_do_sistema(FAILzNOgoal);
+			return false;
+		}
+
+
+
+
+	}
 
 	// Espero vir em seguida para poder mudar estes nome.
-
-	void fit_ground_plane();
 
 	void find_z(const Vetor3D& Zvec);
     bool find_xy();
@@ -100,7 +319,7 @@ private:
     std::array<Vetor3D, 10> position_history;
     unsigned int position_history_ptr = 0;
 
-    float last_z = 0.5; 
+    float ultima_altura_conhecida = 0.5; 
 
     unsigned int _passos_desde_ultima_atualizacao =     0;
     bool 		 _se_esta_pronta_para_atualizacao = false; // Leia a  definição dentro da parte pública
@@ -125,11 +344,32 @@ private:
     int counter_fineTune = 0;
     int counter_ball = 0;
 
-    enum STATE{NONE, RUNNING, MINFAIL, BLIND, FAILzNOgoal, FAILzLine, FAILz, FAILtune, FAILguessLine, FAILguessNone, FAILguessMany, FAILguessTest, DONE, ENUMSIZE};
-    STATE state = NONE;
+    // Uma forma de apresentarmos os erros de forma inteligente
+    enum STATE{
+    	NONE,            /* Nenhum estado definido */
+    	RUNNING,         /* Processo em execução   */
+    	MINFAIL, 		 /* Falha mínima ocorreu   */
+    	BLIND, 			 /* Não há visão registrada*/
+    	FAILzNOgoal, 	 /* Falhas no cálculos de Z*/
+    	FAILzLine, 
+    	FAILz, 
+    	FAILtune,        /* Falha no Ajuste Fino   */
+    	FAILguessLine,   /* Falhas na etapa de guess*/
+    	FAILguessNone, 	 
+    	FAILguessMany, 
+    	FAILguessTest, 
+    	DONE, 			 /* Concluído              */
+    	ENUMSIZE         /* Auxiliar               */
+   	};
+    STATE estado_do_sistema = NONE;
 
-    void stats_change_state(enum STATE s);
-    int state_counter[STATE::ENUMSIZE] = {0};
+    void atualizar_estado_do_sistema(enum STATE novo_estado){
+
+    	contador_do_estado_do_sistema[novo_estado]++;
+    	estado_do_sistema = novo_estado;
+
+    }
+    int contador_do_estado_do_sistema[STATE::ENUMSIZE] = {0};
 
 
 public:
