@@ -76,7 +76,7 @@ public:
 	
 	Vetor3D ponto_na_reta_mais_perto_cart(
 		const Vetor3D& ponto_qualquer_cart
-	){
+	) const {
 		/*
 		A partir de um ponto qualquer, achará o ponto na RETA INFINITA
 		definida pela linha, this.
@@ -103,7 +103,7 @@ public:
 	}
 	Vetor3D ponto_na_reta_mais_perto_esf(
 		Vetor3D& ponto_qualquer_esf
-	){
+	) const {
 		
 		// Note que estamos recebendo em esf e retornaremos em cartesiana!!!
 		
@@ -113,7 +113,7 @@ public:
 	
 	float distancia_ate_ponto_cart(
 		const Vetor3D& ponto_qualquer_cart
-	){
+	) const {
 		/*
 		Distância de um ponto a uma linha. 
 		
@@ -138,7 +138,7 @@ public:
 	
 	float distancia_ate_linha(
 		const Linha& linha
-	)  {
+	) const {
 		/*
 		Suponha duas retas definidas pelas linhas, (*this) e a dada.
 		De tal forma que:

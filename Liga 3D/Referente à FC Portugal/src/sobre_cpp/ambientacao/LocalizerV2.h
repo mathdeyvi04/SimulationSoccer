@@ -12,19 +12,42 @@
 #include <gsl/gsl_multimin.h> //Multidimensional minimization
 */
 
-// Algumas variáveis estão como seus respectivos nomes em Inglês pq é realmente melhor.
+/* Funções Matemáticas Que Serão Úteis
 
-class LocalizerV2 {
-	friend class Singular<LocalizerV2>;
+Acredito que seja desnecessário a tradução dado o objetivo matemático das mesmas.
 
-private: 
+void add_gsl_regression_sample(
+	gsl_matrix* matriz, 
+	gsl_vector* vetor, 
+	int sample_no, 
+	const Vetor3D& relativeCoord, 
+	double absoluteCoord, 
+	double translCoeffMult=1
+){
 
-	///////////////////////////////////////////////////////////////////////////////
-	/// Métodos Privados Principais
-	///////////////////////////////////////////////////////////////////////////////
+	gsl_matrix_set(matriz, sample_no, 0, relativeCoord.x);
+	gsl_matrix_set(matriz, sample_no, 1, relativeCoord.y);
+	gsl_matrix_set(matriz, sample_no, 2, relativeCoord.z); 
+	gsl_matrix_set(matriz, sample_no, 3, translCoeffMult); 
+	gsl_vector_set(vetor,  sample_no,    absoluteCoord  );
+}
+
+template<size_t SIZE>
+gsl_vector* create_gsl_vector(
+	const std::array<double, SIZE> &content
+){
+
+	gsl_vector* v = gsl_vector_alloc (SIZE);
+	
+	for(int i=0; i<SIZE; i++){
+		gsl_vector_set(v, i, content[i]);
+	}
+	return v;
+}
+*/
 
 
-	void calcular_plano_do_chao_e_altura_do_agente(){
+void calcular_plano_do_chao_e_altura_do_agente(){
 		/*
 			- Estimar o melhor plano de chão baseado nos marcadores de chão.
 			
@@ -177,9 +200,158 @@ private:
 		_se_head_z_esta_pronta_para_atualizacao = true;
 	}
 
+Vetor2D get_ground_unit_vec_perpendicular_to( const Vetor3D& vetor ){
+	/*
+	Em inglês é bem melhor.
+	
+	Descrição:
+		Obtém vetor unitário no plano z = 0, perpendicular a um dado vetor.
+		Matematicamente, (0,0,1)x(vetor)/|vetor|.
+	*/
+
+	// Definimos como padrão os vetores convencionais, (1, 0) e (0, 1)
+	float gx = 1;
+	float gy = 0;
+	const float aux = sqrtf(vetor.x * vetor.x + vetor.y * vetor.y); // Vetor 
+
+	if(
+		aux != 0 // Já sabemos que será maior que 0
+	){
+		
+		gx = - vetor.y / aux;
+		gy =   vetor.x / aux;	
+	}
+
+	return Vetor2D( gx, gy );
+}
+
+Vetor3D rotacionar_em_torno_do_eixo_do_chao( Vetor3D vetor, Vetor3D Z_vec ){
+	/*
+	Descrição:
+		Aplica uma rotação 3D em torno de um eixo no plano do chão, onde o eixo é perpendicular
+		à projeção do vetor Z_vec no plano xy.
+		
+		Semelheante à: u=(0,0,1)x(Zvec)/|Zvec|
+	*/
+
+	Vetor2D vetor_unit_perpendicular_no_plano = get_ground_unit_vec_perpendicular_to( Z_vec );
+
+	/* Desnecessário qualquer alteração de tradução */
+
+	//Angle between unit normal vector of original plane and unit normal vector of rotated plane:
+	//cos(a) = (ov.rv)/(|ov||rv|) = ((0,0,1).(rvx,rvy,rvz))/(1*1) = rvz
+	float& cos_a = Z_vec.z; 
+	//assert(cos_a <= 1);
+	if(cos_a > 1) cos_a = 1; //Fix: it happens rarely, no cause was yet detected
+	float sin_a = -sqrtf(1 - cos_a*cos_a); //invert sin_a to invert a (direction was defined in method description)
+
+	const float i_cos_a = 1 - cos_a;
+	const float uxuy_i  = vetor_unit_perpendicular_no_plano.x * vetor_unit_perpendicular_no_plano.y * i_cos_a;
+	const float uxux_i  = vetor_unit_perpendicular_no_plano.x * vetor_unit_perpendicular_no_plano.x * i_cos_a;
+	const float uyuy_i  = vetor_unit_perpendicular_no_plano.y * vetor_unit_perpendicular_no_plano.y * i_cos_a;
+	const float uxsin_a = vetor_unit_perpendicular_no_plano.x * sin_a;
+	const float uysin_a = vetor_unit_perpendicular_no_plano.y * sin_a;
+
+	float x = (cos_a  + uxux_i ) * vetor.x +             uxuy_i * vetor.y + uysin_a * vetor.z;
+	float y =             uxuy_i * vetor.x + (cos_a  + uyuy_i ) * vetor.y - uxsin_a * vetor.z;
+	float z =          - uysin_a * vetor.x +            uxsin_a * vetor.y +   cos_a * vetor.z;
+
+	return Vetor3D(x,y,z);
+}
+
+void    calcular_eixos_XY_a_partir_de_eixo_Z(
+	const Vetor3D& vet_unit_z, 
+	float         agent_angle, 
+	      Vetor3D&       Xvec, 
+	      Vetor3D&       Yvec
+){
+	/*
+	Descrição:
+		Calcular vetores X e Y unitários a partir de um vetor unitário Z normal ao plano do solo.
+	*/
+
+	// Explicação Extremamente Profunda Sobre O Algoritmo Matemático
+
+	/**
+	 * There are two coordinate systems being considered in this method:
+	 * - The actual agent's vision (RELATIVE system -> RELsys)
+	 * - A rotated perspective where the agent's seen Zvec is the real Zvec (ROTATED system -> ROTsys)
+	 * 		(the agent's optical axis / line of sight is parallel to ground ) 
+	 * 
+	 * SUMMARY:
+	 * 		I provide an angle which defines the agent's rotation around Zvec (in the ROTsys)
+	 * 		E.g. suppose the agent is rotated 5deg, then in the ROTsys, the agent sees Xvec as being rotated -5deg
+	 * 		I then rotate Xvec to the RELsys, and compute the Yvec using cross product
+	 * 
+	 * STEPS:
+	 * 1st. Compute ROTsys, by finding rotation of plane defined by normal vector Zvec, in relation to seen XY plane 
+	 * (whose seen normal vector is (0,0,1)). We need: axis of rotation (unit vector lying on XY plane) and angle (rads):
+	 * 		rotation axis:  
+	 * 			u = (0,0,1)x(Zvec) (vector perpendicular to XY plane and Zvec)
+	 * 			  = (-ZvecY,ZvecX,0) (rotation will be counterclockwise when u points towards the observer)
+	 * 							     (so a negative angle will bring the agent to the ROTsys)
+	 * 		angle between Zvec and (0,0,1): 
+	 * 			a = acos( ((0,0,1).(Zvec)) / (|(0,0,1)|*|Zvec|) )
+	 *      	  =	acos( ((0,0,1).(Zvec)) )
+	 * 			  =	acos( ZvecZ )
+	 * 
+	 * 2nd. Establish Xvec in ROTsys:
+	 * 		Let agent_angle be the agent's angle. Then Xvec's angle is (b=-agent_angle).
+	 * 			Xvec = (cos(b),sin(b),0)
+	 * 
+	 * 3rd. Rotate Xvec to RELsys:
+	 * 		Let R be the rotation matrix that rotates from ROTsys to RELsys (positive angle using u):
+	 * 		Xvec = R * Xvec
+ 	 * 		     = R * (cos(b),sin(b),0)
+	 *           = (R00 * cos(b) + R01 * sin(b), R10 * cos(b) + R11 * sin(b), R20 * cos(b) + R21 * sin(b))
+	 * 		where R is: (rotation matrix from axis and angle https://en.wikipedia.org/wiki/Rotation_matrix#Rotation_matrix_from_axis_and_angle)
+	 * 			R00 = cos(a) + ux*ux(1-cos(a))    R01 = ux*uy(1-cos(a))
+	 * 			R10 = uy*ux(1-cos(a))             R11 = cos(a) + uy*uy(1-cos(a))
+	 *      	R20 = -uy*sin(a)                  R21 = ux*sin(a)
+	 * 		so Xvec becomes:
+	 * 			XvecX = cos(a)*cos(b) + (1-cos(a))*(ux*ux*cos(b) + ux*uy*sin(b))
+	 * 			XvecY = cos(a)*sin(b) + (1-cos(a))*(uy*uy*sin(b) + ux*uy*cos(b))
+	 * 			XvecZ = sin(a)*(ux*sin(b) - uy*cos(b))
+	 * 
+	 * 4th. To find Yvec we have two options:
+	 * 		A. add pi/2 to b and compute Yvec with the same expression used for Xvec
+	 * 		B. Yvec = Zvec x Xvec  (specifically in this order for original coordinate system)
+	 */
+
+	Vetor2D u = get_ground_unit_vec_perpendicular_to( vet_unit_z );
+
+	const float& cos_a = vet_unit_z.z; 
+	const float sin_a = sqrtf(1 - cos_a*cos_a);
+	const float uxuy = u.x * u.y;
+	const float b = -agent_angle; //Xvec's angle
+	const float cos_b = cosf(b);
+	const float sin_b = sinf(b);
+	const float i_cos_a = 1-cos_a;
+
+	Xvec.x = cos_a * cos_b + i_cos_a * ( u.x*u.x*cos_b + uxuy*sin_b );
+	Xvec.y = cos_a * sin_b + i_cos_a * ( u.y*u.y*sin_b + uxuy*cos_b );
+	Xvec.z = sin_a * ( u.x*sin_b - u.y*cos_b );
+
+	Yvec = vet_unit_z.CrossProduct(Xvec); //Using original coordinate system
+}
+
+// Algumas variáveis estão como seus respectivos nomes em Inglês pq é realmente melhor.
+
+class LocalizerV2 {
+	friend class Singular<LocalizerV2>;
+
+private: 
+
+	///////////////////////////////////////////////////////////////////////////////
+	/// Métodos Privados Principais
+	///////////////////////////////////////////////////////////////////////////////
+
 	bool obter_orientacao_do_eixo_z(){
 		/*
 		Conforme descrito na documentação .md, vamos fazer o algoritmo demonstrado.
+
+		Retornará True  caso consiga.
+		Retornará False caso não consiga.
 		*/
 
 		RobovizField& campo_existente = Singular<RobovizField>::obter_instancia();
@@ -191,7 +363,7 @@ private:
 		){
 
 			// Basta então
-			calcular_plano_do_chao_e_altura_do_agente();
+			// calcular_plano_do_chao_e_altura_do_agente();
 
 			return true;
 		}
@@ -244,14 +416,172 @@ private:
 			return false;
 		}
 
+		/*
+		Vamos nos preparar para as soluções A e B.
+		*/
 
+		// Obter qualquer ponto da linha que cruza as traves
+		Vetor3D pt_crossline;
+		vector<RobovizField::sMarcador>& lista_de_traves = campo_existente.lista_de_goalposts;
+		
+		if(
+			// Caso haja somente 1
+			numero_de_traves_de_gol == 1
+		){
 
+			pt_crossline = lista_de_traves.front().pos_rel_cart;
+		}
+		else{
+			if(
+				// Caso haja 2 traves do mesmo  gol
+				// Comparamos x pois o campo está na horizontal.
+				lista_de_traves[0].spos_abs.x = lista_de_traves[1].spos_abs.x
+			){
 
+				pt_crossline = Vetor3D::ponto_medio(
+														   lista_de_traves[0].pos_rel_cart,
+														   lista_de_traves[1].pos_rel_cart
+														 );
+			}
+			else{
+
+				// Extremamente raro, há outras soluções possíveis
+				// Mas computacionalmente desvantajosas. Logo:
+				pt_crossline = lista_de_traves.front().pos_rel_cart;
+			}
+		}
+
+		/*
+		Identificamos e aplicamos as soluções A e B
+		*/
+		Vetor3D ponto_da_reta_mais_perto = (*linha_qualquer).ponto_na_reta_mais_perto_cart(pt_crossline);
+		Vetor3D possivel_Z_vec = pt_crossline - ponto_da_reta_mais_perto;
+
+		float possivel_comprimento_Z_vec = possivel_Z_vec.modulo();
+		if(
+			// Nesta verificação, definimos soluções A e B
+			fabsf(
+				possivel_comprimento_Z_vec - 0.8 
+			) < 0.05
+		){
+
+			Vetor3D unitario_Z_vec = possivel_Z_vec / possivel_comprimento_Z_vec;
+
+			// Sabemos a orientação
+			_Head_to_Field_Prelim.setar(2, 0, unitario_Z_vec.x);
+			_Head_to_Field_Prelim.setar(2, 1, unitario_Z_vec.y);
+			_Head_to_Field_Prelim.setar(2, 2, unitario_Z_vec.z);
+
+			// Ir para próximo passo
+			obter_head_z(unitario_Z_vec);
+			return true;
+		}
+
+		// Caso não seja solução A e B, vamos aplicar a solução C
+
+		Vetor3D pt_crossline_left, midp_crossline;
+
+		// Todos são sFixedMkr
+		const auto& goal_mm = RobovizField::gMkrs::goal_mm;
+		const auto& goal_mp = RobovizField::gMkrs::goal_mp;
+		const auto& goal_pm = RobovizField::gMkrs::goal_pm;
+		const auto& goal_pp = RobovizField::gMkrs::goal_pp;
+
+		if(
+			goal_mm.se_esta_visivel && goal_mp.se_esta_visivel
+		){
+
+			pt_crossline_left = goal_mm.pos_rel_cart - goal_mp.pos_rel_cart;
+			midp_crossline    = (goal_mm.pos_rel_cart + goal_mp.pos_rel_cart) / 2;
+		}
+		else{
+
+			if(
+				goal_pp.se_esta_visivel && goal_pm.se_esta_visivel
+			){
+
+				pt_crossline_left = goal_pp.pos_rel_cart - goal_pm.pos_rel_cart;
+				midp_crossline    = (goal_pp.pos_rel_cart + goal_pm.pos_rel_cart) / 2;
+			}
+		}
+
+		/*
+		Verifica se o ângulo entre a linha e a linha de traves está entre 45° e 135°.
+
+		Matemática:
+			45deg < acos(line.crossbar / |line||crossbar|) < 135deg  <=>
+	  		| line.crossbar / |line||crossbar| | < cos(45deg)        <=>
+	  		| line.crossbar | < cos(45deg) * |line| * ~2.1           <=>
+	  		| line.crossbar | < 1.485 * |line|
+		*/
+		Vetor3D vet_diret = (*linha_qualquer).obter_diretor_cart();
+		if(
+			numero_de_traves_de_gol > 1 && fabsf(
+												  vet_diret.InnerProduct(
+												  						  pt_crossline_left
+												  						)
+												) < 1.485 * (*linha_qualquer).comprimento
+		){
+
+			possivel_Z_vec = vet_diret.CrossProduct(
+													pt_crossline_left
+												   );
+
+			possivel_Z_vec = possivel_Z_vec * ((
+				(*linha_qualquer).inicio_c.obter_distancia(
+											midp_crossline
+										  ) > (*linha_qualquer).final_c.obter_distancia(
+						  												 midp_crossline
+						  											   )) ? 1.0 : -1.0);
+
+			possivel_Z_vec = possivel_Z_vec.normalize();
+
+			_Head_to_Field_Prelim.setar(2,0,possivel_Z_vec.x);
+			_Head_to_Field_Prelim.setar(2,1,possivel_Z_vec.y);
+			_Head_to_Field_Prelim.setar(2,2,possivel_Z_vec.z);
+
+			obter_head_z(possivel_Z_vec);
+			return true;
+		}
+
+		// Caso chegue até aqui
+		atualizar_estado_do_sistema(FAILz);
+		return false;
 	}
 
 	// Espero vir em seguida para poder mudar estes nome.
 
-	void find_z(const Vetor3D& Zvec);
+	void obter_head_z(Vetor3D& Z_vec){
+		/*
+		Computar translação de Z, vulgo altura.
+		*/
+
+		RobovizField& campo_existente = Singular<RobovizField>::obter_instancia();
+
+		Vetor3D vetor_resultante;
+		for(
+			const RobovizField::sMarcador& g_mkr : campo_existente.lista_de_marcadores_de_chao_pesados
+		){
+
+			vetor_resultante += g_mkr.pos_rel_cart;
+		}
+
+		vetor_resultante /= campo_existente.lista_de_marcadores_de_chao_pesados.size();
+
+		// Mínima Altura
+		float z = max(
+
+			- vetor_resultante.InnerProduct(Z_vec),
+			0.064f
+		);
+
+		_Head_to_Field_Prelim.setar(2, 3, z);
+
+		ultima_altura_conhecida = _final_z;
+		_final_z = z;
+		_se_head_z_esta_pronta_para_atualizacao = true;
+	}
+
     bool find_xy();
     bool guess_xy();
 
@@ -267,11 +597,102 @@ private:
     	float initial_y
     );
 
-    /*
+    
 	static double map_error_logprob(
-    	const gsl_vector *v,
-    	void *params
-    );
+    	const gsl_vector *vet,
+    				void *params
+    ){
+		/*
+		Descrição:
+			Calcular mapa de erros usando probabilidade de distâncias.
+
+			Observe que, por ser estática, essa função será executada mais de 
+			uma vez em vários momentos.
+
+		Retorno:
+			- log( probabilidade_normalizada = (p1*p2*p3*...*pn)^(1/n) )
+		*/
+
+		float angle;
+		RobovizField& campo_existente = Singular<RobovizField>::obter_instancia();
+
+		// Obtemos o ângulo a aprtir 
+		angle = ((*vet).size() == 3) ? gsl_vector_get(vet, 2) : *(float *) params;
+
+		Matriz& _Head_to_Field_Prelim_instantanea = Singular<LocalizerV2>::obter_instancia()._Head_to_Field_Prelim;
+		Vetor3D Z_vec( 
+			_Head_to_Field_Prelim_instantanea.get(2, 0),
+			_Head_to_Field_Prelim_instantanea.get(2, 1),
+			_Head_to_Field_Prelim_instantanea.get(2, 2),			
+		);
+
+		Vetor3D X_vec, Y_vec;
+		calcular_eixos_XY_a_partir_de_eixo_Z( Z_vec, angle, X_vec, Y_vec );
+
+		// Estes serão os coeficientes que serão otimizados.
+		_Head_to_Field_Prelim_instantanea.setar( 0, 0, X_vec.x);
+		_Head_to_Field_Prelim_instantanea.setar( 0, 1, X_vec.y);
+		_Head_to_Field_Prelim_instantanea.setar( 0, 2, X_vec.z);
+		_Head_to_Field_Prelim_instantanea.setar( 0, 3, gsl_vector_get(vet, 0));
+		_Head_to_Field_Prelim_instantanea.setar( 1, 0, Y_vec.x);
+		_Head_to_Field_Prelim_instantanea.setar( 1, 1, Y_vec.y);
+		_Head_to_Field_Prelim_instantanea.setar( 1, 2, Y_vec.z);
+		_Head_to_Field_Prelim_instantanea.setar( 1, 3, gsl_vector_get(vet, 1));
+
+
+		Matriz _Field_to_Head_Prelim_instantanea = _Head_to_Field_Prelim_instantanea.obter_matriz_de_transformacao_inversa();
+
+		double total_log_prob      = 0;
+		int    total_error_counter = 0;
+    
+    	// Adicionaremos o log da probabilidade de marcadores desconhecidos
+		for(
+			const RobovizField::sMarcador& mkr_desc : campo_existente.lista_de_marcadores_desconhecidos
+		){
+
+			// Sabemos o segmento mais perto, logo podemos trazer para perto 
+			Vetor3D inicio_rel_cart = _Field_to_Head_Prelim_instantanea * ( (*(*mkr_desc.segm).spts[0]).obter_vetor() );
+			Vetor3D final_rel_cart  = _Field_to_Head_Prelim_instantanea * ( (*(*mkr_desc.segm).spts[1]).obter_vetor() );
+
+			Linha segmento_mais_perto(
+									  inicio_rel_cart,
+									  final_rel_cart,
+									  (*mkr_desc.segm).comprimento 
+			                          );
+
+			Vetor3D ponto_esf_mais_perto = segmento_mais_perto.segment_ponto_na_reta_mais_perto_cart(mkr_desc.pos_rel_cart).para_esferica();
+
+			total_log_prob += Ruido_de_Campo::log_prob_r(ponto_esf_mais_perto.x, mkr_desc.pos_rel_esf.x);
+			total_log_prob += Ruido_de_Campo::log_prob_h(ponto_esf_mais_perto.y, mkr_desc.pos_rel_esf.y);
+			total_log_prob += Ruido_de_Campo::log_prob_v(ponto_esf_mais_perto.z, mkr_desc.pos_rel_esf.z);
+			
+			total_error_counter++;			
+		}
+
+		// Adicionaremos o log da probabilidade de marcadores conhecidos
+		for(
+			const RobovizField::sMarcador& mkr : campo_existente.lista_de_marcadores_identificados
+		){
+
+			// Trazer marcador para perto do agente
+			Vetor3D pos_rel_esf_do_mkr = ( _Field_to_Head_Prelim_instantanea * mkr.spos_abs.obter_vetor()).para_esferica();
+			
+			total_logprob += Ruido_de_Campo::log_prob_r(pos_rel_esf_do_mkr.x, mkr.pos_rel_esf.x);
+			total_logprob += Ruido_de_Campo::log_prob_h(pos_rel_esf_do_mkr.y, mkr.pos_rel_esf.y);
+			total_logprob += Ruido_de_Campo::log_prob_v(pos_rel_esf_do_mkr.z, mkr.pos_rel_esf.z);
+			
+			total_error_counter++;
+		}	
+
+		// Retornamos o valor desejado. 
+		// Negativo pois a otimização mínima a função de perda.
+		double logNormProb = - total_logprob / total_error_counter; 
+
+		// Evitar infinitos
+		return (!gsl_finite(logNormProb)) ? 1e6 : logNormProb;
+    }
+
+    /*
     static double map_error_2d(
     	const gsl_vector *v,
     	void *params
@@ -279,7 +700,6 @@ private:
     */
 
     void commit_everything();
-
 
     ///////////////////////////////////////////////////////////////////////////////
 	/// Métodos Privados de Transformação Matricial
@@ -327,7 +747,7 @@ private:
 
 
     ///////////////////////////////////////////////////////////////////////////////
-	/// Estatística de Depuração
+	/// Depuração
 	///////////////////////////////////////////////////////////////////////////////
 
     int stats_sample_position_error(
@@ -345,6 +765,7 @@ private:
     int counter_ball = 0;
 
     // Uma forma de apresentarmos os erros de forma inteligente
+    // Vamos manter em inglês por simplicidade
     enum STATE{
     	NONE,            /* Nenhum estado definido */
     	RUNNING,         /* Processo em execução   */
@@ -480,7 +901,7 @@ public:
 	*/
 	float obter_ultima_head_z() const {
 
-		return last_z;
+		return ultima_altura_conhecida;
 	}
 };
 

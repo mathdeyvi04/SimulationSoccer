@@ -87,14 +87,14 @@ Vamos construir uma tabela de possibilidades para facilitar demonstração:
 
 Calcular o ponto p da linha mais próximo à trave g.
 
-$Z_vec = \frac{g - p}{|g - p|}$
+$Z_{vec} = \frac{g - p}{|g - p|}$
 
 - Solução B:
 
 Calular o ponto p da linha mais próximo ao ponto médio m entre as 
 traves g1 e g2:
 
-$Z_vec = \frac{g - m}{|g - m|}$
+$Z_{vec} = \frac{g - m}{|g - m|}$
 
 Esta solução é mais precisa que a solução A.
 
@@ -104,7 +104,7 @@ Caso a linha não seja a linha do gol, há 3 possibilidades:
 
 > Possbilidade I: 2 traves e uma linha ortogonal
 >
-> $Z_vec = (Linha_das_Traves) \times Linha$
+> $Z_{vec} = \vec{LinhaDasTraves}\times \vec{Linha}$
 
 
 > Possibilidade II: O valor de z foi inferido externamente por aprendizado de máquina.
@@ -120,7 +120,7 @@ Caso a linha não seja a linha do gol, há 3 possibilidades:
 > Literalmente pulamos este caso devido à insegurança dos dados.
 
 
-- Solução *:
+- Solução \*:
 
 Cenário foi testado, mas é inválido, logo descartado.
 
