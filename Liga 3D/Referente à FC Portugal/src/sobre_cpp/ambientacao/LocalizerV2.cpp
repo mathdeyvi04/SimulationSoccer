@@ -190,7 +190,7 @@ void LocalizerV2::run(){
 												);
 	}
 	
-	//reportar_error();
+	//reportar_situacao();
 }
 
 int main(){

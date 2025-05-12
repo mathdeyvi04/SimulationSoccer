@@ -3,7 +3,6 @@
 #define LINHA_H
 
 #include "Geometria.h"
-#include <stdio.h>
 
 class Linha{
 	/*

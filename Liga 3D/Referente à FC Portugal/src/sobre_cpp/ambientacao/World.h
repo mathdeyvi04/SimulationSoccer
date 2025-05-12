@@ -61,6 +61,13 @@ public:
 	Atributos de Mundo:
 
 	Linhas e cantos.
+
+	São amplamente utilizados dentro de LocalizerV2 e RobovizField.
+
+	Experimente ver o arquivo de debug_main.cc para verificar como funciona a criação dos mesmos.
+
+	Tenha noção de que estas structs serão criadas e atribuídas dentro do python, por isso
+	vc não às encontrará nestes arquivos.
 	*/
 
 	struct gMkr{ // ground markers
@@ -68,7 +75,7 @@ public:
 		bool se_eh_canto;
 
 		Vetor3D pos_abs;
-		Vetor3D pos_rel_esf;  // Temos garantia que é esférica.
+		Vetor3D pos_rel_esf;  // Temos garantia que é esférica, basta ver oq é feito em RobovizField.cpp, dentro de atualizar_marcadores()
 	};
 
 	gMkr marcadores_de_chao[8];

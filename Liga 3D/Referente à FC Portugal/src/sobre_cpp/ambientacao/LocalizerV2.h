@@ -1536,7 +1536,7 @@ public:
 	*/
 	void run();
 
-	void reportar_error() const {
+	void reportar_situacao() const {
 		/*
 		Função depuradora, providenciando um relatório estatístico de desempenho do 
 		algoritmo. Projetado para avaliar e diagnosticar a qualidade dos ajustes.
