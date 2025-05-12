@@ -131,7 +131,7 @@ public:
 	}
 	float distancia_ate_ponto_esf(
 		const Vetor3D ponto_qualquer_esf
-	){
+	) const {
 		return distancia_ate_ponto_cart(ponto_qualquer_esf.para_cartesiano());
 	}
 	
@@ -295,7 +295,7 @@ public:
 	
 	float segment_distancia_ate_segment(
 		const Linha& linha
-	){
+	) const {
 		/*
 		Obter distância entre dois segmentos de reta definidos respectivamente
 		por B - A e M - N.

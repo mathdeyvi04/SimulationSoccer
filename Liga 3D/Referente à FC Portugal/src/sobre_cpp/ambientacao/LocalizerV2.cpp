@@ -51,7 +51,7 @@ int LocalizerV2::estimar_error_posicional(
 	return 1;
 }
 
-bool refinamento(
+bool LocalizerV2::refinamento(
 	float initial_angle, 
 	float initial_x, 
 	float initial_y
@@ -67,7 +67,7 @@ bool refinamento(
 
 	// Contamos as estatísticas antes do refinamento
 	counter_tuneo_de_refinamento += estimar_error_posicional(
-															  Vetor3D(initial_x, initial_y, _Head_to_Field_prelim.get(11)),
+															  Vetor3D(initial_x, initial_y, _Head_to_Field_Prelim.obter(11)),
 															  mundo_existente.pos_abs_do_robo_cart_cheat,
 															  errorSum_fineTune_before
 															);
@@ -86,28 +86,28 @@ bool refinamento(
 
 	// Estatísticas para o primeiro refinamento.
 	estimar_error_posicional(
-							  Vetor3D(initial_x, initial_y, _Head_to_Field_prelim.get(11)),
+							  Vetor3D(initial_x, initial_y, _Head_to_Field_Prelim.obter(11)),
 							  mundo_existente.pos_abs_do_robo_cart_cheat,
 							  errorSum_fineTune_euclidianDist
 							);
 
-	mundo_existente.atualizar_marcadores_a_partir_da_transformacao(_Head_to_Field_prelim);
+	campo_existente.atualizar_marcadores_a_partir_da_transformacao(_Head_to_Field_Prelim);
 
 	// Dessa vez com probabilidades
 	refinamento_aux(initial_angle, initial_x, initial_y, true);
 
 	estimar_error_posicional(
-						      _Head_to_Field_prelim.obter_vetor_de_translacao(),
+						      _Head_to_Field_Prelim.obter_vetor_de_translacao(),
 						      mundo_existente.pos_abs_do_robo_cart_cheat,
 							  errorSum_fineTune_probabilistic
 							);
 
-	campo_existente.atualizar_marcadores_desconhecidos_a_partir_da_transformacao(_Head_to_Field_prelim);
+	campo_existente.atualizar_marcadores_desconhecidos_a_partir_da_transformacao(_Head_to_Field_Prelim);
 
 	return true;
 }
 
-void run(){
+void LocalizerV2::run(){
 	/*
 	- Calcular posição e orientação 3D.
 	
@@ -141,7 +141,6 @@ void run(){
 		(numero_de_marcadores == 0 && numero_de_segm < 2) || (numero_de_segm == 0)
 	){
 
-		()
 		if(
 			numero_de_segm == 0 && numero_de_marcadores == 0
 		){
@@ -168,7 +167,7 @@ void run(){
 	// ----- Fluxo de Trabalho 3 - 4
 
 	if(
-		!( (numero_de_marcadores > 1) ? obter_translacao_rotacao_xy : guess_xy )
+		!( (numero_de_marcadores > 1 ) ? obter_translacao_rotacao_xy() : guess_xy() )
 	){
 
 		return;
@@ -185,7 +184,7 @@ void run(){
 	){
 
 		counter_ball += estimar_error_posicional(
-												  _Head_to_Field_prelim * mundo_existente.pos_rel_da_bola_cart,
+												  _Head_to_Field_Prelim * mundo_existente.pos_rel_da_bola_cart,
 												  mundo_existente.pos_abs_da_bola_cart_cheat,
 												  errorSum_ball
 												);

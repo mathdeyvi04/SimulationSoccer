@@ -289,7 +289,7 @@ public:
 	*/
 	Matriz operator*(
 		const Matriz& outra_matriz
-	){
+	) const {
 
 		float temp[M_TAMANHO];
 		
@@ -334,7 +334,7 @@ public:
 	*/
 	Matriz operator*(
 		const float escalar
-	){
+	) const {
 		
 		float temp[M_TAMANHO];
 		

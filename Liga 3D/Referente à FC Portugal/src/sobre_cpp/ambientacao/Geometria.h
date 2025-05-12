@@ -84,6 +84,8 @@ public:
 	
 	float x;
 	float y;
+
+	Vetor2D() : x(0), y(0) {}
 	
 	Vetor2D(
 		/*

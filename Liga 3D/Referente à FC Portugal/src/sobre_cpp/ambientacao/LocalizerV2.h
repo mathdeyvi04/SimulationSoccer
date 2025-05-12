@@ -8,16 +8,15 @@
 #include <iostream>
 #include <cstdio>
 
-/*
 #include <gsl/gsl_multifit.h> //Linear least-squares fitting
 #include <gsl/gsl_linalg.h>   //Singular value decomposition
 #include <gsl/gsl_multimin.h> //Multidimensional minimization
-*/
 
-/* Funções Matemáticas Que Serão Úteis */
+/* Funções Matemáticas Que Serão Úteis 
 
 Acredito que seja desnecessário a tradução dado o objetivo matemático das mesmas.
 
+*/
 void add_gsl_regression_sample(
 	gsl_matrix* matriz, 
 	gsl_vector* vetor, 
@@ -663,18 +662,18 @@ private:
 		 */
 
 		//Convert angle into Xvec and Yvec
-		Vetor3D Zvec(_Head_to_Field_Prelim.get(2,0), _Head_to_Field_Prelim.get(2,1), _Head_to_Field_Prelim.get(2,2));
+		Vetor3D Zvec(_Head_to_Field_Prelim.obter(2,0), _Head_to_Field_Prelim.obter(2,1), _Head_to_Field_Prelim.obter(2,2));
 		Vetor3D Xvec, Yvec;
 		calcular_eixos_XY_a_partir_de_eixo_Z(Zvec, best_ang, Xvec, Yvec );
 
-		_Head_to_Field_Prelim.set(0,0, Xvec.x);
-		_Head_to_Field_Prelim.set(0,1, Xvec.y);
-		_Head_to_Field_Prelim.set(0,2, Xvec.z);
-		_Head_to_Field_Prelim.set(0,3, best_x);
-		_Head_to_Field_Prelim.set(1,0, Yvec.x);
-		_Head_to_Field_Prelim.set(1,1, Yvec.y);
-		_Head_to_Field_Prelim.set(1,2, Yvec.z);
-		_Head_to_Field_Prelim.set(1,3, best_y);
+		_Head_to_Field_Prelim.setar(0,0, Xvec.x);
+		_Head_to_Field_Prelim.setar(0,1, Xvec.y);
+		_Head_to_Field_Prelim.setar(0,2, Xvec.z);
+		_Head_to_Field_Prelim.setar(0,3, best_x);
+		_Head_to_Field_Prelim.setar(1,0, Yvec.x);
+		_Head_to_Field_Prelim.setar(1,1, Yvec.y);
+		_Head_to_Field_Prelim.setar(1,2, Yvec.z);
+		_Head_to_Field_Prelim.setar(1,3, best_y);
 
 		return true;
     }
@@ -697,9 +696,9 @@ private:
     	RobovizField& campo_existente = Singular<RobovizField>::obter_instancia();
 
     	Vetor3D Zvec(
-    		_Head_to_Field_Prelim.get(2,0), 
-    		_Head_to_Field_Prelim.get(2,1), 
-    		_Head_to_Field_Prelim.get(2,2)
+    		_Head_to_Field_Prelim.obter(2,0), 
+    		_Head_to_Field_Prelim.obter(2,1), 
+    		_Head_to_Field_Prelim.obter(2,2)
     	);
 
     	RobovizField::sMarcador *mkr_1 = nullptr;
@@ -744,7 +743,7 @@ private:
 		float agente_angle = real_angle - seen_angle;
 
 		Vetor3D Xvec, Yvec;
-		calcular_eixos_XY_a_partir_de_eixo_Z(Zvec, agent_angle, Xvec, Yvec);
+		calcular_eixos_XY_a_partir_de_eixo_Z(Zvec, agente_angle, Xvec, Yvec);
 
 		/** Explicação Detalhada do que estamos propondo
 		 * 
@@ -782,9 +781,9 @@ private:
 
     	// Obter vetores de estágios anteriores
 		Vetor3D Zvec(
-			_Head_to_Field_Prelim.get(2,0), 
-			_Head_to_Field_Prelim.get(2,1), 
-			_Head_to_Field_Prelim.get(2,2)
+			_Head_to_Field_Prelim.obter(2,0), 
+			_Head_to_Field_Prelim.obter(2,1), 
+			_Head_to_Field_Prelim.obter(2,2)
 		);
 		Vetor2D ultima_altura_conhecida_2d(posicao_da_cabeca.x, posicao_da_cabeca.y);
 
@@ -793,7 +792,7 @@ private:
 		const Linha* maior_linha = &campo_existente.lista_de_todos_os_segmentos.front();
 		for(const Linha& linha_qualquer : campo_existente.lista_de_todos_os_segmentos){
 
-			if(linha_qualquer.comprimento > (*maior_linha).comprimento) longestLine = &linha_qualquer;
+			if(linha_qualquer.comprimento > (*maior_linha).comprimento){ maior_linha = &linha_qualquer; }
 		}
 
 		if(
@@ -989,18 +988,29 @@ private:
 			- log( probabilidade_normalizada = (p1*p2*p3*...*pn)^(1/n) )
 		*/
 
-		float angle;
 		RobovizField& campo_existente = Singular<RobovizField>::obter_instancia();
 
-		// Obtemos o ângulo a aprtir 
-		angle = ((*vet).size() == 3) ? gsl_vector_get(vet, 2) : *(float *) params;
+		/*
+		Infelizmente não é possível escrevê-lo como operator terciário
+		*/
+		float angle = 0;
+		if(
+			(*vet).size == 3
+		){
+
+			angle = gsl_vector_get(vet, 2);
+		}
+		else{
+
+			angle = *(float *) params;
+		}
 
 		// Pegamos a matriz de transformação
 		Matriz& _Head_to_Field_Prelim_instantanea = Singular<LocalizerV2>::obter_instancia()._Head_to_Field_Prelim;
 		Vetor3D Z_vec( 
-			_Head_to_Field_Prelim_instantanea.get(2, 0),
-			_Head_to_Field_Prelim_instantanea.get(2, 1),
-			_Head_to_Field_Prelim_instantanea.get(2, 2),			
+			_Head_to_Field_Prelim_instantanea.obter(2, 0),
+			_Head_to_Field_Prelim_instantanea.obter(2, 1),
+			_Head_to_Field_Prelim_instantanea.obter(2, 2)		
 		);
 
 		Vetor3D X_vec, Y_vec;
@@ -1040,8 +1050,8 @@ private:
 			Vetor3D ponto_mais_perto_esf = segmento_mais_perto.segment_ponto_na_reta_mais_perto_cart(mkr_desc.pos_rel_cart).para_esferica();
 
 			total_log_prob += Ruido_de_Campo::log_prob_r(ponto_mais_perto_esf.x, mkr_desc.pos_rel_esf.x);
-			total_log_prob += Ruido_de_Campo::log_prob_h(ponto_mais_perto_esf.y, mkr_desc.pos_rel_esf.y);
-			total_log_prob += Ruido_de_Campo::log_prob_v(ponto_mais_perto_esf.z, mkr_desc.pos_rel_esf.z);
+			total_log_prob += Ruido_de_Campo::log_prob_theta(ponto_mais_perto_esf.y, mkr_desc.pos_rel_esf.y);
+			total_log_prob += Ruido_de_Campo::log_prob_phi(ponto_mais_perto_esf.z, mkr_desc.pos_rel_esf.z);
 			
 			total_error_counter++;			
 		}
@@ -1054,16 +1064,16 @@ private:
 			// Trazer marcador para perto do agente
 			Vetor3D pos_rel_esf_do_mkr = ( _Field_to_Head_Prelim_instantanea * mkr.spos_abs.obter_vetor()).para_esferica();
 			
-			total_logprob += Ruido_de_Campo::log_prob_r(pos_rel_esf_do_mkr.x, mkr.pos_rel_esf.x);
-			total_logprob += Ruido_de_Campo::log_prob_h(pos_rel_esf_do_mkr.y, mkr.pos_rel_esf.y);
-			total_logprob += Ruido_de_Campo::log_prob_v(pos_rel_esf_do_mkr.z, mkr.pos_rel_esf.z);
+			total_log_prob += Ruido_de_Campo::log_prob_r(pos_rel_esf_do_mkr.x, mkr.pos_rel_esf.x);
+			total_log_prob += Ruido_de_Campo::log_prob_theta(pos_rel_esf_do_mkr.y, mkr.pos_rel_esf.y);
+			total_log_prob += Ruido_de_Campo::log_prob_phi(pos_rel_esf_do_mkr.z, mkr.pos_rel_esf.z);
 			
 			total_error_counter++;
 		}	
 
 		// Retornamos o valor desejado. 
 		// Negativo pois a otimização mínima a função de perda.
-		double logNormProb = - total_logprob / total_error_counter; 
+		double logNormProb = - total_log_prob / total_error_counter; 
 
 		// Evitar infinitos
 		return (!gsl_finite(logNormProb)) ? 1e6 : logNormProb;
@@ -1079,18 +1089,29 @@ private:
     	*/
 
     	/* Mesmas linhas de comando que a função anterior */
-		float angle;
 		RobovizField& campo_existente = Singular<RobovizField>::obter_instancia();
 
-		// Obtemos o ângulo a aprtir 
-		angle = ((*vet).size() == 3) ? gsl_vector_get(vet, 2) : *(float *) params;
+		/*
+		Infelizmente não é possível escrevê-lo como operator terciário
+		*/
+		float angle = 0;
+		if(
+			(*vet).size == 3
+		){
+
+			angle = gsl_vector_get(vet, 2);
+		}
+		else{
+
+			angle = *(float *) params;
+		}
 
 		// Pegamos a matriz de transformação
 		Matriz& _Head_to_Field_Prelim_instantanea = Singular<LocalizerV2>::obter_instancia()._Head_to_Field_Prelim;
 		Vetor3D Z_vec( 
-			_Head_to_Field_Prelim_instantanea.get(2, 0),
-			_Head_to_Field_Prelim_instantanea.get(2, 1),
-			_Head_to_Field_Prelim_instantanea.get(2, 2),			
+			_Head_to_Field_Prelim_instantanea.obter(2, 0),
+			_Head_to_Field_Prelim_instantanea.obter(2, 1),
+			_Head_to_Field_Prelim_instantanea.obter(2, 2)
 		);
 
 		Vetor3D X_vec, Y_vec;
@@ -1110,14 +1131,14 @@ private:
 		int   total_error_counter = 0;
 
 		for(
-			const Linha& linha_qualquer campo_existente.lista_de_todos_os_segmentos
+			const Linha& linha_qualquer : campo_existente.lista_de_todos_os_segmentos
 		){
 
 			// Transformar coordenadas
 			Vetor3D inicio_linha_cart = _Head_to_Field_Prelim_instantanea * linha_qualquer.inicio_c;
-			Vetor3D final_linha_cart  = _Head_to_Field_Prelim_instantanea *   linha_qualquer.fina_c;
+			Vetor3D final_linha_cart  = _Head_to_Field_Prelim_instantanea *  linha_qualquer.final_c;
 
-			// Computar ângulo
+			/* Computar ângulo */
 			float angle_da_linha = 0;
 			float tolerancia_para_angulo = 0;  // Apenas um valor de mínimo
 
@@ -1152,7 +1173,7 @@ private:
 
 						if(
 							// Caso não seja uma linha grande ou seja a mesma linha do loop anterior
-							linha_grande.comrimento < 2 || &linha_grande == &linha_qualquer
+							linha_grande.comprimento < 2 || &linha_grande == &linha_qualquer
 						){
 
 							continue;	
@@ -1194,7 +1215,7 @@ private:
 
 				// Pular a linha caso ela seja muito maior que a outra
 				if(
-					linha_qualquer.comprimento > (segm_importante + 0.7)
+					linha_qualquer.comprimento > (segm_importante.comprimento + 0.7)
 				){
 
 					continue;
@@ -1256,12 +1277,6 @@ private:
 
     /* Método de Atualização para de Variáveis Públicas */
 
-    const Matriz &Head_to_Field_Transform = _final_Head_to_Field_Transform; // -> rotação + translação
-	const Matriz &Head_to_Field_Rotate    = _final_Head_to_Field_Rotate;    // -> rotação
-	const Matriz &Field_to_Head_Transform = _final_Field_to_Head_Transform; // inversa da primeira
-	const Matriz &Field_to_Head_Rotate    = _final_Field_to_Head_Rotate;
-
-
     void commit_system(){
     	/*
 		Descrição:
@@ -1283,10 +1298,10 @@ private:
     	){
 
     		// Rotações do relativo para absoluto
-    		_final_Head_to_Field_Rotate.setar( i + index_aux, _final_Head_to_Field_Transform.get(i + index_aux ));
+    		_final_Head_to_Field_Rotate.setar( i + index_aux, _final_Head_to_Field_Transform.obter(i + index_aux ));
 
     		// Rotações do absoluto para relativo
-    		_final_Field_to_Head_Rotate.setar( i + index_aux, _final_Field_to_Head_Transform.get(i + index_aux ));
+    		_final_Field_to_Head_Rotate.setar( i + index_aux, _final_Field_to_Head_Transform.obter(i + index_aux ));
     		
     		index_aux += 4;
     	}
@@ -1380,7 +1395,7 @@ private:
 
     	for(
     		int i = 0;
-    			i < sizeof(errorSum_fineTune_before) / sizeof(errorSum_fineTune_before[0])
+    			i < sizeof(errorSum_fineTune_before) / sizeof(errorSum_fineTune_before[0]);
     			i++
     	){
 
@@ -1554,24 +1569,18 @@ public:
 		const double* ptr = errorSum_fineTune_before;
 		float e1_2d_var = (ptr[4] - (ptr[3]*ptr[3]) / c) / c1;
 		float e1_3d_var = (ptr[6] - (ptr[5]*ptr[5]) / c) / c1;
-		float e1[] = { 
-					  ptr[3]/c, 
-					  sqrt(e1_2d_var), 
-					  ptr[5]/c, 
-					  sqrt(e1_3d_var), 
-					  ptr[0]/c,
-					  ptr[1]/c, ptr[2]/c 
-					 };
+		double e1[] = { ptr[3]/c, sqrt(e1_2d_var), ptr[5]/c, sqrt(e1_3d_var), ptr[0]/c, ptr[1]/c, ptr[2]/c };
+
 
 		ptr = errorSum_fineTune_euclidianDist;
 		float e2_2d_var = (ptr[4] - (ptr[3]*ptr[3]) / c) / c1;
 		float e2_3d_var = (ptr[6] - (ptr[5]*ptr[5]) / c) / c1;
-		float e2[] = { ptr[3]/c, sqrt(e2_2d_var), ptr[5]/c, sqrt(e2_3d_var), ptr[0]/c, ptr[1]/c, ptr[2]/c };
+		double e2[] = { ptr[3]/c, sqrt(e2_2d_var), ptr[5]/c, sqrt(e2_3d_var), ptr[0]/c, ptr[1]/c, ptr[2]/c };
 
 		ptr = errorSum_fineTune_probabilistic;
 		float e3_2d_var = (ptr[4] - (ptr[3]*ptr[3]) / c) / c1;
 		float e3_3d_var = (ptr[6] - (ptr[5]*ptr[5]) / c) / c1;
-		float e3[] = { ptr[3]/c, sqrt(e3_2d_var), ptr[5]/c, sqrt(e3_3d_var), ptr[0]/c, ptr[1]/c, ptr[2]/c };
+		double e3[] = { ptr[3]/c, sqrt(e3_2d_var), ptr[5]/c, sqrt(e3_3d_var), ptr[0]/c, ptr[1]/c, ptr[2]/c };
 
 		ptr = errorSum_ball;
 		float e4_2d_var=0, e4_3d_var=0;
@@ -1579,7 +1588,7 @@ public:
 			e4_2d_var = (ptr[4] - (ptr[3]*ptr[3]) / cb) / cb1;
 			e4_3d_var = (ptr[6] - (ptr[5]*ptr[5]) / cb) / cb1;
 		}
-		float e4[] = { ptr[3]/cb, sqrt(e4_2d_var), ptr[5]/cb, sqrt(e4_3d_var), ptr[0]/cb, ptr[1]/cb, ptr[2]/cb };
+		double e4[] = { ptr[3]/cb, sqrt(e4_2d_var), ptr[5]/cb, sqrt(e4_3d_var), ptr[0]/cb, ptr[1]/cb, ptr[2]/cb };
 
 		const int* st = contador_de_estados_do_sistema;
 		printf("---------------------------------- LocalizerV2 Report ----------------------------------\n");

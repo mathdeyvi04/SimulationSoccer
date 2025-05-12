@@ -3,6 +3,9 @@ Devido à genialidade, vamos manter exatamente os créditos:
 
 efficient computation of relative probabilities (for the noise model of the RoboCup 3DSSL)
 Miguel Abreu (m.abreu@fe.up.pt)
+
+As funções definidas aqui são utilizadas no arquivo LocalizerV2.h, mais especificamente dentro de 
+map_error_logprob().
 */
 
 #ifndef RUIDO_DE_CAMPO_H
@@ -13,7 +16,7 @@ Miguel Abreu (m.abreu@fe.up.pt)
 #define LOG0_5 -0.69314718056f   // Base neperiana
 #define LIM_DE_ARG 2
 
-class RuidoCampo{
+class Ruido_de_Campo {
 	/*
 	Classe responsável por
 
@@ -27,7 +30,7 @@ class RuidoCampo{
 
 private: 
 
-	RuidoCampo() {}; // Disabilitar construtor.
+	Ruido_de_Campo() {}; // Disabilitar construtor.
 	
 
 	// Documentação providenciada pela equipe
