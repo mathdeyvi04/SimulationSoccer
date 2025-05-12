@@ -60,6 +60,7 @@ Do arquivo / pasta mais profundo, implementado mais cedo, até o mais superficia
   * Módulo C++ responsável por ferramentas de localização, de visualização de mundo e de conexão
   com RoboViz.
   * Houve condensação de arquivos, quando comparado com o original, e alterações consideráveis em algumas lógicas.
+  * Pasta contendo código de altíssimo nível de complexidade e de importância.
     
     * [Singular.h](src/sobre_cpp/ambientacao/Singular.h)
       * Criação e Implementação de Classe Abstrata que permitirá instâncias únicas de qualquer classe.
@@ -116,6 +117,6 @@ Do arquivo / pasta mais profundo, implementado mais cedo, até o mais superficia
     * [LocalizerV2.h](src/sobre_cpp/ambientacao/LocalizerV2.h)
       * Criação, definição e documentação do método de localização 3D utilizado e 
       desenvolvimento pela equipe FC portugal.
-      * Código extremamente mais robusto e complexo.
+      * Código extremamente mais robusto e complexo, complexo mesmo!
       * **Parâmetos alterados aqui influenciam o funcionamento global.**
       * Há possibilidades de novas implementações.

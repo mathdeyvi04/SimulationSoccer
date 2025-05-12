@@ -452,7 +452,7 @@ public:
 
 		csegm = {
 			inicio_c, 
-			 final_c,
+			final_c,
 
 			comprimento,
 			angulo,
@@ -695,6 +695,7 @@ public:
     void atualizar_marcadores();
 
 
+    /* As duas seguintes funções são utilizadas em Localizerv2.cpp */
     void atualizar_marcadores_a_partir_da_transformacao(
     	const Matriz& matriz_de_transformacao
     );
@@ -823,7 +824,7 @@ public:
     }
 
 
-    static float calcular_dist_segm_para_pt2_c(
+    static float calcular_dist_segm_para_pt2d_c(
     	const sSegmento& segm_de_linha,
     	const Vetor2D& ponto_cart_2d
     ){

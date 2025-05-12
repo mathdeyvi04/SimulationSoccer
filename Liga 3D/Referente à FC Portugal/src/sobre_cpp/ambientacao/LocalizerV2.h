@@ -5,6 +5,8 @@
 #include "RobovizField.h"
 #include "Matriz.h"
 #include "Ruido_de_Campo.h"
+#include <iostream>
+#include <cstdio>
 
 /*
 #include <gsl/gsl_multifit.h> //Linear least-squares fitting
@@ -12,7 +14,7 @@
 #include <gsl/gsl_multimin.h> //Multidimensional minimization
 */
 
-/* Funções Matemáticas Que Serão Úteis
+/* Funções Matemáticas Que Serão Úteis */
 
 Acredito que seja desnecessário a tradução dado o objetivo matemático das mesmas.
 
@@ -39,166 +41,17 @@ gsl_vector* create_gsl_vector(
 
 	gsl_vector* v = gsl_vector_alloc (SIZE);
 	
-	for(int i=0; i<SIZE; i++){
+	for(
+		int i=0; 
+		    i<SIZE; 
+			i++
+	){
+
 		gsl_vector_set(v, i, content[i]);
 	}
 	return v;
 }
-*/
 
-
-void calcular_plano_do_chao_e_altura_do_agente(){
-		/*
-			- Estimar o melhor plano de chão baseado nos marcadores de chão.
-			
-			- Calcular a altura do agente baseado no centróide dos marcadores de chão.
-		*/
-
-		RobovizField& campo_existente = Singular<RobovizField>::obter_instancia();
-
-		const vector<RobovizField::sMarcador>& marcadores_de_chao_pesados = campo_existente.lista_de_marcadores_de_chao_pesados;
-		const int quantidade_de_marcadores = marcadores_de_chao_pesados.size();
-
-		// ---------------------------------------------------------------------------------
-
-		// Iniciar determinados vetores e matrizes
-		gsl_matrix *A, *V;
-		gsl_vector *S, *vec_aux;
-
-		A = gsl_matrix_alloc(
-			quantidade_de_marcadores,
-			3
-		);
-		V = gsl_matrix_alloc(
-			3,
-			3
-		);
-		S = gsl_vector_alloc(
-			3
-		);
-		vec_aux = gsl_vector_alloc(
-			3
-		);
-
-		// Obter centróide
-		Vetor3D centroide(0, 0, 0);
-		for(
-			const RobovizField::sMarcador& mkr_chao : marcadores_de_chao_pesados
-		){
-
-			centroide += mkr_chao.pos_rel_cart;
-		}
-
-		centroide /= (float) quantidade_de_marcadores;
-
-		// Inserir todos os marcadores dentro da matriz após subtrair do centróide
-		for(
-			int i = 0;
-				i < quantidade_de_marcadores;
-				i++
-		){
-
-			gsl_matrix_set( A, i, 0, marcadores_de_chao_pesados[i].pos_rel_cart.x - centroide.x );
-			gsl_matrix_set( A, i, 1, marcadores_de_chao_pesados[i].pos_rel_cart.y - centroide.y );
-			gsl_matrix_set( A, i, 2, marcadores_de_chao_pesados[i].pos_rel_cart.z - centroide.z );
-		}
-
-		/*
-		Utiliza a ferramenta SVD já disponível.
-
-		Decomporá a matriz A em U * S * V^(T), matrizes as quais:
-
-		U -> matriz ortogonal dos vetores próprios da matriz AA^(T)
-		S -> vetor com valores singulares
-		V -> matriz ortogonal dos vetores próprios da matriz A^(T)A
-		*/
-		gsl_linalg_SV_decomp( A, V, S, vec_aux);
-
-		// Capturar o plano ax + by + cy = d
-		double a = gsl_matrix_get( V, 0, 2 );
-		double b = gsl_matrix_get( V, 1, 2 );
-		double c = gsl_matrix_get( V, 2, 2 );
-		double d = a * centroide.x + b * centroide.y + c * centroide.z;
-
-		// Observe que |d| é caracterizado como uma estimativa da altura do agente.
-
-		gsl_matrix_free (A);
-		gsl_matrix_free (V);
-		gsl_vector_free (S);
-		gsl_vector_free (vec_aux);
-
-		// --------------------------------------------------------------------------------------
-
-		/*
-		Observe que não necessariamente o vetor normal (a, b, c) apontará para cima, sendo assim
-		devemos gerenciar as regiões nas quais temos certezas.
-
-		Sabe-se que:
-			
-			- ax + by + cz - d > 0  // SemiEspaço Superior
-			- ax + by + cz - d = 0  // Plano
-			- ax + by + cz - d < 0  // SemiEspaço Diminui
-
-		Já que o agente está sempre acima do chão, basta que determinemos que o agente está no 
-		mesmo semiespaço que o vetor normal.
-		Para fazer isso, checamos se a origem do sistema relativo de coordenadas, cabeça do agente,
-		retorna:
-
-			- ax + by + cz - d > 0
-			- - d > 0  // Cabeça do agente está em (0, 0, 0).
-			-   d < 0
-
-		Entretanto, caso o agente esteja caído, o plano otimizado pode estar deslocado. Sendo assim,
-		caso tiver um ponto de referência melhor, podemos usar.
-		*/
-
-		if(
-			! campo_existente.lista_de_goalposts.empty()
-		){
-
-			const Vetor3D& pt_aereo = campo_existente.lista_de_goalposts.front().pos_rel_cart;
-			if(
-				// Caso o gol esteja no semiespaço negativo, devemos inverter o vetor normal
-				a * pt_aereo.x + b * pt_aereo.y + c * pt_aereo.z < d 
-			){
-
-				a = -a;
-				b = -b;
-				c = -c;
-			}
-		}
-		else{
-
-			if(
-				// Caso não haja referências disponíveis, nos reta a cabeça do agente mesmo.
-				//
-				d > 0
-			){
-
-				a = -a;
-				b = -b;
-				c = -c;
-			}
-		}
-
-		// Salvamos a informação do vetor normal como nova orientação do vetor.
-		_Head_to_Field_Prelim.setar(2, 0, a);
-		_Head_to_Field_Prelim.setar(2, 1, b);
-		_Head_to_Field_Prelim.setar(2, 2, c);
-
-		// Calculamos a altura do agente
-		float altura = max(
- 							- (centroide.x * a + centroide.y * b + centroide.z * c),
- 							0.064
-						  );
-
-		_Head_to_Field_Prelim.setar(2, 3, altura);
-
-		// Setamos os pontos 
-		ultima_altura_conhecida = _final_z;
-		_final_z = altura;
-		_se_head_z_esta_pronta_para_atualizacao = true;
-	}
 
 Vetor2D get_ground_unit_vec_perpendicular_to( const Vetor3D& vetor ){
 	/*
@@ -549,7 +402,158 @@ private:
 		return false;
 	}
 
-	// Espero vir em seguida para poder mudar estes nome.
+	void calcular_plano_do_chao_e_altura_do_agente(){
+		/*
+			- Estimar o melhor plano de chão baseado nos marcadores de chão.
+			
+			- Calcular a altura do agente baseado no centróide dos marcadores de chão.
+		*/
+
+		RobovizField& campo_existente = Singular<RobovizField>::obter_instancia();
+
+		const vector<RobovizField::sMarcador>& marcadores_de_chao_pesados = campo_existente.lista_de_marcadores_de_chao_pesados;
+		const int quantidade_de_marcadores = marcadores_de_chao_pesados.size();
+
+		// ---------------------------------------------------------------------------------
+
+		// Iniciar determinados vetores e matrizes
+		gsl_matrix *A, *V;
+		gsl_vector *S, *vec_aux;
+
+		A = gsl_matrix_alloc(
+			quantidade_de_marcadores,
+			3
+		);
+		V = gsl_matrix_alloc(
+			3,
+			3
+		);
+		S = gsl_vector_alloc(
+			3
+		);
+		vec_aux = gsl_vector_alloc(
+			3
+		);
+
+		// Obter centróide
+		Vetor3D centroide(0, 0, 0);
+		for(
+			const RobovizField::sMarcador& mkr_chao : marcadores_de_chao_pesados
+		){
+
+			centroide += mkr_chao.pos_rel_cart;
+		}
+
+		centroide /= (float) quantidade_de_marcadores;
+
+		// Inserir todos os marcadores dentro da matriz após subtrair do centróide
+		for(
+			int i = 0;
+				i < quantidade_de_marcadores;
+				i++
+		){
+
+			gsl_matrix_set( A, i, 0, marcadores_de_chao_pesados[i].pos_rel_cart.x - centroide.x );
+			gsl_matrix_set( A, i, 1, marcadores_de_chao_pesados[i].pos_rel_cart.y - centroide.y );
+			gsl_matrix_set( A, i, 2, marcadores_de_chao_pesados[i].pos_rel_cart.z - centroide.z );
+		}
+
+		/*
+		Utiliza a ferramenta SVD já disponível.
+
+		Decomporá a matriz A em U * S * V^(T), matrizes as quais:
+
+		U -> matriz ortogonal dos vetores próprios da matriz AA^(T)
+		S -> vetor com valores singulares
+		V -> matriz ortogonal dos vetores próprios da matriz A^(T)A
+		*/
+		gsl_linalg_SV_decomp( A, V, S, vec_aux);
+
+		// Capturar o plano ax + by + cy = d
+		double a = gsl_matrix_get( V, 0, 2 );
+		double b = gsl_matrix_get( V, 1, 2 );
+		double c = gsl_matrix_get( V, 2, 2 );
+		double d = a * centroide.x + b * centroide.y + c * centroide.z;
+
+		// Observe que |d| é caracterizado como uma estimativa da altura do agente.
+
+		gsl_matrix_free (A);
+		gsl_matrix_free (V);
+		gsl_vector_free (S);
+		gsl_vector_free (vec_aux);
+
+		// --------------------------------------------------------------------------------------
+
+		/*
+		Observe que não necessariamente o vetor normal (a, b, c) apontará para cima, sendo assim
+		devemos gerenciar as regiões nas quais temos certezas.
+
+		Sabe-se que:
+			
+			- ax + by + cz - d > 0  // SemiEspaço Superior
+			- ax + by + cz - d = 0  // Plano
+			- ax + by + cz - d < 0  // SemiEspaço Diminui
+
+		Já que o agente está sempre acima do chão, basta que determinemos que o agente está no 
+		mesmo semiespaço que o vetor normal.
+		Para fazer isso, checamos se a origem do sistema relativo de coordenadas, cabeça do agente,
+		retorna:
+
+			- ax + by + cz - d > 0
+			- - d > 0  // Cabeça do agente está em (0, 0, 0).
+			-   d < 0
+
+		Entretanto, caso o agente esteja caído, o plano otimizado pode estar deslocado. Sendo assim,
+		caso tiver um ponto de referência melhor, podemos usar.
+		*/
+
+		if(
+			! campo_existente.lista_de_goalposts.empty()
+		){
+
+			const Vetor3D& pt_aereo = campo_existente.lista_de_goalposts.front().pos_rel_cart;
+			if(
+				// Caso o gol esteja no semiespaço negativo, devemos inverter o vetor normal
+				a * pt_aereo.x + b * pt_aereo.y + c * pt_aereo.z < d 
+			){
+
+				a = -a;
+				b = -b;
+				c = -c;
+			}
+		}
+		else{
+
+			if(
+				// Caso não haja referências disponíveis, nos reta a cabeça do agente mesmo.
+				//
+				d > 0
+			){
+
+				a = -a;
+				b = -b;
+				c = -c;
+			}
+		}
+
+		// Salvamos a informação do vetor normal como nova orientação do vetor.
+		_Head_to_Field_Prelim.setar(2, 0, a);
+		_Head_to_Field_Prelim.setar(2, 1, b);
+		_Head_to_Field_Prelim.setar(2, 2, c);
+
+		// Calculamos a altura do agente
+		float altura = max(
+ 							- (centroide.x * a + centroide.y * b + centroide.z * c),
+ 							0.064
+						  );
+
+		_Head_to_Field_Prelim.setar(2, 3, altura);
+
+		// Setamos os pontos 
+		ultima_altura_conhecida = _final_z;
+		_final_z = altura;
+		_se_head_z_esta_pronta_para_atualizacao = true;
+	}
 
 	void obter_head_z(Vetor3D& Z_vec){
 		/*
@@ -582,21 +586,393 @@ private:
 		_se_head_z_esta_pronta_para_atualizacao = true;
 	}
 
-    bool find_xy();
-    bool guess_xy();
-
-    bool fine_tune_aux(
+    bool refinamento_aux(
     	float &initial_angle,
     	float &initial_x, 
     	float &initial_y, 
-    	bool use_probabilities
-    );
-    bool fine_tune(
-    	float initial_angle, 
-    	float initial_x, 
+    	bool  use_probabilities
+    ){
+    	/*
+		Descrição:
+			Aplicamos o refinamento diretamente em:
+
+				- initial_angle, initial_x, initial_y ( caso seja use_probabilities == false )
+    			- _Head_to_Field_prelim ( caso use_probabilites == true)
+		Parâmetros:
+			-> initial_angle:
+				Ângulo inicial entre Xvec e Zvec
+
+			-> initial_x, initial_y
+				Translações em x e y.
+
+		A função a seguir é puramente matemática.
+    	*/
+
+    	int status, iter=0;
+		gsl_vector* x  =  create_gsl_vector<3>({initial_x, initial_y, initial_angle});    // Initial transformation 
+		gsl_vector* step_sizes = create_gsl_vector<3>({0.02, 0.02, 0.03});                // Set initial step sizes 
+		gsl_multimin_function minex_func   = {map_error_euclidian_distance, 3, nullptr};  // error func, variables no., params
+		if(use_probabilities) minex_func.f =  map_error_logprob;				          // probablity-based error function
+
+		const gsl_multimin_fminimizer_type *T = gsl_multimin_fminimizer_nmsimplex2;   // algorithm type
+		gsl_multimin_fminimizer *s = gsl_multimin_fminimizer_alloc (T, 3);            // allocate workspace
+	  	gsl_multimin_fminimizer_set (s, &minex_func, x, step_sizes);                 // set workspace
+
+		float best_x, best_y, best_ang;
+
+
+	  	do{
+			iter++;
+			status = gsl_multimin_fminimizer_iterate(s);
+
+			//*s holds the best solution, not the last solution
+			best_x   = gsl_vector_get (s->x, 0);
+			best_y   = gsl_vector_get (s->x, 1);
+			best_ang = gsl_vector_get (s->x, 2);
+
+			if (status) break;
+
+			double size = gsl_multimin_fminimizer_size (s); //minimizer-specific characteristic size
+			status = gsl_multimin_test_size (size, 1e-3); //This size can be used as a stopping criteria, as the simplex contracts itself near the minimum
+
+	    }
+		while ((status == GSL_CONTINUE || use_probabilities) && iter < 40);
+
+		float best_map_error = s->fval;
+
+		gsl_vector_free(x);
+		gsl_vector_free(step_sizes);
+		gsl_multimin_fminimizer_free (s);
+
+		if(!use_probabilities){
+			if(best_map_error > 0.10){
+				atualizar_estado_do_sistema(FAILtune);
+				return false;
+			}else{
+				initial_angle = best_ang;
+				initial_x = best_x;
+				initial_y = best_y;
+				return true;
+			}
+		}
+
+		/**
+		 * At this point, use_probabilities is true
+		 * Note: The transformations are directly tested on prelimHeadToField but it currently
+		 * holds the last test, so we set it manually here to the best found solution
+		 */
+
+		//Convert angle into Xvec and Yvec
+		Vetor3D Zvec(_Head_to_Field_Prelim.get(2,0), _Head_to_Field_Prelim.get(2,1), _Head_to_Field_Prelim.get(2,2));
+		Vetor3D Xvec, Yvec;
+		calcular_eixos_XY_a_partir_de_eixo_Z(Zvec, best_ang, Xvec, Yvec );
+
+		_Head_to_Field_Prelim.set(0,0, Xvec.x);
+		_Head_to_Field_Prelim.set(0,1, Xvec.y);
+		_Head_to_Field_Prelim.set(0,2, Xvec.z);
+		_Head_to_Field_Prelim.set(0,3, best_x);
+		_Head_to_Field_Prelim.set(1,0, Yvec.x);
+		_Head_to_Field_Prelim.set(1,1, Yvec.y);
+		_Head_to_Field_Prelim.set(1,2, Yvec.z);
+		_Head_to_Field_Prelim.set(1,3, best_y);
+
+		return true;
+    }
+
+    bool refinamento(
+    	float initial_angle,
+    	float initial_x,
     	float initial_y
     );
 
+    /*
+	Obtém translação e rotação nos eixos X e Y.
+
+	Solução única é garantida se Zvec estiver na direção certa.
+
+	Necessário pelo menos 2 marcadores.
+    */
+    bool obter_translacao_rotacao_xy(){
+
+    	RobovizField& campo_existente = Singular<RobovizField>::obter_instancia();
+
+    	Vetor3D Zvec(
+    		_Head_to_Field_Prelim.get(2,0), 
+    		_Head_to_Field_Prelim.get(2,1), 
+    		_Head_to_Field_Prelim.get(2,2)
+    	);
+
+    	RobovizField::sMarcador *mkr_1 = nullptr;
+    	RobovizField::sMarcador *mkr_2 = nullptr;
+
+    	if(
+    		campo_existente.lista_de_corners.size() > 1
+    	){
+
+    		mkr_1 = &(campo_existente.lista_de_corners[0]);
+    		mkr_2 = &(campo_existente.lista_de_corners[1]);
+    	}
+    	else{
+
+    		if(
+    			campo_existente.lista_de_corners.size() == 1
+    		){
+
+    			mkr_1 = &(  campo_existente.lista_de_corners[0]);
+    			mkr_2 = &(campo_existente.lista_de_goalposts[0]);
+    		}
+    		else{
+
+    			mkr_1 = &(campo_existente.lista_de_goalposts[0]);
+    			mkr_2 = &(campo_existente.lista_de_goalposts[1]);
+    		}
+    	}
+
+    	Vetor3D real_vec(
+    					  (*mkr_2).spos_abs.x - (*mkr_1).spos_abs.x,
+    					  (*mkr_2).spos_abs.y - (*mkr_1).spos_abs.y,
+    					  (*mkr_2).spos_abs.z - (*mkr_1).spos_abs.z 
+    					);
+    	float real_angle = atan2f(real_vec.y, real_vec.x);
+
+		Vetor3D seen_vec((*mkr_2).pos_rel_cart - (*mkr_1).pos_rel_cart);
+		Vetor3D vec_rotacao = rotacionar_em_torno_do_eixo_do_chao(seen_vec, Zvec);
+
+		float seen_angle = atan2f(vec_rotacao.y, vec_rotacao.x);
+		/*Observe que, por serem vetores e não segmentos/linhas, os ângulos podem ser trocados.*/ 	
+
+		float agente_angle = real_angle - seen_angle;
+
+		Vetor3D Xvec, Yvec;
+		calcular_eixos_XY_a_partir_de_eixo_Z(Zvec, agent_angle, Xvec, Yvec);
+
+		/** Explicação Detalhada do que estamos propondo
+		 * 
+		 * Let m be a landmark, rel:(mx,my,mz), abs:(mabsx, mabsy, mabsz)
+		 * XvecX*mx + XvecY*my + XvecZ*mz + AgentX = mabsx
+		 * AgentX = mabsx - (XvecX*mx + XvecY*my + XvecZ*mz)
+		 * AgentX = mabsx - (XvecX . m)
+		 * 
+		 * Generalizing for N estimates:
+		 * AgentX = sum( mabsx - (XvecX . m) )/N
+		 */
+		float initial_x = 0, initial_y = 0;
+		for(
+			const RobovizField::sMarcador& mkr : campo_existente.lista_de_corners_e_goalposts
+		){
+
+			initial_x += mkr.spos_abs.x - Xvec.InnerProduct(mkr.pos_rel_cart);
+			initial_y += mkr.spos_abs.y - Yvec.InnerProduct(mkr.pos_rel_cart);
+		}
+
+		initial_x /= campo_existente.lista_de_corners_e_goalposts.size();
+		initial_y /= campo_existente.lista_de_corners_e_goalposts.size();
+
+		return refinamento(agente_angle, initial_x, initial_y);
+    }
+
+    bool guess_xy(){
+    	/*
+		Processo extremamente complexo e de outro patamar de dificuldade.
+		Aparentemente, trata-se de um modelo de decisão para escolha
+		de vetores x e y.
+    	*/
+
+    	RobovizField& campo_existente = Singular<RobovizField>::obter_instancia();
+
+    	// Obter vetores de estágios anteriores
+		Vetor3D Zvec(
+			_Head_to_Field_Prelim.get(2,0), 
+			_Head_to_Field_Prelim.get(2,1), 
+			_Head_to_Field_Prelim.get(2,2)
+		);
+		Vetor2D ultima_altura_conhecida_2d(posicao_da_cabeca.x, posicao_da_cabeca.y);
+
+		//------------------------------------------------------------ Get longest line and use it as X or Y vector
+
+		const Linha* maior_linha = &campo_existente.lista_de_todos_os_segmentos.front();
+		for(const Linha& linha_qualquer : campo_existente.lista_de_todos_os_segmentos){
+
+			if(linha_qualquer.comprimento > (*maior_linha).comprimento) longestLine = &linha_qualquer;
+		}
+
+		if(
+			// Caso a linha seja pequena demais.
+			(*maior_linha).comprimento < 1.6
+		){
+
+			atualizar_estado_do_sistema(FAILguessLine);
+			return false; 
+		}
+
+		//Rotate line to real ground plane, where it loses the 3rd dimension
+		Vetor3D longestLineVec = maior_linha->final_c - maior_linha->inicio_c;
+		Vetor3D rotated_abs_line = rotacionar_em_torno_do_eixo_do_chao(longestLineVec, Zvec);
+
+		//The line can be aligned with X or Y, positively or negatively (these angles don't need to be normalized) 
+		float fixed_angle[4];
+		fixed_angle[0] = -atan2f(rotated_abs_line.y,rotated_abs_line.x); //if longestLineVec is Xvec
+		fixed_angle[1] = fixed_angle[0] + 3.14159265f; //if longestLineVec is -Xvec
+		fixed_angle[2] = fixed_angle[0] + 1.57079633f; //if longestLineVec is Yvec
+		fixed_angle[3] = fixed_angle[0] - 1.57079633f; //if longestLineVec is -Yvec
+
+		//------------------------------------------------------------ Get initial translation
+
+		//if we see 1 landmark, we use it, if not, we get the last position
+
+		float initial_x[4], initial_y[4];
+		bool noLandmarks = campo_existente.lista_de_corners_e_goalposts.empty();
+
+		if(noLandmarks){
+
+			for(int i=0; i<4; i++){
+				initial_x[i] = ultima_altura_conhecida_2d.x;
+				initial_y[i] = ultima_altura_conhecida_2d.y;
+			}
+
+		} else {
+
+			Vetor3D Xvec = longestLineVec / maior_linha->comprimento;
+			Vetor3D Yvec(Zvec.CrossProduct(Xvec));
+
+			/**
+			 * Let m be a landmark, rel:(mx,my,mz), abs:(mabsx, mabsy, mabsz)
+			 * XvecX*mx + XvecY*my + XvecZ*mz + AgentX = mabsx
+			 * AgentX = mabsx - (XvecX*mx + XvecY*my + XvecZ*mz)
+			 * AgentX = mabsx - (XvecX . m)
+			 */
+
+			const RobovizField::sMarcador& mkr = campo_existente.lista_de_corners_e_goalposts.front();
+			const float x_aux = Xvec.InnerProduct(mkr.pos_rel_cart);
+			const float y_aux = Yvec.InnerProduct(mkr.pos_rel_cart);
+
+			initial_x[0] = mkr.spos_abs.x - x_aux;
+			initial_y[0] = mkr.spos_abs.y - y_aux;
+			initial_x[1] = mkr.spos_abs.x + x_aux; // 2nd version: X is inverted
+			initial_y[1] = mkr.spos_abs.y + y_aux; // 2nd version: Y is inverted
+			initial_x[2] = mkr.spos_abs.x + y_aux; // 3rd version: X is inverted Y
+			initial_y[2] = mkr.spos_abs.y - x_aux; // 3rd version: Y is X
+			initial_x[3] = mkr.spos_abs.x - y_aux; // 4th version: X is Y
+			initial_y[3] = mkr.spos_abs.y + x_aux; // 4th version: Y is inverted X
+		}
+		
+
+		//------------------------------------------------------------ Optimize XY rotation for each possible orientation
+		/*
+		Simplesmente não tem o que fazer aqui, é um absurdo de incrível
+		*/
+
+		const gsl_multimin_fminimizer_type *T = gsl_multimin_fminimizer_nmsimplex2;
+		gsl_multimin_fminimizer *s[4] = {nullptr,nullptr,nullptr,nullptr};
+		gsl_vector *ss[4], *x[4];
+		gsl_multimin_function minex_func[4];
+
+		size_t iter = 0;
+		int status;
+		double size;
+
+		for(int i=0; i<4; i++){
+			x[i]  = create_gsl_vector<2>({initial_x[i], initial_y[i]}); // Initial transformation 
+			ss[i] = create_gsl_vector<2>({1, 1}); //Set initial step sizes to 1
+
+			/* Initialize method */
+			minex_func[i].n = 2;
+			minex_func[i].f = map_error_euclidian_distance;
+			minex_func[i].params = &fixed_angle[i];	
+
+			s[i] = gsl_multimin_fminimizer_alloc (T, 2);
+	  		gsl_multimin_fminimizer_set (s[i], &minex_func[i], x[i], ss[i]);
+		}
+
+		/* start iterating */
+		bool running[4] = {true,true,true,true};
+		float current_error[4] = {1e6,1e6,1e6,1e6};
+		float lowest_error = 1e6;
+		Vetor2D best_xy[4];
+		const int maximum_iterations = 50;
+		bool plausible_solution[4] = {false,false,false,false};
+	  	do{
+			iter++;
+			for(int i=0; i<4; i++){
+				if(!running[i]) continue;
+
+				status = gsl_multimin_fminimizer_iterate(s[i]);
+
+				current_error[i] = s[i]->fval;
+				if(current_error[i] < lowest_error) lowest_error = current_error[i];
+
+				// Possible errors: 
+				// GSL_ERROR ("incompatible size of x", GSL_EINVAL); This should only be a concern during code design
+				// GSL_ERROR ("contraction failed", GSL_EFAILED); Evaluation function produced non finite value
+				if (status) { 
+					running[i]=false; //This is not a valid solution
+					continue; 
+				}
+
+				size = gsl_multimin_fminimizer_size (s[i]); //minimizer-specific characteristic size
+				status = gsl_multimin_test_size (size, 1e-2); //This size can be used as a stopping criteria, as the simplex contracts itself near the minimum
+
+				if(status != GSL_CONTINUE || (lowest_error * 50 < current_error[i])) { //finished or aborted
+					best_xy[i].x = gsl_vector_get (s[i]->x, 0);
+					best_xy[i].y = gsl_vector_get (s[i]->x, 1);
+					running[i]=false; 
+					plausible_solution[i]=(status == GSL_SUCCESS); //only valid if it converged to local minimum
+					continue; 
+				} 
+
+
+			}	
+
+
+	    } while (iter < maximum_iterations && (running[0] || running[1] || running[2] || running[3]));
+
+		for(int i=0; i<4; i++){
+			gsl_vector_free(x[i]);
+			gsl_vector_free(ss[i]);
+			gsl_multimin_fminimizer_free (s[i]);
+		}
+
+
+		//At this point, a solution is plausible if it converged to a local minimum
+		//So, we apply the remaining criteria for plausiblity
+		int plausible_count = 0;
+		int last_i;
+		for(int i=0; i<4; i++){
+			if(!plausible_solution[i]) continue;
+			bool isDistanceOk = (!noLandmarks) || posicao_da_cabeca.obter_distancia(best_xy[i]) < 0.5; //  distance to last known position
+			if(current_error[i] < 0.12 && isDistanceOk){ // mapping error  
+				plausible_count++; 
+				last_i = i;
+			}
+		}
+
+		// If there is 1 landmark, and multiple options, the distance to last known pos is now used to eliminate candidates
+		if(!noLandmarks && plausible_count>1){
+			plausible_count = 0;
+			for(int i=0; i<4; i++){
+				if(plausible_solution[i] && posicao_da_cabeca.obter_distancia(best_xy[i]) < 0.5){ // distance to last known position
+					plausible_count++; 
+					last_i = i;
+				}
+			}
+		}
+
+		//Check if best solution is good if all others are not even plausible
+		if(plausible_count==0){
+			atualizar_estado_do_sistema(FAILguessNone);
+			return false; 
+		}else if(plausible_count>1){
+			atualizar_estado_do_sistema(FAILguessMany);
+			return false;
+		}else if(current_error[last_i] > 0.06 || (noLandmarks && posicao_da_cabeca.obter_distancia(best_xy[last_i]) > 0.3)){ // mapping error  /  distance to last known position
+			atualizar_estado_do_sistema(FAILguessTest);
+			return false;
+		}
+
+		return refinamento(fixed_angle[last_i],best_xy[last_i].x, best_xy[last_i].y);
+	}
+
+    /* Métodos de Mapeação de Erros */
     
 	static double map_error_logprob(
     	const gsl_vector *vet,
@@ -619,6 +995,7 @@ private:
 		// Obtemos o ângulo a aprtir 
 		angle = ((*vet).size() == 3) ? gsl_vector_get(vet, 2) : *(float *) params;
 
+		// Pegamos a matriz de transformação
 		Matriz& _Head_to_Field_Prelim_instantanea = Singular<LocalizerV2>::obter_instancia()._Head_to_Field_Prelim;
 		Vetor3D Z_vec( 
 			_Head_to_Field_Prelim_instantanea.get(2, 0),
@@ -660,11 +1037,11 @@ private:
 									  (*mkr_desc.segm).comprimento 
 			                          );
 
-			Vetor3D ponto_esf_mais_perto = segmento_mais_perto.segment_ponto_na_reta_mais_perto_cart(mkr_desc.pos_rel_cart).para_esferica();
+			Vetor3D ponto_mais_perto_esf = segmento_mais_perto.segment_ponto_na_reta_mais_perto_cart(mkr_desc.pos_rel_cart).para_esferica();
 
-			total_log_prob += Ruido_de_Campo::log_prob_r(ponto_esf_mais_perto.x, mkr_desc.pos_rel_esf.x);
-			total_log_prob += Ruido_de_Campo::log_prob_h(ponto_esf_mais_perto.y, mkr_desc.pos_rel_esf.y);
-			total_log_prob += Ruido_de_Campo::log_prob_v(ponto_esf_mais_perto.z, mkr_desc.pos_rel_esf.z);
+			total_log_prob += Ruido_de_Campo::log_prob_r(ponto_mais_perto_esf.x, mkr_desc.pos_rel_esf.x);
+			total_log_prob += Ruido_de_Campo::log_prob_h(ponto_mais_perto_esf.y, mkr_desc.pos_rel_esf.y);
+			total_log_prob += Ruido_de_Campo::log_prob_v(ponto_mais_perto_esf.z, mkr_desc.pos_rel_esf.z);
 			
 			total_error_counter++;			
 		}
@@ -692,14 +1069,246 @@ private:
 		return (!gsl_finite(logNormProb)) ? 1e6 : logNormProb;
     }
 
-    /*
-    static double map_error_2d(
-    	const gsl_vector *v,
+    static double map_error_euclidian_distance(
+    	const gsl_vector *vet,
     	void *params
-    );
-    */
+    ){
+    	/*
+		Descrição:
+			Computar mapa de erros usando distâncias euclidianas 2D
+    	*/
 
-    void commit_everything();
+    	/* Mesmas linhas de comando que a função anterior */
+		float angle;
+		RobovizField& campo_existente = Singular<RobovizField>::obter_instancia();
+
+		// Obtemos o ângulo a aprtir 
+		angle = ((*vet).size() == 3) ? gsl_vector_get(vet, 2) : *(float *) params;
+
+		// Pegamos a matriz de transformação
+		Matriz& _Head_to_Field_Prelim_instantanea = Singular<LocalizerV2>::obter_instancia()._Head_to_Field_Prelim;
+		Vetor3D Z_vec( 
+			_Head_to_Field_Prelim_instantanea.get(2, 0),
+			_Head_to_Field_Prelim_instantanea.get(2, 1),
+			_Head_to_Field_Prelim_instantanea.get(2, 2),			
+		);
+
+		Vetor3D X_vec, Y_vec;
+		calcular_eixos_XY_a_partir_de_eixo_Z( Z_vec, angle, X_vec, Y_vec );
+
+		// Estes serão os coeficientes que serão otimizados.
+		_Head_to_Field_Prelim_instantanea.setar( 0, 0, X_vec.x);
+		_Head_to_Field_Prelim_instantanea.setar( 0, 1, X_vec.y);
+		_Head_to_Field_Prelim_instantanea.setar( 0, 2, X_vec.z);
+		_Head_to_Field_Prelim_instantanea.setar( 0, 3, gsl_vector_get(vet, 0));
+		_Head_to_Field_Prelim_instantanea.setar( 1, 0, Y_vec.x);
+		_Head_to_Field_Prelim_instantanea.setar( 1, 1, Y_vec.y);
+		_Head_to_Field_Prelim_instantanea.setar( 1, 2, Y_vec.z);
+		_Head_to_Field_Prelim_instantanea.setar( 1, 3, gsl_vector_get(vet, 1));
+
+		float total_error 		  = 0;
+		int   total_error_counter = 0;
+
+		for(
+			const Linha& linha_qualquer campo_existente.lista_de_todos_os_segmentos
+		){
+
+			// Transformar coordenadas
+			Vetor3D inicio_linha_cart = _Head_to_Field_Prelim_instantanea * linha_qualquer.inicio_c;
+			Vetor3D final_linha_cart  = _Head_to_Field_Prelim_instantanea *   linha_qualquer.fina_c;
+
+			// Computar ângulo
+			float angle_da_linha = 0;
+			float tolerancia_para_angulo = 0;  // Apenas um valor de mínimo
+
+			if(
+				// Comprimento para que seja grande o suficiente
+				linha_qualquer.comprimento > 0.8
+			){
+
+				angle_da_linha = atan2f(
+										  final_linha_cart.y - inicio_linha_cart.y,
+										  final_linha_cart.x - inicio_linha_cart.x
+										);
+				if(
+					angle_da_linha < 0
+				){	
+					// Como é uma linha, não desejamos que possua valores negativos de ângulos.
+					angle_da_linha += 3.14159265f;
+				}
+
+				tolerancia_para_angulo = 0.35f;  // Cerca de 20°
+			}
+			else{
+
+				// Aqui o sanha começa, o custo começa a ficar alto demais, teremos um O(n^2).
+				if(
+					campo_existente.lista_de_todos_os_segmentos.size() <= 3
+				){
+
+					for(
+						const Linha& linha_grande : campo_existente.lista_de_todos_os_segmentos
+					){
+
+						if(
+							// Caso não seja uma linha grande ou seja a mesma linha do loop anterior
+							linha_grande.comrimento < 2 || &linha_grande == &linha_qualquer
+						){
+
+							continue;	
+						}
+
+						if(
+							// Se estiverem quase se cruzando
+							linha_grande.segment_distancia_ate_segment(linha_qualquer) < 0.5
+						){
+							// Observe que pode gerar falsos positivos com as linhas mediais e verticais
+							// Entretanto, podem ser descartados
+
+							Vetor3D inicio_da_linha_grande_cart = _Head_to_Field_Prelim_instantanea * linha_grande.inicio_c;
+							Vetor3D final_da_linha_grande_cart  = _Head_to_Field_Prelim_instantanea *  linha_grande.final_c;
+
+							angle_da_linha = atan2f(
+													 final_da_linha_grande_cart.y - inicio_da_linha_grande_cart.y,
+										 			 final_da_linha_grande_cart.x - inicio_da_linha_grande_cart.x
+												   );
+
+							// Sem saco para fatorar isso
+							// add 90deg while keeping the angle between 0-180deg (same logic used when l.length > 0.8)
+							if     (angle_da_linha < -1.57079632f){ angle_da_linha += 4.71238898f; } //Q3 -> add pi*3/2
+							else if(angle_da_linha < 0           ){ angle_da_linha += 1.57079632f; } //Q4 -> add pi/2
+							else if(angle_da_linha < 1.57079632f ){ angle_da_linha += 1.57079632f; } //Q1 -> add pi/2
+							else                           		  { angle_da_linha -= 1.57079632f; } //Q2 -> subtract pi/2
+
+							tolerancia_para_angulo = 1.22f;
+							break;
+						}
+					}
+				}
+			}
+
+			float min_error = 1e6f;
+			for(
+				const auto& segm_importante : RobovizField::cSegmentos::list 
+			){
+
+				// Pular a linha caso ela seja muito maior que a outra
+				if(
+					linha_qualquer.comprimento > (segm_importante + 0.7)
+				){
+
+					continue;
+				}
+
+				// Pular caso a orientação da linha não seja semelhante
+				float angle_diff = fabsf(angle_da_linha - segm_importante.ang);
+				if(
+					angle_diff > 1.57079632f
+				){
+
+					angle_diff = 3.14159265f - angle_diff;
+				}
+				if(
+					angle_diff > tolerancia_para_angulo
+				){
+
+					continue;
+				}
+
+				// O erro será a soma de distância entre um segmento de linha para ambas extremidades vistas
+				float error = RobovizField::calcular_dist_segm_para_pt2d_c(segm_importante, inicio_linha_cart.para_2D());
+
+				if(
+					error < min_error
+				){
+
+					error += RobovizField::calcular_dist_segm_para_pt2d_c(segm_importante, final_linha_cart.para_2D());
+				}
+
+				if(
+					error < min_error 
+				){
+
+					min_error = error;
+				}
+			}
+
+			total_error += min_error;
+			total_error_counter += 2;  // Como a linha tem 2 extremidades
+		}
+
+
+		for(
+			const RobovizField::sMarcador& mkr : campo_existente.lista_de_corners_e_goalposts
+		){
+
+			Vetor3D pt = _Head_to_Field_Prelim_instantanea * mkr.pos_rel_cart;
+
+			float error = pt.para_2D().obter_distancia(Vetor2D(mkr.spos_abs.x, mkr.spos_abs.y));
+			total_error += (error > 0.5) ? error * 100 : error;
+			total_error_counter++;
+		}
+
+		double media_de_error = total_error / total_error_counter;
+
+		return (!gsl_finite(media_de_error)) ? 1e6 : media_de_error;
+    }
+
+    /* Método de Atualização para de Variáveis Públicas */
+
+    const Matriz &Head_to_Field_Transform = _final_Head_to_Field_Transform; // -> rotação + translação
+	const Matriz &Head_to_Field_Rotate    = _final_Head_to_Field_Rotate;    // -> rotação
+	const Matriz &Field_to_Head_Transform = _final_Field_to_Head_Transform; // inversa da primeira
+	const Matriz &Field_to_Head_Rotate    = _final_Field_to_Head_Rotate;
+
+
+    void commit_system(){
+    	/*
+		Descrição:
+			Atualizará todas as variáveis públicas após ter feito os testes e confirmações
+			das variáveis privadas.
+		*/
+
+    	// Obtemos do relativo para absoluto
+    	_final_Head_to_Field_Transform = _Head_to_Field_Prelim;  
+
+    	// Obtemos do absoluto para relativo
+    	_final_Head_to_Field_Transform.obter_inversa(_final_Field_to_Head_Transform);
+
+    	int index_aux = 0;
+    	for(
+    		int i = 0;
+    			i < 3;
+    			i++
+    	){
+
+    		// Rotações do relativo para absoluto
+    		_final_Head_to_Field_Rotate.setar( i + index_aux, _final_Head_to_Field_Transform.get(i + index_aux ));
+
+    		// Rotações do absoluto para relativo
+    		_final_Field_to_Head_Rotate.setar( i + index_aux, _final_Field_to_Head_Transform.get(i + index_aux ));
+    		
+    		index_aux += 4;
+    	}
+
+    	_final_translacao = _final_Head_to_Field_Transform.obter_vetor_de_translacao();
+
+    	_se_head_z_esta_pronta_para_atualizacao = true;
+
+    	_passos_desde_ultima_atualizacao = 0;
+
+    	/*
+		Atualizamos o histórico
+		Note que devido à quantidade fixa devemos nos atentar a isso
+    	*/
+    	_historico_de_translacao[_counter_historico_de_translacao++] = _final_translacao;
+    	if(
+    		_counter_historico_de_translacao >= _historico_de_translacao.size()
+    	){
+
+    		_counter_historico_de_translacao = 0;
+    	}
+    }
 
     ///////////////////////////////////////////////////////////////////////////////
 	/// Métodos Privados de Transformação Matricial
@@ -736,8 +1345,8 @@ private:
 	/// Estatística Avançada
 	///////////////////////////////////////////////////////////////////////////////
 
-    std::array<Vetor3D, 10> position_history;
-    unsigned int position_history_ptr = 0;
+    std::array<Vetor3D, 10> _historico_de_translacao;
+    unsigned int _counter_historico_de_translacao = 0;
 
     float ultima_altura_conhecida = 0.5; 
 
@@ -750,19 +1359,53 @@ private:
 	/// Depuração
 	///////////////////////////////////////////////////////////////////////////////
 
-    int stats_sample_position_error(
-    	const Vetor3D sample,
+	/*
+	Descrição:
+		Toma uma amostra do erro de posição atual.
+
+	Parâmetros:
+		-> sample: posição estimada do agente
+		-> cheat: posição real proibida e providenciada pelo servidor.
+	*/
+    int estimar_error_posicional(
+    	const Vetor3D sample, 
     	const Vetor3D& cheat,
     	double error_placeholder[]
     );
-    void stats_reset();
+
+    void stats_reset(){
+    	/* Apenas resetará os valores de erro e de sistema obtidos após os cálculos */
+
+    	counter_tuneo_de_refinamento = 0;
+
+    	for(
+    		int i = 0;
+    			i < sizeof(errorSum_fineTune_before) / sizeof(errorSum_fineTune_before[0])
+    			i++
+    	){
+
+    		errorSum_fineTune_before[i]        = 0;
+    		errorSum_fineTune_probabilistic[i] = 0;
+    		errorSum_fineTune_euclidianDist[i] = 0;
+    	}
+
+    	for(
+    		int i = 0;
+    			i < STATE::ENUMSIZE;
+    			i++
+    	){
+
+    		contador_de_estados_do_sistema[i] = 0;
+    	}
+    }
     
+    /* Não mudaremos estes nomes pq é muito melhor assim. */
     double errorSum_fineTune_before[7] = {0};        //[0,1,2]- xyz err sum, [3]-2D err sum, [4]-2D err sq sum, [5]-3D err sum, [6]-3D err sq sum
     double errorSum_fineTune_euclidianDist[7] = {0}; //[0,1,2]- xyz err sum, [3]-2D err sum, [4]-2D err sq sum, [5]-3D err sum, [6]-3D err sq sum
     double errorSum_fineTune_probabilistic[7] = {0}; //[0,1,2]- xyz err sum, [3]-2D err sum, [4]-2D err sq sum, [5]-3D err sum, [6]-3D err sq sum
     double errorSum_ball[7] = {0};                   //[0,1,2]- xyz err sum, [3]-2D err sum, [4]-2D err sq sum, [5]-3D err sum, [6]-3D err sq sum
-    int counter_fineTune = 0;
-    int counter_ball = 0;
+    int    counter_tuneo_de_refinamento = 0;
+    int    counter_ball = 0;
 
     // Uma forma de apresentarmos os erros de forma inteligente
     // Vamos manter em inglês por simplicidade
@@ -786,11 +1429,11 @@ private:
 
     void atualizar_estado_do_sistema(enum STATE novo_estado){
 
-    	contador_do_estado_do_sistema[novo_estado]++;
+    	contador_de_estados_do_sistema[novo_estado]++;
     	estado_do_sistema = novo_estado;
 
     }
-    int contador_do_estado_do_sistema[STATE::ENUMSIZE] = {0};
+    int contador_de_estados_do_sistema[STATE::ENUMSIZE] = {0};
 
 
 public:
@@ -852,15 +1495,21 @@ public:
 	/*
 	Transformar coordenadas relativas para absolutas usando Head_to_Field_Transform
 	*/
-	Vetor3D transform_relativo_para_absoluta( const Vetor3D pos_rel ) const;
+	Vetor3D transform_relativo_para_absoluta( const Vetor3D pos_rel ) const {
+		
+		return Head_to_Field_Transform * pos_rel;
+	}
 
 	/*
 	Transformar coordenadas absolutas para relativas usando Field_to_Head_Transform
 	*/
-	Vetor3D transform_absoluta_para_relativo( const Vetor3D pos_abs ) const;
+	Vetor3D transform_absoluta_para_relativo( const Vetor3D pos_abs ) const {
+
+		return Field_to_Head_Transform * pos_abs;
+	}
 
 	/*
-	- Calcular posição e orientãção 3D.
+	- Calcular posição e orientação 3D.
 	
 	- Caso haja nova informação disponível:
 
@@ -872,26 +1521,116 @@ public:
 	*/
 	void run();
 
-	/*
-	Função depuradora, nos ajudando a identificar o erro e possível solução
-	a partir de um print.
-	*/
-	void reportar_error() const;
+	void reportar_error() const {
+		/*
+		Função depuradora, providenciando um relatório estatístico de desempenho do 
+		algoritmo. Projetado para avaliar e diagnosticar a qualidade dos ajustes.
+		*/
 
-	/*
-	- Obter velocidade 3D baseado na n-ésima posição 3D, (n_min, n_max) = (1, 9)
+		if(
+			// Se for primeira vez
+			counter_tuneo_de_refinamento == 0
+		){
 
-	Ao que parece o diferencial vem da seguinte forma:
+			cout << "LocalizerV2 reportando -> Verifique se o servidor está provendo dados privados (cheat data).\n -> counter_tuneo_de_refinamento = 0. \n";
+			return;
+		}
 
-		p0 -> posição atual
-		p1 -> última posição
-		p2 -> penúltima pos~ição
-		...
-		pn -> posição desejada
+		if(
+			counter_tuneo_de_refinamento < 2
+		){
 
-		Usa-se p0 - pn como dS
-	*/
-	Vetor3D obter_velocidade(unsigned int n) const;
+			return;
+		}
+
+		const int &c  = counter_tuneo_de_refinamento;
+		const int &cb =                 counter_ball;
+		const int c1  =                        c - 1;
+		const int cb1 =                       cb - 1;
+
+		/* Cada index dos vetores de erro significam algo específico,
+  		   veja no local de declaração para mais informações.
+		*/
+		const double* ptr = errorSum_fineTune_before;
+		float e1_2d_var = (ptr[4] - (ptr[3]*ptr[3]) / c) / c1;
+		float e1_3d_var = (ptr[6] - (ptr[5]*ptr[5]) / c) / c1;
+		float e1[] = { 
+					  ptr[3]/c, 
+					  sqrt(e1_2d_var), 
+					  ptr[5]/c, 
+					  sqrt(e1_3d_var), 
+					  ptr[0]/c,
+					  ptr[1]/c, ptr[2]/c 
+					 };
+
+		ptr = errorSum_fineTune_euclidianDist;
+		float e2_2d_var = (ptr[4] - (ptr[3]*ptr[3]) / c) / c1;
+		float e2_3d_var = (ptr[6] - (ptr[5]*ptr[5]) / c) / c1;
+		float e2[] = { ptr[3]/c, sqrt(e2_2d_var), ptr[5]/c, sqrt(e2_3d_var), ptr[0]/c, ptr[1]/c, ptr[2]/c };
+
+		ptr = errorSum_fineTune_probabilistic;
+		float e3_2d_var = (ptr[4] - (ptr[3]*ptr[3]) / c) / c1;
+		float e3_3d_var = (ptr[6] - (ptr[5]*ptr[5]) / c) / c1;
+		float e3[] = { ptr[3]/c, sqrt(e3_2d_var), ptr[5]/c, sqrt(e3_3d_var), ptr[0]/c, ptr[1]/c, ptr[2]/c };
+
+		ptr = errorSum_ball;
+		float e4_2d_var=0, e4_3d_var=0;
+		if(cb1 > 0){
+			e4_2d_var = (ptr[4] - (ptr[3]*ptr[3]) / cb) / cb1;
+			e4_3d_var = (ptr[6] - (ptr[5]*ptr[5]) / cb) / cb1;
+		}
+		float e4[] = { ptr[3]/cb, sqrt(e4_2d_var), ptr[5]/cb, sqrt(e4_3d_var), ptr[0]/cb, ptr[1]/cb, ptr[2]/cb };
+
+		const int* st = contador_de_estados_do_sistema;
+		printf("---------------------------------- LocalizerV2 Report ----------------------------------\n");
+		printf("Estágios                    2D-MAE  2D-STD  3D-MAE  3D-STD   x-MBE    y-MBE    z-MBE\n");
+		printf("Antes do Refinamento:       %.4f  %.4f  %.4f  %.4f  %7.4f  %7.4f  %7.4f\n",   e1[0],e1[1],e1[2],e1[3],e1[4],e1[5],e1[6]);
+		printf("Após EuclidDist. fit:       %.4f  %.4f  %.4f  %.4f  %7.4f  %7.4f  %7.4f\n",   e2[0],e2[1],e2[2],e2[3],e2[4],e2[5],e2[6]);
+		printf("Após Probabilistico fit:    %.4f  %.4f  %.4f  %.4f  %7.4f  %7.4f  %7.4f\n",   e3[0],e3[1],e3[2],e3[3],e3[4],e3[5],e3[6]);
+		printf("Bola:                       %.4f  %.4f  %.4f  %.4f  %7.4f  %7.4f  %7.4f\n\n", e4[0],e4[1],e4[2],e4[3],e4[4],e4[5],e4[6]);
+		printf("* MBE(Mean Bias Error) MAE(Mean Abs Error) STD(Standard Deviation)\n");
+		printf("* Note: the cheat positions should be active in server (preferably with >2 decimal places)\n");
+		printf("* cheat -> informações 'proibidas'.\n\n");
+		printf("------------------LocalizerV2::run calls analysis:\n");
+		printf("- Total:               %i \n", st[RUNNING]);
+		printf("- Successful:          %i \n", st[DONE]);
+		printf("- Blind agent:         %i \n", st[BLIND]);
+		printf("- Almost blind:        %i \n", st[MINFAIL] + st[FAILzNOgoal] + st[FAILzLine] + st[FAILz]);
+		printf("- Guess location fail: %i \n", st[FAILguessLine] + st[FAILguessNone] + st[FAILguessMany] + st[FAILguessTest]);
+		printf("--- Lines too short:   %i \n", st[FAILguessLine]);
+		printf("--- No solution:       %i \n", st[FAILguessNone]);
+		printf("--- >1 solution:       %i \n", st[FAILguessMany]);
+		printf("--- Weak solution:     %i \n", st[FAILguessTest]);
+		printf("- Eucl. tune fail:     %i \n", st[FAILtune]); //Euclidian distance tune error above 6cm
+		printf("----------------------------------------------------------------------------------------\n");
+	}
+
+	Vetor3D obter_velocidade(unsigned int index) const {
+		/*
+		- Obter velocidade 3D baseado na n-ésima posição 3D, (n_min, n_max) = (1, 9)
+
+		Ao que parece o diferencial vem da seguinte forma:
+
+			p0 -> posição atual
+			p1 -> última posição
+			p2 -> penúltima pos~ição
+			...
+			pn -> posição desejada
+
+			Usa-se p0 - pn como dS
+		*/
+
+		int ultima_pos = _historico_de_translacao.size() - 1;
+
+		Vetor3D pos_atual = _historico_de_translacao[ 
+			( _counter_historico_de_translacao + ultima_pos )         % _historico_de_translacao.size() 
+		];
+		Vetor3D pos_final = _historico_de_translacao[ 
+			( _counter_historico_de_translacao + ultima_pos - index ) % _historico_de_translacao.size() 
+		];
+
+		return pos_atual = pos_final;
+	}
 
 	/*
 	Obtém última posição conhecida da coordenada z da cabeça.
