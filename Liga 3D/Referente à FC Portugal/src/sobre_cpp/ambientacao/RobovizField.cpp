@@ -927,13 +927,8 @@ void RobovizField::desenhar_visiveis_trocados(
 	return artista(Head_to_Field, -1);
 }
 
-
 int main(){
 
-
-
-
-	printf("\n\nCompilado e executado com sucesso.\n\n");
-	return 0;
+    printf("-> RobovizField.cpp: Compilação Bem Sucedida.");
+    return 0;
 }
-

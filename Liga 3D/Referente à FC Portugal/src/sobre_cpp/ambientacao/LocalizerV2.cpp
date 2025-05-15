@@ -1,6 +1,5 @@
 #include "LocalizerV2.h"
-#include "math.h"
-#include "World.h"
+#include "World.h"  // Incluirá Singular.h e AlgLin.h, este último possuindo math.h e cmath
 
 /*
 Precisamos te um arquivo .cpp para que ele seja executado em conjunto.

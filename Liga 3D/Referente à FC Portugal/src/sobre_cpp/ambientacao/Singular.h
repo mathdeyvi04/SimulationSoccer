@@ -1,7 +1,7 @@
 /*
 Estava com um bug imenso, pois estava '#define SINGULAR',
 logo este header era importado duas vezes, oq causava erro de 
-definição.
+definiï¿½ï¿½o.
 */
 #ifndef SINGULAR_H
 #define SINGULAR_H
@@ -14,10 +14,10 @@ class Singular {
 	/*
 	No exemplo original, ele define como SingleTon:
 	
-		Para garantir que uma classe tenha APENAS uma instância
-		em toda a aplicação.
+		Para garantir que uma classe tenha APENAS uma instï¿½ncia
+		em toda a aplicaï¿½ï¿½o.
 		
-		Isso é útil para:
+		Isso ï¿½ ï¿½til para:
 			-> Gerenciar Recursos Globais.
 			-> Controlar acesso ao Hardware.
 			
@@ -28,11 +28,11 @@ public:
 	
 	static classe_qualquer& obter_instancia() {
 		
-		// O static garante que seja única e seja thread-safe.
+		// O static garante que seja ï¿½nica e seja thread-safe.
 		static classe_qualquer instancia;
 		
-		// Retorna referência para permitir modificações futuras.
-		// Não há cópia, apenas endereço é compartilhado.
+		// Retorna referï¿½ncia para permitir modificaï¿½ï¿½es futuras.
+		// Nï¿½o hï¿½ cï¿½pia, apenas endereï¿½o ï¿½ compartilhado.
 		return instancia; 
 	}
 	
@@ -42,9 +42,9 @@ private:
 	Observe a genialidade disso:
 	
 	- Construtor e Destrutor bloqueados.
-		Não é possível inicializar ou destruir uma instância.
+		Nï¿½o ï¿½ possï¿½vel inicializar ou destruir uma instï¿½ncia.
 	
-	- Cópia e Atribuição bloqueados.
+	- Cï¿½pia e Atribuiï¿½ï¿½o bloqueados.
 		Isso violaria a unicidade.
 	
 	*/

@@ -1,12 +1,7 @@
 #include <iostream>
-#include "Geometria.h"
-#include "Matriz.h"
 #include "Ruido_de_Campo.h"
-#include "Linha.h"
 #include "World.h"
-#include "RobovizField.h"
-#include "LocalizerV2.h"
-#include "Singular.h"
+#include "LocalizerV2.h"  // Já incluirá RobovizField
 
 using namespace std;
 

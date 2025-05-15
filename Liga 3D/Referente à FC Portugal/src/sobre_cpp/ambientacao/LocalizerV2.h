@@ -1,11 +1,8 @@
 #ifndef LOCALIZERV2_H
 #define LOCALIZERV2_H
 
-#include "Singular.h"
-#include "RobovizField.h"
-#include "Matriz.h"
+#include "RobovizField.h"  // Já incluirá os arquivos AlgLin.h e Singular.h
 #include "Ruido_de_Campo.h"
-#include <iostream>
 #include <cstdio>
 
 #include <gsl/gsl_multifit.h> //Linear least-squares fitting
@@ -1547,7 +1544,8 @@ public:
 			counter_tuneo_de_refinamento == 0
 		){
 
-			cout << "LocalizerV2 reportando -> Verifique se o servidor está provendo dados privados (cheat data).\n -> counter_tuneo_de_refinamento = 0. \n";
+			printf("LocalizerV2 reportando -> Verifique se o servidor está provendo dados privados (cheat data).\n");
+			printf("-> counter_tuneo_de_refinamento = 0.\n")
 			return;
 		}
 

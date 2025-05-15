@@ -5,9 +5,7 @@ Créditos mantidos: Miguel Abreu, um gênio, (m.abreu@fe.up.pt)
 #define WORLD_H
 
 #include "Singular.h"
-#include "Geometria.h"
-#include "Matriz.h"
-#include "Linha.h"
+#include "AlgLin.h"
 #include <vector>
 #include <array>
 

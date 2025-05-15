@@ -5,9 +5,7 @@ Manter créditos ao Miguel Abreu e à equipe FC Portugal
 #define CAMPO_H 
 
 #include "Singular.h"  
-#include "Geometria.h"
-#include "Matriz.h"
-#include "Linha.h"
+#include "AlgLin.h"
 #include <vector>  // Alocação Dinâmica
 #include <array>   // Alocação Estática
 

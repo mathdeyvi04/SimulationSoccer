@@ -10,7 +10,6 @@ map_error_logprob().
 
 #ifndef RUIDO_DE_CAMPO_H
 #define RUIDO_DE_CAMPO_H
-#include <cstdio>
 #include <cmath>
 
 #define LOG0_5 -0.69314718056f   // Base neperiana

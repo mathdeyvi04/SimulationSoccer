@@ -1,12 +1,7 @@
 #include <iostream>
-#include "Geometry.h"
-#include "Vector3f.h"
-#include "Matrix4D.h"
-#include "FieldNoise.h"
-#include "Line6f.h"
-#include "World.h"
-#include "Field.h"
-#include "LocalizerV2.h"
+#include "Ruido_de_Campo.h"
+#include "World.h"  // Incluirá AlgLin.h
+#include "LocalizerV2.h"  // Já incluirá RobovizField.h
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
 

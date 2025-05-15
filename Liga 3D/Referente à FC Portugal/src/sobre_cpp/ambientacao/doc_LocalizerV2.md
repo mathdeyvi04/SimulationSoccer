@@ -289,21 +289,3 @@ Grad(PDF[En](p,on,mn)) wrt p = sum(gradPDF[Ei] / PDF[Ei]) * PDF[En](p,on,mn)
 
 note that: gradPDF[zE](pz,estz) wrt {px,py,pz} = {0,0,d/d_pz}
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
