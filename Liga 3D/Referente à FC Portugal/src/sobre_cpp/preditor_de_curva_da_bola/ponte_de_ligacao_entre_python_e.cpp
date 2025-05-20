@@ -138,13 +138,13 @@ PYBIND11_MODULE(
 	m.doc() = "Preditor de Curva de Bola, obtendo atributos cinemáticos e trajetória aproximada.";
 	
 	m.def(
-		"kinematic_predict",
+		"obter_previsao_de_atributos_cinematicos",
 		&obter_previsao_de_atributos_cinematicos,
 		"parametros"_a.
 	);
 	
 	m.def(
-		"obter_intersecao",
+		"obter_previsao_de_intersecao",
 		&obter_previsao_de_intersecao,
 		"parametros"_a
 	);

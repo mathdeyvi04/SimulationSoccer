@@ -49,121 +49,153 @@ void apresentar_dados_em_python(){
     }
 }
 
-py::array_t<float> compute(
-            bool lfoot_touch, bool rfoot_touch, 
+py::array_t<float>
+compute(
+            // Não vou renomear estes pq já estão bons.
+            bool lfoot_touch,
+            bool rfoot_touch, 
             py::array_t<double> feet_contact,
-            bool ball_seen, py::array_t<double> ball_pos,
+            bool ball_seen,
+            py::array_t<double> ball_pos,
             py::array_t<double> me_pos,
             py::array_t<double> landmarks,
-            py::array_t<double> lines){
+            py::array_t<double> lines
+){
 
-    // ================================================= 1. Parse data
+    // Traduzir informações
     
-    static World &world = SWorld::getInstance();
-    world.foot_touch[0] = lfoot_touch;
-    world.foot_touch[1] = rfoot_touch;
+    static World &world = Singular<World>::obter_instancia();
+    world.se_pe_esta_tocando[0] = lfoot_touch;
+    world.se_pe_esta_tocando[1] = rfoot_touch;
 
-    //Structure of feet_contact {lfoot_contact_pt, rfoot_contact_pt, lfoot_contact_rel_pos, rfoot_contact_rel_pos}
+    /*
+    Receberemos do python a estrutura feet_contact:
+        {lfoot_contact_pt, rfoot_contact_pt, lfoot_contact_rel_pos, rfoot_contact_rel_pos}
+    */
+    py::buffer_info buffer_pos_pes = feet_contact.request();
+    double *feet_contact_ptr = (double *) buffer_pos_pes.ptr;  // ponteiro para buffer
 
-    py::buffer_info feet_contact_buf = feet_contact.request();
-    double *feet_contact_ptr = (double *) feet_contact_buf.ptr;
-    world.foot_contact_rel_pos[0].x = feet_contact_ptr[0];
-    world.foot_contact_rel_pos[0].y = feet_contact_ptr[1];
-    world.foot_contact_rel_pos[0].z = feet_contact_ptr[2];
-    world.foot_contact_rel_pos[1].x = feet_contact_ptr[3];
-    world.foot_contact_rel_pos[1].y = feet_contact_ptr[4];
-    world.foot_contact_rel_pos[1].z = feet_contact_ptr[5];
+    world.pos_rel_do_ponto_de_contato[0].x = feet_contact_ptr[0];
+    world.pos_rel_do_ponto_de_contato[0].y = feet_contact_ptr[1];
+    world.pos_rel_do_ponto_de_contato[0].z = feet_contact_ptr[2];
+    world.pos_rel_do_ponto_de_contato[1].x = feet_contact_ptr[3];
+    world.pos_rel_do_ponto_de_contato[1].y = feet_contact_ptr[4];
+    world.pos_rel_do_ponto_de_contato[1].z = feet_contact_ptr[5];
 
-    world.ball_seen = ball_seen;
+    world.se_bola_esta_visivel = se_bola_esta_visivel;
 
-    //Structure of ball_pos {ball_rel_pos_cart, ball_cheat_abs_cart_pos}
+    // Receberemos do python a estrutura ball_pos:
+    //   {pos_rel_da_bola_cart, ball_cheat_abs_cart_pos}
 
-    py::buffer_info ball_pos_buf = ball_pos.request();
-    double *ball_pos_ptr = (double *) ball_pos_buf.ptr;
-    world.ball_rel_pos_cart.x = ball_pos_ptr[0];
-    world.ball_rel_pos_cart.y = ball_pos_ptr[1];
-    world.ball_rel_pos_cart.z = ball_pos_ptr[2];
-    world.ball_cheat_abs_cart_pos.x = ball_pos_ptr[3];
-    world.ball_cheat_abs_cart_pos.y = ball_pos_ptr[4];
-    world.ball_cheat_abs_cart_pos.z = ball_pos_ptr[5];
+    py::buffer_info buffer_pos_ball = ball_pos.request();
+    double *ball_pos_ptr = (double *) buffer_pos_ball.ptr;
+
+    world.pos_rel_da_bola_cart.x       = ball_pos_ptr[0];
+    world.pos_rel_da_bola_cart.y       = ball_pos_ptr[1];
+    world.pos_rel_da_bola_cart.z       = ball_pos_ptr[2];
+    world.pos_abs_da_bola_cart_cheat.x = ball_pos_ptr[3];
+    world.pos_abs_da_bola_cart_cheat.y = ball_pos_ptr[4];
+    world.pos_abs_da_bola_cart_cheat.z = ball_pos_ptr[5];
     
-    py::buffer_info me_pos_buf = me_pos.request();
-    double *me_pos_ptr = (double *) me_pos_buf.ptr;
-    world.my_cheat_abs_cart_pos.x = me_pos_ptr[0];
-    world.my_cheat_abs_cart_pos.y = me_pos_ptr[1];
-    world.my_cheat_abs_cart_pos.z = me_pos_ptr[2];
+    py::buffer_info buffer_robo = me_pos.request();
+    double *me_pos_ptr = (double *) buffer_robo.ptr;
+
+    world.pos_abs_do_robo_cart_cheat.x = me_pos_ptr[0];
+    world.pos_abs_do_robo_cart_cheat.y = me_pos_ptr[1];
+    world.pos_abs_do_robo_cart_cheat.z = me_pos_ptr[2];
 
     py::buffer_info landmarks_buf = landmarks.request();
     double *landmarks_ptr = (double *) landmarks_buf.ptr;
 
-    for(int i=0; i<8; i++){
-        world.landmark[i].seen = (bool) landmarks_ptr[0];
-        world.landmark[i].isCorner = (bool) landmarks_ptr[1];
-        world.landmark[i].pos.x = landmarks_ptr[2];
-        world.landmark[i].pos.y = landmarks_ptr[3];
-        world.landmark[i].pos.z = landmarks_ptr[4];
-        world.landmark[i].rel_pos.x = landmarks_ptr[5];
-        world.landmark[i].rel_pos.y = landmarks_ptr[6];
-        world.landmark[i].rel_pos.z = landmarks_ptr[7];
-        landmarks_ptr += 8;
+    for(
+        int i=0; 
+            i<8; 
+            i++
+    ){
+
+        world.marcadores_de_chao[i].se_esta_visivel = (bool) landmarks_ptr[0];
+        world.marcadores_de_chao[i].se_eh_canto   = (bool) landmarks_ptr[1];
+        world.marcadores_de_chao[i].pos_abs.x     = landmarks_ptr[2];
+        world.marcadores_de_chao[i].pos_abs.y     = landmarks_ptr[3];
+        world.marcadores_de_chao[i].pos_abs.z     = landmarks_ptr[4];
+        world.marcadores_de_chao[i].pos_rel_esf.x = landmarks_ptr[5];
+        world.marcadores_de_chao[i].pos_rel_esf.y = landmarks_ptr[6];
+        world.marcadores_de_chao[i].pos_rel_esf.z = landmarks_ptr[7];
+
+        // São 8 marcadores, logo devemos realizar esse loop 8 vezes
+        // Pegando informações de cada um
+        landmarks_ptr += 8; 
     }
 
-    py::buffer_info lines_buf = lines.request();
-    int lines_len = lines_buf.shape[0];
-    double *lines_ptr = (double *) lines_buf.ptr;
-    world.lines_polar.clear();
+    py::buffer_info buffer_das_linhas = lines.request();
+    int lines_len = buffer_das_linhas.shape[0];  // Para sabermos quantas linhas estamos vendo.
 
-    for(int i=0; i<lines_len; i++){
-        Vector3f s(lines_ptr[0],lines_ptr[1],lines_ptr[2]);
-        Vector3f e(lines_ptr[3],lines_ptr[4],lines_ptr[5]);
-        world.lines_polar.emplace_back(s, e); 
-        lines_ptr += 6;
+    double *lines_ptr = (double *) buffer_das_linhas.ptr;
+    world.linhas_esfericas.clear();
+
+    for(
+        int i=0; 
+            i<lines_len; 
+            i++
+    ){
+
+        world.linhas_esfericas.emplace_back(
+            Vetor3D( lines_ptr[0],lines_ptr[1],lines_ptr[2] ),  // inicio da linhas
+            Vetor3D( lines_ptr[3],lines_ptr[4],lines_ptr[5] )   // final 
+        ); 
+
+        lines_ptr += 6;  // Para cada linha
     }
     
-    // ================================================= 2. Compute 6D pose
+    // Realizamos o super algoritmo.
 
     loc.run(); 
     
-    // ================================================= 3. Prepare data to return
+    // Preparamos data para retornar.
     
-    py::array_t<float> retval = py::array_t<float>(35); //allocate
-    py::buffer_info buff = retval.request();
-    float *ptr = (float *) buff.ptr;
+    // Prealocamos tudo que iremos retornar
+    py::array_t<float> retval = py::array_t<float>(35); 
+    py::buffer_info buffer = retval.request();
+    float *ptr = (float *) buffer.ptr;  // Manipulação de ponteiro é algo realmente lindo.
 
     for(int i=0; i<16; i++){
-        ptr[i] = loc.headTofieldTransform.content[i];
-    }
-    ptr += 16;
-    for(int i=0; i<16; i++){
-        ptr[i] = loc.fieldToheadTransform.content[i];
+        ptr[i] = loc.Head_to_Field_Transform.conteudo[i];
     }
     ptr += 16;
 
-    ptr[0] = (float) loc.is_uptodate;
+    for(int i=0; i<16; i++){
+        ptr[i] = loc.Field_to_Head_Transform.conteudo[i];
+    }
+    ptr += 16;
+
+    ptr[0] = (float) loc.se_esta_pronta_para_atualizacao;
     ptr[1] = loc.head_z;
-    ptr[2] = (float) loc.is_head_z_uptodate;
-
+    ptr[2] = (float) loc.se_head_z_esta_pronta_para_atualizacao;
 
     return retval;
 }
 
-void print_report(){
-    loc.print_report();
+void reportar_situacao(){
+    loc.reportar_situacao();
 }
 
-void draw_visible_elements(bool is_right_side){
-    Field& fd = SField::getInstance();
-    fd.draw_visible(loc.headTofieldTransform, is_right_side);
+void desenhar_elementos_visiveis(bool is_right_side){
+
+    RobovizField& fd = Singular<RobovizField>::obter_instancia();
+    fd.desenhar_visiveis(loc.Head_to_Field_Transform, is_right_side);
+
+    return;
 }
 
 
-using namespace pybind11::literals; //to add informative argument names as -> "argname"_a
+using namespace pybind11::literals; 
 
-PYBIND11_MODULE(localization, m) { //the python module name, m is the interface to create bindings
-    m.doc() = "Probabilistic 6D localization algorithm"; // optional module docstring
+// Vamos manter o nome em honra aos autores
+PYBIND11_MODULE(localization, m) {                      
+    m.doc() = "Super Algoritmo de Localização 6D baseado em Probabilidades"; // optional module docstring
 
-    //optional arguments names
-    m.def("compute", &compute, "Compute the 6D pose based on visual information and return transformation matrices and other relevant data",
+    m.def(
+        "aplicar_localizer", &compute, "Calcular a posição do robô baseado em informações virtuais e retornar dados relevantes, como as matrizes de transformação. Cada argumento tem uma função crucial, atente-se.",
         "lfoot_touch"_a,
         "rfoot_touch"_a,
         "feet_contact"_a,
@@ -173,8 +205,23 @@ PYBIND11_MODULE(localization, m) { //the python module name, m is the interface 
         "landmarks"_a,
         "lines"_a);
 
-    m.def("print_python_data", &print_python_data, "Print data received from Python");
-    m.def("print_report", &print_report, "Print localization report");
-    m.def("draw_visible_elements", &draw_visible_elements, "Draw all visible elements in RoboViz", "is_right_side"_a);
+    m.def(
+        "apresentar_dados_recebidos_do_python",
+        &apresentar_dados_em_python, 
+        "Apresenta dados recebidos pelo C++ a partir do Python."
+    );
+
+    m.def(
+        "reportar_situacao",
+        &reportar_situacao,
+        "Reportar informações relevantes sobre os processos calculados pelo algoritmo de localização."
+    );
+
+    m.def(
+        "desenhar_elementos_visiveis", 
+        &desenhar_elementos_visiveis, 
+        "Desenhar todos os elementos vísiveis no Roboviz.", 
+        "is_right_side"_a
+    );
     
 }
