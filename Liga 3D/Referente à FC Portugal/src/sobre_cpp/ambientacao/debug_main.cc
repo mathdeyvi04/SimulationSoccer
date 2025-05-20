@@ -8,6 +8,9 @@ using namespace std;
 static LocalizerV2& loc = Singular<LocalizerV2>::obter_instancia();
 
 void apresentar_dados_em_python(){
+    /*
+    Função que apresentará as informações que estarão sendo levadas para o ambiente C++.
+    */
 
     static World &world = Singular<World>::obter_instancia();
 

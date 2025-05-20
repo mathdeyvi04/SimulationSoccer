@@ -8,40 +8,44 @@
 namespace py = pybind11;
 using namespace std;
 
-static LocalizerV2& loc = SLocalizerV2::getInstance();
+static LocalizerV2& loc = Singular<LocalizerV2>::obter_instancia();
 
-void print_python_data(){
+void apresentar_dados_em_python(){
+    /*
+    Função que levará informações que serão utilizadas no ambiente C++.
+    */
 
-    static World &world = SWorld::getInstance();
+    static World &world = Singular<World>::obter_instancia();
 
-    cout << "Foot touch: " << world.foot_touch[0] << " " << world.foot_touch[1] << endl;
-    cout << "LFoot contact rpos: " << world.foot_contact_rel_pos[0].x << " " << world.foot_contact_rel_pos[0].y << " " << world.foot_contact_rel_pos[0].z << endl;
-    cout << "RFoot contact rpos: " << world.foot_contact_rel_pos[1].x << " " << world.foot_contact_rel_pos[1].y << " " << world.foot_contact_rel_pos[1].z << endl;
-    cout << "Ball seen: " << world.ball_seen << endl;
-    cout << "Ball rpos cart: " << world.ball_rel_pos_cart.x << " " << world.ball_rel_pos_cart.y << " " << world.ball_rel_pos_cart.z << endl;
-    cout << "Ball cheat: " << world.ball_cheat_abs_cart_pos.x << " " << world.ball_cheat_abs_cart_pos.y << " " << world.ball_cheat_abs_cart_pos.z << endl;
-    cout << "Me cheat: " << world.my_cheat_abs_cart_pos.x << " " << world.my_cheat_abs_cart_pos.y << " " << world.my_cheat_abs_cart_pos.z << endl;
-    
+    cout << "Foot Is Touching: "      << world.se_pe_esta_tocando[0] << " " << world.se_pe_esta_tocando[1] << endl;
+    cout << "LFoot Pos_Rel Contato: " << world.pos_rel_do_ponto_de_contato[0].x << ", " << world.pos_rel_do_ponto_de_contato[0].y << ", " << world.pos_rel_do_ponto_de_contato[0].z << endl;
+    cout << "RFoot Pos_Rel Contato: " << world.pos_rel_do_ponto_de_contato[1].x << ", " << world.pos_rel_do_ponto_de_contato[1].y << ", " << world.pos_rel_do_ponto_de_contato[1].z << endl;
+    cout << "Bola Vista: "            << world.se_bola_esta_visivel << endl;
+    cout << "Bola Cheat: "            << world.pos_abs_da_bola_cart_cheat.x << ", " << world.pos_abs_da_bola_cart_cheat.y << ", " << world.pos_abs_da_bola_cart_cheat.z << endl;
+    cout << "Eu, Robo:   "            << world.pos_abs_do_robo_cart_cheat.x << ", " << world.pos_abs_do_robo_cart_cheat.y << ", " << world.pos_abs_do_robo_cart_cheat.z << endl;
+               
     for(int i=0; i<8; i++){
-        cout << "Landmark " << i << ": " <<
-        world.landmark[i].seen << " " <<
-        world.landmark[i].isCorner << " " <<
-        world.landmark[i].pos.x << " " <<
-        world.landmark[i].pos.y << " " <<
-        world.landmark[i].pos.z << " " <<
-        world.landmark[i].rel_pos.x << " " <<
-        world.landmark[i].rel_pos.y << " " <<
-        world.landmark[i].rel_pos.z << endl;
+
+        cout << "Marcador de Chão " << i << ": " <<
+        world.marcadores_de_chao[i].se_esta_visivel << " " <<
+        world.marcadores_de_chao[i].se_eh_canto   << " " <<
+        world.marcadores_de_chao[i].pos_abs.x     << " " <<
+        world.marcadores_de_chao[i].pos_abs.y     << " " <<
+        world.marcadores_de_chao[i].pos_abs.z     << " " <<
+        world.marcadores_de_chao[i].pos_rel_esf.x << " " <<
+        world.marcadores_de_chao[i].pos_rel_esf.y << " " <<
+        world.marcadores_de_chao[i].pos_rel_esf.z << endl;
     }
 
-    for(int i=0; i<world.lines_polar.size(); i++){
-        cout << "Line " << i << ": " <<
-        world.lines_polar[i].start.x << " " << 
-        world.lines_polar[i].start.y << " " << 
-        world.lines_polar[i].start.z << " " << 
-        world.lines_polar[i].end.x << " " << 
-        world.lines_polar[i].end.y << " " << 
-        world.lines_polar[i].end.z << endl;
+    for(int i=0; i<world.linhas_esfericas.size(); i++){
+
+        cout << "Linha Em Coordenadas Esfericas " << i << ": " <<
+        world.linhas_esfericas[i].inicio.x << " " << 
+        world.linhas_esfericas[i].inicio.y << " " << 
+        world.linhas_esfericas[i].inicio.z << " " << 
+        world.linhas_esfericas[i].final.x << " " << 
+        world.linhas_esfericas[i].final.y << " " << 
+        world.linhas_esfericas[i].final.z << endl;
     }
 }
 
