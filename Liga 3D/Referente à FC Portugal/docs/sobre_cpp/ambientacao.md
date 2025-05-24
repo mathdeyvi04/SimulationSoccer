@@ -66,25 +66,3 @@ Houve condensação de arquivos, quando comparado com o original, e alterações
 * [LocalizerV2.cpp](../../src/sobre_cpp/ambientacao/LocalizerV2.cpp)
     * Implementação de funções que precisam ser compiladas.
     * Lógica de alta complexidade e importância.
-
-
-* [ponte_de_ligacao_entre_python_e.cpp](../../src/sobre_cpp/ambientacao/ponte_de_ligacao_entre_python_e.cpp)
-
-* [debug_main.cc]()
-
-* [Makefile]()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

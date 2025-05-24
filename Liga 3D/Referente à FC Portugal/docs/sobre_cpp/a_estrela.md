@@ -19,13 +19,3 @@ Módulo C++ focado no algoritmo A*, o qual foi criado em C++ para ser usado em P
   * Utilização de um algoritmo insano para calcular distâncias, criado e desenvolvido pela equipe de Portugal exclusivamente para aprimorar a velocidade da busca pelo melhor caminho possível.
   * Excelente demonstração de como codar como um Deus, agradeço ao Miguel Abreu por disponibilzar essa obra de arte.
   * Acredito que, para posteriores avanços, pode-se implementar métodos de testes automáticos a fim de apresentar e verificar o algoritmo e respectivos avanços.
-
-* [debug_main.cc](../../src/sobre_cpp/a_estrela/debug_main.cc)
-  * Código para teste de função desenvolvida dentro da pasta, vulgo a_estrela().
-
-* [ponte_de_ligacao_entre_python_e.cpp](../../src/sobre_cpp/a_estrela/ponte_de_ligacao_entre_python_e.cpp)
-  * Código responsável por prover ferramentos de conexão do ambiente Python com funções C++.
-
-* [Makefile](../../src/sobre_cpp/a_estrela/Makefile)
-  * Responsável por providenciar o Build do módulo. Não ironicamente é o segundo
-  arquivo mais importante.
