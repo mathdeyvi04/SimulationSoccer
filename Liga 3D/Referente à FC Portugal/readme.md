@@ -24,7 +24,7 @@ ou o modificado da RoboIME.
 
 	* Explicação Base de Diversos Componentes Básicos da Aplicação.
 
-	* [Hierarquia de Arquivos e Pastas]("docs\readme.md")
+	* [Hierarquia de Arquivos e Pastas](docs\readme.md)
     
 		* Como ocorre a distrbuição de arquivos e de módulos, e suas respectivas responsabilidades.
 
