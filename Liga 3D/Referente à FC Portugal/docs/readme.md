@@ -35,22 +35,24 @@ não tente colocar UTF-8 nas documentações ou nomes.
 Arquivo de build do módulo cpp, o qual gerará um arquivo _.so_.
 
 Caso deseje compilar o módulo manualmente para realizar testes e comparações,
-realize:
+faça o que é descrito dentro do arquivo:
 
-´´´ 
+```
 # Para executar a compilação manual, descomente a seguinte linha: 
 # FLAGS_DE_COMPILACAO_MANUAL = -I/usr/include/python3.12 -I/usr/include/pybind11
 
 # E substitua o termo $(PYBIND_INCLUDES) por $(FLAGS_DE_COMPILACAO_MANUAL)
-´´´
+```
 
 Atente-se ao que está sendo feito, colocamos o diretório da versão de python e 
 da pasta pybind11.
 
-* Explicação Adicional
+* Como é feito a automação?
 
 Estes módulos são compilados e construídos a partir de um método específico da classe 
-Script.
+[Script](../src/sobre_scripts/comuns/Script.py).
+
+... Descrição sucinta do que acontece.
 
 
 
