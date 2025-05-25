@@ -19,13 +19,12 @@ class UserInterface:
         do usuário com o terminal amigável, com
         tratamento de erros e formatação automática.
 
-        Inclui funcionalidades interessantes como leitura de
-        entradas específicas, como *ler_particula* e *ler_inteiro*,
-        e a exibição de listas e tabelas formatadas, *apresentar_lista*.
+        Inclui funcionalidades interessantes como:
 
-        A ideia é que não há reutilização de partes do código, logo
+
+
+        A ideia é não haver reutilização de partes do código, logo
         é desnecessário a fragmentação em subfunções.
-
     """
 
     comprimento_console = 80
@@ -72,7 +71,7 @@ class UserInterface:
                 int() -> int
 
             -> intervalo:
-                Para tipos numéricos.
+                Somente para tipos numéricos.
 
         Retorno:
             -> escolha_do_usuario: int/tipo_de_entrada
@@ -91,7 +90,7 @@ class UserInterface:
                 pass
             
             * O termo math.inf é desnecessário.
-            * O argumento padrão mutável torna o código sucessível a erros.
+            * O argumento padrão mutável torna o código sucetível a erros.
             """
             intervalo = [-99999, 99999]
 
@@ -733,30 +732,9 @@ class UserInterface:
 
 
 if __name__ == '__main__':
-    # Testes Unitários? Devem ser providenciados no futuro.
+    # Desenvolvimento de testes unitários para cada método.
 
-    # exemplo = UserInterface()
+    #
 
-    # exemplo.apresentar_tabela(
-    #     dados=[
-    #         ["John", "Graciete", "Galvão"],
-    #         [30, 29, 50],
-    #         ["SP", "SP", "CE"]
-    #     ],
-    #     titulos=["Nome", "Idade", "Cidade"],
-    #     alinhamento=["<", "^", ">"],
-    #     comprimento_das_colunas=[0, 0, 0],
-    #     margens=[3, 3, 2],
-    #     enumerando=[True, False, False],
-    #     prompt="Escolha alguém:"
-    # )
-
-    # exemplo.apresentar_lista(
-    #     dados=[
-    #         "Lima",
-    #         "Salgados",
-    #         "SegFem"
-    #     ]
-    # )
 
     pass

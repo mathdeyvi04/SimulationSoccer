@@ -1,14 +1,24 @@
 src = $(wildcard *.cpp)
 obj = $(src:.cpp=.o)
 
-CFLAGS = -O3 -shared -std=c++11 -fPIC -Wall $(PYBIND_INCLUDES)
+# Para executar a compilação manual, descomente a seguinte linha: 
+# FLAGS_DE_COMPILACAO_MANUAL = -I/usr/include/python3.12 -I/usr/include/pybind11
+
+# E substitua o termo $(PYBIND_INCLUDES) por $(FLAGS_DE_COMPILACAO_MANUAL)
+
+
+CXXFLAGS = -O3 -shared -std=c++11 -fPIC -Wall $(PYBIND_INCLUDES)
 
 all: $(obj)
-	g++ $(CFLAGS) -o preditor_de_curva_da_bola.so $^
+	g++ $(CXXFLAGS) -o preditor_de_curva_da_bola.so $^
 
-debug: $(filter-out ponto_de_ligacao_entre_python_e.cpp,$(obj))
-	g++ -O0 -std=c++14 -Wall -g -o debug.bin debug_main.cc $^
+teste:
+	clear; python3 debug.py
 
 .PHONY: clean
+
 clean:
 	rm -f $(obj) all
+
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@

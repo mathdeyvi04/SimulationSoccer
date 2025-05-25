@@ -15,16 +15,16 @@ int   quantidade_de_pontos_de_posicao;
 
 void obter_previsao_de_intersecao_com_bola(
 	/*
-	Componentes da Posição.
+	Componentes da Posição do robô.
 	*/
 	float x, 
 	float y,
 	/*
-	Máximo módulo de velocidade por passo.
+	Máximo módulo de deslocamento do robô por passo tempo
 	*/
 	float max_speed_do_robo_por_passo,
 	/*
-	Vetor de posições da bola e seu respectiva quantidade
+	Vetor de futuras posições da bola e seu respectiva quantidade
 	de pontos.
 	*/
 	float posicao_da_bola[],
@@ -38,8 +38,15 @@ void obter_previsao_de_intersecao_com_bola(
 ){
 	/*
 	Descrição:
-		Obtém a interseção com a bola em movimento.
-		
+		Verifica a possível interseção do robô com a bola. Note que a variável max_speed...
+		é para considerarmos que o robô está correndo com máxima velocidade na direção da bola,
+		a fim de termos uma estimativa.
+
+		Caso haja interseção, retorna a posição (x, y) e a respectiva distância relativas à interseção.
+		Caso não, retornará a última posição (x, y) e a respectiva distância relativas calculadas.
+
+		Uma forma de saber se há a possibilidade de contato é observar 
+		a distância relativa dada.		
 	Retorno:
 		ret_x -> ponteiro para posição x do ponto de intersção
 		ret_y -> ponteiro para posição y do ponto de interseção
@@ -51,7 +58,8 @@ void obter_previsao_de_intersecao_com_bola(
 	int index = 0;
 	while(1){
 		/*
-		Vamos pegar a distância relativa percorrida entre dois slots de posição.
+		Vamos pegar a distância relativa entre a posição futura do robô e 
+		verificar se há interseção
 		*/
 		float vec_x = posicao_da_bola[index++] - x;
 		float vec_y = posicao_da_bola[index++] - y;
@@ -59,18 +67,19 @@ void obter_previsao_de_intersecao_com_bola(
 		// Distância percorrida pela bola nesse intervalo de tempo.
 		// Vulgo intervalo de tempo para termos dois slots de posição registrados.
 		float dist_sq = vec_x * vec_x + vec_y * vec_y;  
-		
+
 		if(
 			(
-				dist_sq < max_distancia_de_contato 
+				dist_sq < max_distancia_de_contato * max_distancia_de_contato
 			) || (
 				index > quantidade_de_pontos_de_posicao
 			)
 		){
+
 			ret_d = sqrtf(dist_sq);
 			
-			ret_x = posicao_da_bola[index - 2];
-			ret_y = posicao_da_bola[index - 1];
+			ret_x = (fabs(posicao_da_bola[index - 2] > 1e-5)) ? posicao_da_bola[index - 2] : 0;
+			ret_y = (fabs(posicao_da_bola[index - 1] > 1e-5)) ? posicao_da_bola[index - 1] : 0;
 			
 			break;
 		}
@@ -125,9 +134,8 @@ void obter_previsao_cinematica(
 		double acel_x = vel_ball_x * vel_ball_x * coef_arrasto_quadratico_x + vel_ball_x * coef_arrasto_linear;
 		double acel_y = vel_ball_y * vel_ball_y * coef_arrasto_quadratico_y + vel_ball_y * coef_arrasto_linear;
 		
-		double dx = vel_ball_x * delta_t + acel_x * delta_t_sq;
-		double dy
-		 = vel_ball_y * delta_t + acel_y * delta_t_sq;
+		double dx = vel_ball_x * delta_t + 0.5 * acel_x * delta_t_sq;
+		double dy = vel_ball_y * delta_t + 0.5 * acel_y * delta_t_sq;
 		
 		pos_ball_x += dx;
 		pos_ball_y += dy;
@@ -160,5 +168,3 @@ void obter_previsao_cinematica(
 	
 	quantidade_de_pontos_de_posicao = index;
 }
-
-
