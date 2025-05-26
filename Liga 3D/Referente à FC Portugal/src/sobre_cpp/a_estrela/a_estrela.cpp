@@ -6,17 +6,11 @@ escrito por Miguel Abreu.
 
 Sim, eu sei que esse arquivo é grande. Entretanto:
 	
-	Não é possível a criação de outros arquivos .cpp, pois obrigaria 
-	a existência de um build aprimorado e não conseguiriamos criar o 
-	.so trivialmente.
-	
 	Determinadas funções estão usando parâmetros definidos no escopo global,
 	pois fazemos alterações nos ponteiros. Usando mais arquivos, a lógica ficaria mais complexa.
 
 	Além disso, diversas linhas são apenas comentários para auxiliá-lo na compreensão.
 */
-
-#include <iostream>  // Apenas para realizarmos testes.
 
 #include "a_estrela.h"
 #include "obtendo_possibilidades.h"
@@ -104,7 +98,7 @@ distancia_diagonal(
 ){
 	/*
 	Descrição:
-		Oq está prestes é algo muito foda.
+		Oq está prestes a ver é algo muito foda.
 		Sugiro que verifique o seguinte site explicatório: http://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html
 		
 		Basicamente, estamos escolhendo velocidade à precisão! Buscando
@@ -164,66 +158,6 @@ namespace noding{
 		open::imprimir();
 		std::cout << open::valor;
 	*/
-	
-	int
-	apresentar_recursivamente(
-		Node* raiz,
-		/*
-		const std::string&
-			
-			É uma referência constante a um objeto do tipo std::string. Usá-la
-			garante eficiência para o caso de darmos strings grandes demais,
-			pois o endereço de memória original será usado.
-			
-			O const serve apenas para indicar que não será modificado dentro
-			da função.
-		*/
-		const std::string& prefixo,
-		bool se_eh_esquerdo
-	){
-		/*
-			Apresentará propriamente a BST.
-		*/
-		if(
-			raiz == nullptr
-		){
-			return 0;
-		}
-		
-		std::cout << prefixo;
-		
-		std::cout << (se_eh_esquerdo ? "|---" : "L---");  // Sim, eu sei, operador terciário, me perdoe.
-		
-		std::cout << (*raiz).valor << std::endl;
-		
-		apresentar_recursivamente(
-			(*raiz).right,
-			prefixo + (se_eh_esquerdo ? "|   " : "    "),
-			true
-		);
-		apresentar_recursivamente(
-			(*raiz).left,
-			prefixo + (se_eh_esquerdo ? "|   " : "    "),
-			false
-		);
-	}
-	
-	
-	int apresentar(
-		Node* raiz
-	){
-		/*
-		Descrição:
-			Apenas preenche os parâmetros corretamente, exigir isso do usuário
-			é demais.
-		*/
-		return apresentar_recursivamente(
-			raiz,
-			"",
-			false
-		);
-	}
-	
 		
 	int liberar(
 		Node* node
@@ -246,9 +180,11 @@ namespace noding{
 			(*node).right
 		);
 		
-		std::cout << "\nLiberando noh de valor: " << (*node).valor;
+		// std::cout << "\nLiberando noh de valor: " << (*node).valor;
 		
 		delete node;
+
+		return 0;
 	}	
 	
 	
@@ -281,9 +217,9 @@ namespace noding{
 		
 		///////////////////////////////////////////////////////////////////
 		
-		// Caso o novo nó seja o menor que o mínimo.
+		// Caso o novo nó seja menor que o mínimo.
 		if(
-			(*novo_node).valor < (*min_node).valor 
+			((*novo_node).valor < (*min_node).valor) 
 		){
 			/*
 			O nó minimo passa a ter este novo nó como seu filho esquerdo.
@@ -347,7 +283,7 @@ namespace noding{
 			1
 		){
 			if(
-				// Se for menor, devemos colocá-lo na esqueda.
+				// Se for menor, devemos colocá-lo na esquerda.
 				(*novo_node).valor < (*node).valor
 			){
 				
@@ -371,7 +307,6 @@ namespace noding{
 					
 					node = (*node).left;
 				}
-				
 			}
 			else{
 				// Caso seja maior ou igual, devemos colocá-lo na direita.
@@ -401,7 +336,8 @@ namespace noding{
 	
 	Node*
 	remover_min(
-		Node* raiz
+		Node* raiz,
+		bool for_debugging = true
 	){
 		/*
 		Descrição:
@@ -424,8 +360,11 @@ namespace noding{
 				// Caso não tenha pai.
 				min_node == raiz
 			){
-				// Então, após removê-lo não haverá nada dentro.
-				delete min_node;
+				if (for_debugging){
+
+					// Então, após removê-lo não haverá nada dentro.
+					delete min_node;
+				}
 				
 				return nullptr;
 			}
@@ -440,11 +379,18 @@ namespace noding{
 			
 			(*((*min_node).up)).left = nullptr;
 			
-			Node* temp_para_eliminacao = min_node;
+			if (for_debugging){
+
+				Node* temp_para_eliminacao = min_node;
 			
-			min_node = (*temp_para_eliminacao).up;
-			
-			delete temp_para_eliminacao;
+				min_node = (*min_node).up;
+
+				delete temp_para_eliminacao;
+			}
+			else{
+
+				min_node = (*min_node).up;
+			}
 		}
 		else{
 			// Há filho direito
@@ -460,14 +406,21 @@ namespace noding{
 			        \
 		   			[10]
 				
-				Note que ele possui filho direito e é a raiz.
+				Note que ele é a raiz e possui filho direito.
 				*/
 				
-				Node* temp_para_eliminacao = min_node;
+				if (for_debugging){
+
+					Node* temp_para_eliminacao = min_node;
 				
-				min_node = (*min_node).right;
+					min_node = (*min_node).right;
 				
-				delete temp_para_eliminacao;
+					delete temp_para_eliminacao;
+				}
+				else{
+
+					min_node = (*min_node).right;
+				}
 				
 				raiz = min_node;
 				
@@ -514,13 +467,20 @@ namespace noding{
 			(*((*min_node).up)).left = (*min_node).right;
 			
 			// Atualizamos o novo mínimo
+
+			if (for_debugging){
+
+				Node* temp_para_eliminacao = min_node;
 			
-			Node* temp_para_eliminacao = min_node;
+				min_node = (*min_node).right;
 			
-			min_node = (*min_node).right;
-			
-			delete min_node;
-			
+				delete temp_para_eliminacao;
+			}
+			else{
+
+				min_node = (*min_node).right;
+			}
+
 			while(
 				/*
 				Enquanto houver um elemento à esquerda, haverá um mínimo.
@@ -530,8 +490,6 @@ namespace noding{
 				
 				min_node = (*min_node).left;
 			}
-			
-			return raiz;
 		}	
 		
 		return raiz;
@@ -541,7 +499,8 @@ namespace noding{
 	Node*
 	remover_node(
 		Node* node_a_ser_removido,
-		Node* raiz
+		Node* raiz,
+		bool for_debugging = true
 	){
 		/*
 		Descrição:
@@ -552,10 +511,12 @@ namespace noding{
 		*/
 		
 		if(
+			// Verificamos os ponteiros, note isso.
 			node_a_ser_removido == min_node
 		){
 			return remover_min(
-				raiz
+				raiz,
+				for_debugging
 			); // removerá o mínimo da estrutura.
 		}
 		
@@ -576,8 +537,11 @@ namespace noding{
 				(*((*node_a_ser_removido).up)).right = nullptr;
 			}
 			
-			delete node_a_ser_removido;
-			
+			if (for_debugging){
+
+				delete node_a_ser_removido;
+			}
+
 			return raiz;
 		}
 		
@@ -603,7 +567,10 @@ namespace noding{
 				(*((*node_a_ser_removido).up)).right = (*node_a_ser_removido).right;
 			}
 			
-			delete node_a_ser_removido;
+			if (for_debugging){
+
+				delete node_a_ser_removido;
+			}
 			
 			return raiz;
 			
@@ -622,12 +589,16 @@ namespace noding{
 				*/
 				node_a_ser_removido == raiz
 			){
-				
+
 				(*((*node_a_ser_removido).left)).up = nullptr;
 				
+				// Isso é para não lermos memória.
 				Node* nova_raiz = (*node_a_ser_removido).left;
 				
-				delete node_a_ser_removido;
+				if (for_debugging){
+
+					delete node_a_ser_removido;
+				}
 				
 				return nova_raiz; 
 			}
@@ -644,7 +615,10 @@ namespace noding{
 				(*((*node_a_ser_removido).up)).right = (*node_a_ser_removido).left;
 			}
 			
-			delete node_a_ser_removido;
+			if (for_debugging){
+
+				delete node_a_ser_removido;
+			}
 			
 			return raiz;
 		}
@@ -678,7 +652,6 @@ namespace noding{
 			// Sucessor não tem filho esquerdo.
 			(*sucessor).left == nullptr
 		){
-			// Caso o sucessor não tenha filho esquerdo.
 			
 			/*
 			Filho esquerdo do nó a ser removido torna-se o filho esquerdo
@@ -700,8 +673,11 @@ namespace noding{
 				// Se for a raiz
 				node_a_ser_removido == raiz
 			){
-				delete node_a_ser_removido;
-				
+				if (for_debugging){
+
+					delete node_a_ser_removido;
+				}
+					
 				return sucessor; // Este tornou-se a nova raiz
 			}
 			
@@ -716,6 +692,13 @@ namespace noding{
 				
 				(*((*node_a_ser_removido).up)).right = sucessor;
 			}
+
+			if (for_debugging){
+
+				delete node_a_ser_removido;
+			}
+
+			return raiz;
 		}
 		else{
 			// Sucessor tem filho esquerdo.
@@ -730,9 +713,9 @@ namespace noding{
 				sucessor = (*sucessor).left;
 			}
 			
+			// Pelo loop anterior, não há filho esquerdo.
 			if(
 				/*
-				Pelo loop anterior, não há filho esquerdo.
 				Verificamos se não há filho direito.
 				*/
 				(*sucessor).right == nullptr
@@ -747,7 +730,7 @@ namespace noding{
 			}
 			else{
 				/*
-				O filho esquerdo do pai do sucessor, deve se tornar o único filho do sucessor.
+				O filho esquerdo do pai do sucessor deve se tornar o único filho do sucessor.
 				*/
 				(*((*sucessor).up)).left = (*sucessor).right;
 				
@@ -776,7 +759,11 @@ namespace noding{
 				node_a_ser_removido == raiz
 			){
 				
-				delete node_a_ser_removido;
+				if (for_debugging){
+
+					delete node_a_ser_removido;
+				}
+
 				return sucessor;
 			}
 			
@@ -794,6 +781,11 @@ namespace noding{
 				(*((*node_a_ser_removido).up)).right = sucessor;
 			}
 			
+			if (for_debugging){
+
+				delete node_a_ser_removido;
+			}
+
 			return raiz;
 		}
 		/*
@@ -838,7 +830,7 @@ namespace noding{
 		return raiz;
 	}
 	
-	Node*
+	inline Node*
 	expandir_filho(
 		Node* raiz_da_estrutura,  
 		float custo_para_chegar_ao_no_desejado,
@@ -871,7 +863,7 @@ namespace noding{
 			
 			Fiz o possível para tentar decifrar o que acontece aqui.
 		*/
-		
+
 		if(
 			/*
 			Filho pode ser inacessível a partir do nó atual, para isso haverá um 
@@ -884,11 +876,11 @@ namespace noding{
 		}
 		
 		float min_custo = (*node_atual_a_ser_expandido).custo_pontual + extra + std::fmaxf(
-			0.f,
-			custo_para_chegar_ao_no_desejado
-		);  // Max para garantimos que seja positivo.
-		
-		Node* filho = quadro_de_possibilidades + posicao_do_node_no_quadro;
+																							0.f,
+																							custo_para_chegar_ao_no_desejado
+																						   );  // Max para garantimos que seja positivo.
+
+		Node* filho = &quadro_de_possibilidades[posicao_do_node_no_quadro];
 		
 		if(
 			// Caso o nó atual já esteja na lista aberta.
@@ -909,9 +901,11 @@ namespace noding{
 				Houve uma melhora, devemos remover a referência do nó filho,
 				atualizá-lo e adicioná-lo na estrutura posteriormente.
 				*/
+
 				raiz_da_estrutura = noding::remover_node(
 					filho,
-					raiz_da_estrutura
+					raiz_da_estrutura,
+					false
 				);
 			}
 		}
@@ -926,12 +920,12 @@ namespace noding{
 		Preenchemos características do nó filho que está sendo analisado.
 		*/
 		float predicao_de_custo_para_atravessar_filho = min_custo + distancia_diagonal(
-			ir_ao_gol,
-			linha,
-			coluna,
-			linha_final,
-			coluna_final
-		);
+																						ir_ao_gol,
+																						linha,
+																						coluna,
+																						linha_final,
+																						coluna_final
+																					  );
 		
 		(*filho).custo_pontual = min_custo;
 		(*filho).valor = predicao_de_custo_para_atravessar_filho;
@@ -943,7 +937,6 @@ namespace noding{
 			raiz_da_estrutura
 		);
 	}
-
 }
 
 float caminho_final[2050] = {0};
@@ -989,6 +982,7 @@ construir_caminho_final(
 	
 	Node* ptr = melhor_node;
 	
+	// Vamos percorrer até o fim da estrutura.
 	int quantidade_de_parentes = 0;
 	while(
 		ptr != nullptr
@@ -1030,6 +1024,7 @@ construir_caminho_final(
 		ptr = (*ptr).parente;
 	}
 	
+	// Preenchemos os endereços no caminho!
 	while(
 		indice > 0
 	){
@@ -1043,6 +1038,9 @@ construir_caminho_final(
 		) / 10.f - 16.f;  // x
 		
 		ptr = (*ptr).parente;
+
+		// Observe que não fazemos alteração do índice aqui.
+		// Fazemos dentro do acesso do vetor, indice--.
 	}
 	
 	/*
@@ -1091,7 +1089,7 @@ se_a_linha_ab_intercepta_qualquer_gol(
 	
 	float delta_x = b_x - a_x;
 	float delta_y = b_y - a_y;
-	float coef_ang = 0;
+	float coef_ang = 0;  // coeficiente angular
 	
 	if(
 		// Verificar se linha ab e 'goal back' são não colineares.
@@ -1112,7 +1110,7 @@ se_a_linha_ab_intercepta_qualquer_gol(
 			) && (
 				fabsf(  // Apenas pega o valor absoluto de floats.
 					a_y + delta_y * coef_ang 
-				) < 1.25
+				) <= 1.25
 			)
 		){
 			/*
@@ -1133,7 +1131,7 @@ se_a_linha_ab_intercepta_qualquer_gol(
 			) && (
 				fabsf(  // Apenas pega o valor absoluto de floats.
 					a_y + delta_y * coef_ang 
-				) < 1.25
+				) <= 1.25
 			)
 		){
 			/*
@@ -1279,7 +1277,7 @@ adicionar_espaco_de_amortecimento(
 		){
 			
 			quadro_de_custo[
-				i + j + 12	
+				j + i + 12	
 			] = TAMANHO_DO_AMORTECIMENTO - i;
 			
 			quadro_de_custo[
@@ -1357,7 +1355,7 @@ se_caminho_esta_obstruido(
 	*/
 	bool se_esta_perto = abs(
 		start_x_linha  - end_x_linha
-	) <= 1 and        abs(
+	) <= 1 and           abs(
 		start_y_coluna - end_y_coluna
 	) <= 1;
 	
@@ -1399,7 +1397,7 @@ se_caminho_esta_obstruido(
 		end_x = max(
 			-16.f,
 			min(
-				start_y,
+				end_x,
 				16.f
 			)
 		);
@@ -1407,23 +1405,19 @@ se_caminho_esta_obstruido(
 		end_y = max(
 			-11.f,
 			min(
-				start_y,
+				end_y,
 				11.f
 			)
-		);
-		
-		// Mesmo motivo do if que é igual anteriormente.
-		if(
-			(
-				end_custo <= limite_para_qual_custo_eh_impossivel
-			) || (
-				!se_esta_perto and end_custo > 0
-			)
-		){
-			return true;
-		}		
+		);	
 	}
 	
+	/**
+     * Check if path intersects either goal (considering the unreachable area)
+     * - at this point we know that 'start' and 'end' are reachable
+     * - Therefore, the path must enter and exit the goal unreachable area for an intersection to exist
+     * - To detect this, we consider only the intersection of the path and the goal outer borders (back+sides)
+     * - The front is covered next by goal posts checks
+     */
 	if(
 		se_a_linha_ab_intercepta_qualquer_gol(
 			start_x,
@@ -1564,9 +1558,9 @@ se_caminho_esta_obstruido(
 				Observe que não utilizamos sqrt.
 				*/
 				(
-					(sc_x * sc_x + sc_y * sc_y) <= raio_hard * raio_hard
+					(sc_x * sc_x + sc_y * sc_y) <= (raio_hard * raio_hard)
 				) || (
-					(ec_x * ec_x + ec_y * ec_y) <= raio_hard * raio_hard
+					(ec_x * ec_x + ec_y * ec_y) <= (raio_hard * raio_hard)
 				)
 			){
 				return true;
@@ -1616,7 +1610,7 @@ se_caminho_esta_obstruido(
 			float proj_sc_y = se_y * proj_sc_escala;
 			
 			// Fazemos isso para impedir divisões por 0.
-			float parametro = abs( se_x ) > abs( se_y ) ? proj_sc_x / se_x : proj_sc_y / se_y;
+			float parametro = (abs( se_x ) > abs( se_y )) ? proj_sc_x / se_x : proj_sc_y / se_y;
 			
 			if(
 				parametro <= 0
@@ -1689,11 +1683,12 @@ a_estrela(
 	Parâmetros:
 		parametros:
 		
-			[start x][start y]
-			[allow out of bounds?][go to goal?]
-			[optional target x][optional target y]
-			[timeout]
-			[x][y][hard radius][soft radius][force]
+			[start x][start y]						-> posição inicial
+			[allow out of bounds?]					-> se está permitido sair dos limites
+			[go to goal?]							-> se há um objetivo  
+			[optional target x][optional target y]	-> posição do objetivo opcional
+			[timeout]								-> tempo limite de busca
+			[x][y][hard radius][soft radius][force] -> descrição dos obstáculos
 	*/
 	
 	//////////////////////////////////////////////////////////////////////
@@ -1760,7 +1755,7 @@ a_estrela(
 			quadro_de_custo
 		)
 	){
-		// Força retornar void
+		// Retorna o caminho caso não esteja obstruído
 		return;
 	}
 
@@ -1821,7 +1816,7 @@ a_estrela(
 		coluna_min = min( coluna_min, 206         );
 		coluna_max = max( 14,  		  coluna_max  );
 	}
-	
+
 	////////////////////////////////////////////////////////////////////
 	/// Algoritmo A*
 	////////////////////////////////////////////////////////////////////
@@ -1925,6 +1920,7 @@ a_estrela(
 				aneis_e_pontos_disponiveis[index] <= raio_hard
 			)
 		){
+			// Lembre-se que este valor está definido em obtendo_possibilidades.h
 			int coef_linha  = linha  + linhas_de_cada_ponto [ index ];
 			int coef_coluna = coluna + colunas_de_cada_ponto[ index ];
 			
@@ -2007,6 +2003,7 @@ a_estrela(
 			// Caso nosso gol esteja sendo sobreposto
 			linha_max > 1 and linha_min < 12
 		){
+			// Extend working area to include our goal
 			linha_max  = max( 12,  linha_max  );
 			linha_min  = min( 1,   linha_min  );
 			coluna_max = max( 124, coluna_max );
@@ -2017,6 +2014,7 @@ a_estrela(
 			// Caso seja o gol deles.
 			linha_max > 308 and linha_min < 319
 		){
+			// Extend working area to include their goal
 			linha_max  = max( 319, linha_max  );
 			linha_min  = min( 308, linha_min  );
 			coluna_max = max( 124, coluna_max );
@@ -2055,7 +2053,7 @@ a_estrela(
 	else{
 		for(
 			int index = LINHA_DO_GOL * QUANT_COLUNAS + 101;
-			    index < LINHA_DO_GOL * QUANT_COLUNAS + 119;
+			    index <= LINHA_DO_GOL * QUANT_COLUNAS + 119;
 			    index++
 		){
 			if(
@@ -2078,6 +2076,8 @@ a_estrela(
 	quadro_de_possibilidades[start_pos].parente = nullptr;  
 	raiz_da_estrutura = noding::inserir( &quadro_de_possibilidades[ start_pos ], raiz_da_estrutura );
 	Node* melhor_node = &quadro_de_possibilidades[start_pos];
+
+	// infinite distance if start is itself unreachable
 	float distancia_ao_melhor_node = std::numeric_limits<float>::max();  // Apenas dizemos que é a maior possível primeiro.
 	
 	/*
@@ -2100,7 +2100,7 @@ a_estrela(
 	}
 	
 	////////////////////////////////////////////////////////////////////
-	/// Aplicação do Algoritmo
+	/// Aplicação do Algoritmo A*
 	////////////////////////////////////////////////////////////////////
 	
 	while(
@@ -2110,9 +2110,9 @@ a_estrela(
 		// Procuramos o próximo melhor nó.
 		Node* node_atual = min_node;
 		
-		const int pos_atual = node_atual - quadro_de_possibilidades;
-		const int linha_atual = pos_atual / QUANT_COLUNAS; 
-		const int coluna_atual = pos_atual % QUANT_COLUNAS;
+		const int pos_atual     = node_atual - quadro_de_possibilidades;
+		const int linha_atual   = pos_atual / QUANT_COLUNAS; 
+		const int coluna_atual  = pos_atual % QUANT_COLUNAS;
 		const float custo_atual = quadro_de_custo[pos_atual];
 		
 		medida_de_tempo_limite = (medida_de_tempo_limite + 1) % 31; // Checar o tempo a cada 32 iterações
@@ -2137,7 +2137,7 @@ a_estrela(
 			}
 		}
 		
-		raiz_da_estrutura = noding::remover_min( raiz_da_estrutura );
+		raiz_da_estrutura = noding::remover_min( raiz_da_estrutura, false );
 		estado_dos_nodes[pos_atual] = 2;
 		
 		// Checamos se o objetivo foi atingido.
@@ -2469,48 +2469,3 @@ a_estrela(
 	
 	return;
 }
-
-//int main()
-//{
-// 	// Exemplo de BST para testarmos código de noding.
-// 	// Fiz usando // para poder usar o atalho.
-//	{
-////		Node *node = new Node(5);			
-////		Node *node_l = new Node(2);
-////		(*node_l).up = node;
-////		(*node).left = node_l;
-////		
-////		Node *node_r = new Node(10);
-////		(*node_r).up = node;
-////		(*node).right = node_r;
-////		
-////		Node *node_ll = new Node(1);
-////		(*node_ll).up = node_l;
-////		(*node_l).left = node_ll;
-////		
-////		Node *node_lr = new Node(4);
-////		(*node_lr).up = node_l;
-////		(*node_l).right = node_lr;
-////		
-////		Node* node_lrl = new Node(3);
-////		(*node_lrl).up = node_lr;
-////		(*node_lr).left = node_lrl;
-////		
-////		Node* node_lrr = new Node(5);
-////		(*node_lrr).up = node_lr;
-////		(*node_lr).right = node_lrr;
-////		
-////		
-////		noding::apresentar(
-////			node
-////		);
-////		
-////		noding::liberar(
-////			node
-////		);
-//
-//	}
-//	
-//    return 0;
-//}
-

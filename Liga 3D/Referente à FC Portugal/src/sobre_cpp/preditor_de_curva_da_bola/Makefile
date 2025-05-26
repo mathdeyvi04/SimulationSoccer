@@ -6,7 +6,6 @@ obj = $(src:.cpp=.o)
 
 # E substitua o termo $(PYBIND_INCLUDES) por $(FLAGS_DE_COMPILACAO_MANUAL)
 
-
 CXXFLAGS = -O3 -shared -std=c++11 -fPIC -Wall $(PYBIND_INCLUDES)
 
 all: $(obj)

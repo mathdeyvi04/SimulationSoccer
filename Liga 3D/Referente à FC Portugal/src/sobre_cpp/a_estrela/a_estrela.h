@@ -33,7 +33,7 @@ struct Node{
 	{}
     
     Node(
-		int valor
+		float valor
 	) :
 		left         ( nullptr ),
 		right        ( nullptr ),
@@ -44,7 +44,7 @@ struct Node{
 	{}
 	
 	Node(
-		int valor,
+		float valor,
 		Node* left
 	) : 
 		left         ( left    ),
@@ -56,7 +56,7 @@ struct Node{
 	{}
 	
 	Node(
-		int valor,
+		float valor,
 		Node* left,
 		Node* right
 	) : 
@@ -84,7 +84,7 @@ extern float caminho_final[
     2050
 ];
 
-extern int tamanho_caminho_final;
+extern int tamanho_do_caminho_final;
 
 ////////////////////////////////////////////////////////////////////////////
 /// Definições Inerentes À Otimização

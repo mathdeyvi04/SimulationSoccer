@@ -19,7 +19,7 @@ O compilador C++ gera um módulo nativo (ex: a_star.so)
 No Python:
 '''
 import a_estrela
-a_estrela.calcular_melhor_caminho(params)
+a_estrela.find_optimal_path(params)
 '''
 */
 #include <pybind11/pybind11.h>
@@ -36,7 +36,7 @@ namespace py = pybind11;
 using namespace std;
 
 py::array_t<float>
-calcular_melhor_caminho(
+find_optimal_path(
     py::array_t<float> parametros_de_campo_e_de_situacao
 ){
     /*
@@ -76,7 +76,7 @@ calcular_melhor_caminho(
         o tamanho de cada item, em teoria.
     */
     py::buffer_info buffer_de_entrada = parametros_de_campo_e_de_situacao.request();
-    int quantidade_de_parametros = parametros_de_campo_e_de_situacao.shape[
+    int quantidade_de_parametros = buffer_de_entrada.shape[
         0  // Colocamos 0 pois assumimos que será um vetor unidimensional.
     ];
 
@@ -94,16 +94,16 @@ calcular_melhor_caminho(
     /////////////////////////////////////////////////////////////////////
 
     // Alocamos memória
-    py::array_t<float> a_ser_retornado = py::array_t<float>(tamanho_caminho_final);
+    py::array_t<float> a_ser_retornado = py::array_t<float>(tamanho_do_caminho_final);
 
     // Obtemos informações de ponteiros.
-    py::buffer_info buffer_de_saida = a_ser_retornado.request()
+    py::buffer_info buffer_de_saida = a_ser_retornado.request();
 
     float *ptr = (float*) buffer_de_saida.ptr;  // Pegamos o primeiro ponteiro do array.
 
     for(
         int index = 0;
-        index < tamanho_caminho_final;
+        index < tamanho_do_caminho_final;
         index++
     ){
         /*
@@ -130,22 +130,40 @@ using namespace pybind11::literals;
 /*
 Definiremos um módulo a_estrela e criamos um objeto m
 para configurar a ligação entre C++ e Python.
-
-
-
 */
 PYBIND11_MODULE(
     a_estrela,
     m
 ){
-    m.doc(
-        "Implementação de A* aprimorado"
-    );
+    m.doc() = "Module responsible for providing optimized design tools to obtain a valid path to an objective";
 
     m.def(
-        "calcular_melhor_caminho",    // Nome da função que será executada em python.
-        &calcular_melhor_caminho,     // Ponteiro para a função C++
-        "Calcular melhor caminho usando algoritmo A*.",  // Documentário
+        "find_optimal_path",    // Nome da função que será executada em python.
+        &find_optimal_path,     // Ponteiro para a função C++
+        R"pbdoc(
+        Description:
+            Computes the optimal path from a starting point while avoiding obstacles
+            and considering motion constraints. The path is selected to be both 
+            unblocked (collision-free) and fast enough within the given timeout.
+
+            The algorithm can optionally handle:
+            - Goals to be reached
+            - Obstacles with varying influence (soft and hard radii)
+            - Permission to go out of bounds
+
+        Parameters:
+            - start_x, start_y: Starting position.
+            - allow_out_of_bounds: Whether the agent can leave the predefined area.
+            - go_to_goal: Whether the agent should attempt to reach a given goal.
+            - target_x, target_y: Optional goal coordinates.
+            - timeout: Maximum computation time allowed.
+            - [x, y, hard_radius, soft_radius, force] * n: List of obstacles, each defined
+              by its position, collision radius, influence zone, and repulsion force.
+
+        Return:
+            A trajectory or path that avoids obstacles and is optimal with respect to
+            time and space constraints.
+        )pbdoc"
         "parametros"_a  // nomeamos o argumento da função.
     );
 }

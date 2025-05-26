@@ -18,10 +18,12 @@ Os módulos são independentes entre si e cada um é fundamental para o funciona
 
 Dentro de cada, há 3 arquivos essenciais para a portabilidade.
 
-* debug.py
+* debug.py ou debug.cc
   
 Arquivo específico para realização de testes das funções implementadas no módulo.
-Para informações mais completas, pode-se utilizar o help(nome_do_modulo)
+
+Usando `make teste` é possível realizar as verificações. Lembre-se que há a necessidade
+de realizar o `make` anteriormente.
 
 * module_main.cpp
 
@@ -29,6 +31,11 @@ Arquivo específico **responsável pela portabilidade das aplicações para o Py
 
 Caso deseje alterar algo, saiba que o _pybind somente aceitará caracteres ASCII_, 
 não tente colocar UTF-8 nas documentações ou nomes.
+
+Quando descobri isso, preferi reescrever inglês mesmo.
+
+Utilizando `help(nome_do_modulo)` pode-se obter mais informações sobre o módulo e 
+suas funcionalidades.
 
 * Makefile 
 
@@ -44,8 +51,11 @@ faça o que é descrito dentro do arquivo:
 # E substitua o termo $(PYBIND_INCLUDES) por $(FLAGS_DE_COMPILACAO_MANUAL)
 ```
 
-Atente-se ao que está sendo feito, colocamos o diretório da versão de python e 
-da pasta pybind11.
+Em minha máquina, instalei o python e pybind com `sudo apt install ...`. 
+Logo, meus caminhos são esses e essas são as respectivas versões. Caso você tente
+fazer o make manualmente para testes e verificações, você deve colocar o caminho 
+do interpretador e o caminho da biblioteca pybind11.
+
 
 * Como é feito a automação?
 
