@@ -192,22 +192,17 @@ PYBIND11_MODULE(
 			relative distance.
 
 		Parametros: 
-			float pos_x,  
-			float pos_y,
-			/*
-			Maximum robot displacement per time step
-			*/
-			float max_speed_do_robo_por_passo,
-			/*
-			Vector of future positions of the ball and the respective number of points.
-			*/
-			float posicao_da_bola[],  
-			float quantidade_de_pontos_de_posicao
+			- float pos_x: initial x position's robot
+			- float pos_y: initial y position's robot
+			- float max_speed_do_robo_por_passo: Maximum robot displacement per time step
+			- float posicao_da_bola[]:  Vector of future positions of the ball and the respective number of points.
+			- float quantidade_de_pontos_de_posicao
 			
 		Retorno:
-			ret_x -> x position of the intersection point  
-			ret_y -> y position of the intersection point  
-			ret_d -> distance between the robot and the intersection point  
+			An array thats:
+			- [0] -> x position of the intersection point  
+			- [1] -> y position of the intersection point  
+			- [2] -> distance between the robot and the intersection point  
 		)pbdoc"
 		"parametros"_a
 	);

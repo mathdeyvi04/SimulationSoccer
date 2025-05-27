@@ -7,9 +7,9 @@ using namespace std;
 
 static LocalizerV2& loc = Singular<LocalizerV2>::obter_instancia();
 
-void apresentar_dados_em_python(){
+void expose_runtime_data(){
     /*
-    Função que apresentará as informações que estarão sendo levadas para o ambiente C++.
+    Função que apresentará informações que serão utilizadas no ambiente C++.
     */
 
     static World &world = Singular<World>::obter_instancia();
@@ -17,8 +17,8 @@ void apresentar_dados_em_python(){
     cout << "Foot Is Touching: "      << world.se_pe_esta_tocando[0] << " " << world.se_pe_esta_tocando[1] << endl;
     cout << "LFoot Pos_Rel Contato: " << world.pos_rel_do_ponto_de_contato[0].x << ", " << world.pos_rel_do_ponto_de_contato[0].y << ", " << world.pos_rel_do_ponto_de_contato[0].z << endl;
     cout << "RFoot Pos_Rel Contato: " << world.pos_rel_do_ponto_de_contato[1].x << ", " << world.pos_rel_do_ponto_de_contato[1].y << ", " << world.pos_rel_do_ponto_de_contato[1].z << endl;
-    cout << "Bola Vista: "            << world.se_bola_esta_visivel << endl;
-    cout << "Bola Cheat: "            << world.pos_abs_da_bola_cart_cheat.x << ", " << world.pos_abs_da_bola_cart_cheat.y << ", " << world.pos_abs_da_bola_cart_cheat.z << endl;
+    cout << "If Ball Seen: "          << world.se_bola_esta_visivel << endl;
+    cout << "Ball Pos Abs Cheat: "    << world.pos_abs_da_bola_cart_cheat.x << ", " << world.pos_abs_da_bola_cart_cheat.y << ", " << world.pos_abs_da_bola_cart_cheat.z << endl;
     cout << "Eu, Robo:   "            << world.pos_abs_do_robo_cart_cheat.x << ", " << world.pos_abs_do_robo_cart_cheat.y << ", " << world.pos_abs_do_robo_cart_cheat.z << endl;
                
     for(int i=0; i<8; i++){
@@ -34,7 +34,7 @@ void apresentar_dados_em_python(){
         world.marcadores_de_chao[i].pos_rel_esf.z << endl;
     }
 
-    for(int i=0; i<world.linhas_esfericas.size(); i++){
+    for(size_t i=0; i<world.linhas_esfericas.size(); i++){
 
         cout << "Linha Em Coordenadas Esfericas " << i << ": " <<
         world.linhas_esfericas[i].inicio.x << " " << 
@@ -46,14 +46,15 @@ void apresentar_dados_em_python(){
     }
 }
 
-float *computar(
+float *localize_agent_pose(
     bool lfoot_touch, bool rfoot_touch, 
     double feet_contact[],
     bool ball_seen, double ball_pos[],
     double me_pos[],
     double landmarks[],
     double lines[],
-    int lines_no
+    int lines_no,
+    float *retval  // Esse parâmetro é apenas para conseguirmos retornar sem alocar.
 ){
 
     // ================================================= 1. Traduzir informações para o Python
@@ -102,19 +103,20 @@ float *computar(
 
         Vetor3D inicio(lines[0],lines[1],lines[2]);
         Vetor3D final(lines[3],lines[4],lines[5]);
-        world.lines_polar.emplace_back(inicio, final); 
+        world.linhas_esfericas.emplace_back(inicio, final); 
         lines += 6;
     }
 
-    apresentar_dados_em_python();
+    expose_runtime_data();
     
     // ================================================= 2. Aplicar Algoritmo de LocalizerV2
 
     loc.run(); 
+
+    loc.reportar_situacao();
     
     // ================================================= 3. Retornar valores para Python
     
-    float retval[35];
     float *ptr = retval;
 
     // Observe que não há como entregarmos uma matriz, temos que devolver como um vetor!
@@ -137,14 +139,21 @@ float *computar(
     return retval;
 }
 
-void reportar_situacao(){
+void report_calculation_status(){
     loc.reportar_situacao();
 }
 
-void desenhar_elementos_visiveis(bool is_right_side){
+// Não ache estranho, é apenas ilustrador em inglês.
+void illustrator(bool is_right_side){
 
-    RobovizField& fd = Singular<RobovizField>::obter_instancia();
-    fd.desenhar_visiveis(loc.Head_to_Field_Transform, is_right_side);
+    RobovizField& campo_existente = Singular<RobovizField>::obter_instancia();
+
+    campo_existente.ilustrador(
+                                loc.Head_to_Field_Transform,
+                                (is_right_side) ? -1 : 1
+                              );
+
+    return;
 }
 
 int main(){
@@ -185,8 +194,9 @@ int main(){
                               21.49,  15.92,  -1.32,  20.95,  13.07,  -1.32 };
 
     int lines_no = sizeof(lines)/sizeof(lines[0])/6;
-
-    compute(true, // lfoot_touch
+    
+    float retval[35];
+    localize_agent_pose(true, // lfoot_touch
             true, // rfoot_touch
             feet_contact,
             true, // ball_seen
@@ -194,7 +204,9 @@ int main(){
             me_pos,
             landmarks,
             lines,
-            lines_no);
+            lines_no,
+            retval
+    );
 
 
     cout << "\n\nCompilado com sucesso.\n\n";

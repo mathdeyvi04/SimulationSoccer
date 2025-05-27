@@ -1,7 +1,7 @@
 /*
 Estava com um bug imenso, pois estava '#define SINGULAR',
-logo este header era importado duas vezes, oq causava erro de 
-defini��o.
+logo este header era importado duas vezes, o que causava erro de 
+definição.
 */
 #ifndef SINGULAR_H
 #define SINGULAR_H
@@ -12,12 +12,12 @@ Garantir que a classe possa ser usada para qualquer outra.
 template <class classe_qualquer>  
 class Singular {
 	/*
-	No exemplo original, ele define como SingleTon:
+	No exemplo original, ele define como Singleton:
 	
-		Para garantir que uma classe tenha APENAS uma inst�ncia
-		em toda a aplica��o.
+		Para garantir que uma classe tenha APENAS uma instância
+		em toda a aplicação.
 		
-		Isso � �til para:
+		Isso é útil para:
 			-> Gerenciar Recursos Globais.
 			-> Controlar acesso ao Hardware.
 			
@@ -28,11 +28,11 @@ public:
 	
 	static classe_qualquer& obter_instancia() {
 		
-		// O static garante que seja �nica e seja thread-safe.
+		// O static garante que seja única e seja thread-safe.
 		static classe_qualquer instancia;
 		
-		// Retorna refer�ncia para permitir modifica��es futuras.
-		// N�o h� c�pia, apenas endere�o � compartilhado.
+		// Retorna referência para permitir modificações futuras.
+		// Não há cópia, apenas o endereço é compartilhado.
 		return instancia; 
 	}
 	
@@ -42,9 +42,9 @@ private:
 	Observe a genialidade disso:
 	
 	- Construtor e Destrutor bloqueados.
-		N�o � poss�vel inicializar ou destruir uma inst�ncia.
+		Não é possível inicializar ou destruir uma instância.
 	
-	- C�pia e Atribui��o bloqueados.
+	- Cópia e Atribuição bloqueados.
 		Isso violaria a unicidade.
 	
 	*/

@@ -9,187 +9,192 @@
 #include <gsl/gsl_linalg.h>   //Singular value decomposition
 #include <gsl/gsl_multimin.h> //Multidimensional minimization
 
-/* Funções Matemáticas Que Serão Úteis 
-
-Acredito que seja desnecessário a tradução dado o objetivo matemático das mesmas.
-
-*/
-void add_gsl_regression_sample(
-	gsl_matrix* matriz, 
-	gsl_vector* vetor, 
-	int sample_no, 
-	const Vetor3D& relativeCoord, 
-	double absoluteCoord, 
-	double translCoeffMult=1
-){
-
-	gsl_matrix_set(matriz, sample_no, 0, relativeCoord.x);
-	gsl_matrix_set(matriz, sample_no, 1, relativeCoord.y);
-	gsl_matrix_set(matriz, sample_no, 2, relativeCoord.z); 
-	gsl_matrix_set(matriz, sample_no, 3, translCoeffMult); 
-	gsl_vector_set(vetor,  sample_no,    absoluteCoord  );
-}
-
-template<size_t SIZE>
-gsl_vector* create_gsl_vector(
-	const std::array<double, SIZE> &content
-){
-
-	gsl_vector* v = gsl_vector_alloc (SIZE);
-	
-	for(
-		int i=0; 
-		    i<SIZE; 
-			i++
-	){
-
-		gsl_vector_set(v, i, content[i]);
-	}
-	return v;
-}
-
-
-Vetor2D get_ground_unit_vec_perpendicular_to( const Vetor3D& vetor ){
-	/*
-	Em inglês é bem melhor.
-	
-	Descrição:
-		Obtém vetor unitário no plano z = 0, perpendicular a um dado vetor.
-		Matematicamente, (0,0,1)x(vetor)/|vetor|.
-	*/
-
-	// Definimos como padrão os vetores convencionais, (1, 0) e (0, 1)
-	float gx = 1;
-	float gy = 0;
-	const float aux = sqrtf(vetor.x * vetor.x + vetor.y * vetor.y); // Vetor 
-
-	if(
-		aux != 0 // Já sabemos que será maior que 0
-	){
-		
-		gx = - vetor.y / aux;
-		gy =   vetor.x / aux;	
-	}
-
-	return Vetor2D( gx, gy );
-}
-
-Vetor3D rotacionar_em_torno_do_eixo_do_chao( Vetor3D vetor, Vetor3D Z_vec ){
-	/*
-	Descrição:
-		Aplica uma rotação 3D em torno de um eixo no plano do chão, onde o eixo é perpendicular
-		à projeção do vetor Z_vec no plano xy.
-		
-		Semelheante à: u=(0,0,1)x(Zvec)/|Zvec|
-	*/
-
-	Vetor2D vetor_unit_perpendicular_no_plano = get_ground_unit_vec_perpendicular_to( Z_vec );
-
-	/* Desnecessário qualquer alteração de tradução */
-
-	//Angle between unit normal vector of original plane and unit normal vector of rotated plane:
-	//cos(a) = (ov.rv)/(|ov||rv|) = ((0,0,1).(rvx,rvy,rvz))/(1*1) = rvz
-	float& cos_a = Z_vec.z; 
-	//assert(cos_a <= 1);
-	if(cos_a > 1) cos_a = 1; //Fix: it happens rarely, no cause was yet detected
-	float sin_a = -sqrtf(1 - cos_a*cos_a); //invert sin_a to invert a (direction was defined in method description)
-
-	const float i_cos_a = 1 - cos_a;
-	const float uxuy_i  = vetor_unit_perpendicular_no_plano.x * vetor_unit_perpendicular_no_plano.y * i_cos_a;
-	const float uxux_i  = vetor_unit_perpendicular_no_plano.x * vetor_unit_perpendicular_no_plano.x * i_cos_a;
-	const float uyuy_i  = vetor_unit_perpendicular_no_plano.y * vetor_unit_perpendicular_no_plano.y * i_cos_a;
-	const float uxsin_a = vetor_unit_perpendicular_no_plano.x * sin_a;
-	const float uysin_a = vetor_unit_perpendicular_no_plano.y * sin_a;
-
-	float x = (cos_a  + uxux_i ) * vetor.x +             uxuy_i * vetor.y + uysin_a * vetor.z;
-	float y =             uxuy_i * vetor.x + (cos_a  + uyuy_i ) * vetor.y - uxsin_a * vetor.z;
-	float z =          - uysin_a * vetor.x +            uxsin_a * vetor.y +   cos_a * vetor.z;
-
-	return Vetor3D(x,y,z);
-}
-
-void    calcular_eixos_XY_a_partir_de_eixo_Z(
-	const Vetor3D& vet_unit_z, 
-	float         agent_angle, 
-	      Vetor3D&       Xvec, 
-	      Vetor3D&       Yvec
-){
-	/*
-	Descrição:
-		Calcular vetores X e Y unitários a partir de um vetor unitário Z normal ao plano do solo.
-	*/
-
-	// Explicação Extremamente Profunda Sobre O Algoritmo Matemático
-
-	/**
-	 * There are two coordinate systems being considered in this method:
-	 * - The actual agent's vision (RELATIVE system -> RELsys)
-	 * - A rotated perspective where the agent's seen Zvec is the real Zvec (ROTATED system -> ROTsys)
-	 * 		(the agent's optical axis / line of sight is parallel to ground ) 
-	 * 
-	 * SUMMARY:
-	 * 		I provide an angle which defines the agent's rotation around Zvec (in the ROTsys)
-	 * 		E.g. suppose the agent is rotated 5deg, then in the ROTsys, the agent sees Xvec as being rotated -5deg
-	 * 		I then rotate Xvec to the RELsys, and compute the Yvec using cross product
-	 * 
-	 * STEPS:
-	 * 1st. Compute ROTsys, by finding rotation of plane defined by normal vector Zvec, in relation to seen XY plane 
-	 * (whose seen normal vector is (0,0,1)). We need: axis of rotation (unit vector lying on XY plane) and angle (rads):
-	 * 		rotation axis:  
-	 * 			u = (0,0,1)x(Zvec) (vector perpendicular to XY plane and Zvec)
-	 * 			  = (-ZvecY,ZvecX,0) (rotation will be counterclockwise when u points towards the observer)
-	 * 							     (so a negative angle will bring the agent to the ROTsys)
-	 * 		angle between Zvec and (0,0,1): 
-	 * 			a = acos( ((0,0,1).(Zvec)) / (|(0,0,1)|*|Zvec|) )
-	 *      	  =	acos( ((0,0,1).(Zvec)) )
-	 * 			  =	acos( ZvecZ )
-	 * 
-	 * 2nd. Establish Xvec in ROTsys:
-	 * 		Let agent_angle be the agent's angle. Then Xvec's angle is (b=-agent_angle).
-	 * 			Xvec = (cos(b),sin(b),0)
-	 * 
-	 * 3rd. Rotate Xvec to RELsys:
-	 * 		Let R be the rotation matrix that rotates from ROTsys to RELsys (positive angle using u):
-	 * 		Xvec = R * Xvec
- 	 * 		     = R * (cos(b),sin(b),0)
-	 *           = (R00 * cos(b) + R01 * sin(b), R10 * cos(b) + R11 * sin(b), R20 * cos(b) + R21 * sin(b))
-	 * 		where R is: (rotation matrix from axis and angle https://en.wikipedia.org/wiki/Rotation_matrix#Rotation_matrix_from_axis_and_angle)
-	 * 			R00 = cos(a) + ux*ux(1-cos(a))    R01 = ux*uy(1-cos(a))
-	 * 			R10 = uy*ux(1-cos(a))             R11 = cos(a) + uy*uy(1-cos(a))
-	 *      	R20 = -uy*sin(a)                  R21 = ux*sin(a)
-	 * 		so Xvec becomes:
-	 * 			XvecX = cos(a)*cos(b) + (1-cos(a))*(ux*ux*cos(b) + ux*uy*sin(b))
-	 * 			XvecY = cos(a)*sin(b) + (1-cos(a))*(uy*uy*sin(b) + ux*uy*cos(b))
-	 * 			XvecZ = sin(a)*(ux*sin(b) - uy*cos(b))
-	 * 
-	 * 4th. To find Yvec we have two options:
-	 * 		A. add pi/2 to b and compute Yvec with the same expression used for Xvec
-	 * 		B. Yvec = Zvec x Xvec  (specifically in this order for original coordinate system)
-	 */
-
-	Vetor2D u = get_ground_unit_vec_perpendicular_to( vet_unit_z );
-
-	const float& cos_a = vet_unit_z.z; 
-	const float sin_a = sqrtf(1 - cos_a*cos_a);
-	const float uxuy = u.x * u.y;
-	const float b = -agent_angle; //Xvec's angle
-	const float cos_b = cosf(b);
-	const float sin_b = sinf(b);
-	const float i_cos_a = 1-cos_a;
-
-	Xvec.x = cos_a * cos_b + i_cos_a * ( u.x*u.x*cos_b + uxuy*sin_b );
-	Xvec.y = cos_a * sin_b + i_cos_a * ( u.y*u.y*sin_b + uxuy*cos_b );
-	Xvec.z = sin_a * ( u.x*sin_b - u.y*cos_b );
-
-	Yvec = vet_unit_z.CrossProduct(Xvec); //Using original coordinate system
-}
-
 // Algumas variáveis estão como seus respectivos nomes em Inglês pq é realmente melhor.
 
 class LocalizerV2 {
 	friend class Singular<LocalizerV2>;
 
 private: 
+
+	/* 
+	Funções Matemáticas Que Serão Úteis 
+
+	Acredito que seja desnecessário a tradução dado o objetivo matemático das mesmas.
+
+	*/
+	static
+	void add_gsl_regression_sample(
+		gsl_matrix* matriz, 
+		gsl_vector* vetor, 
+		int sample_no, 
+		const Vetor3D& relativeCoord, 
+		double absoluteCoord, 
+		double translCoeffMult=1
+	){
+
+		gsl_matrix_set(matriz, sample_no, 0, relativeCoord.x);
+		gsl_matrix_set(matriz, sample_no, 1, relativeCoord.y);
+		gsl_matrix_set(matriz, sample_no, 2, relativeCoord.z); 
+		gsl_matrix_set(matriz, sample_no, 3, translCoeffMult); 
+		gsl_vector_set(vetor,  sample_no,    absoluteCoord  );
+	}
+
+	template<size_t SIZE>
+	static 
+	gsl_vector* create_gsl_vector(
+		const std::array<double, SIZE> &content
+	){
+
+		gsl_vector* v = gsl_vector_alloc (SIZE);
+		
+		for(
+		 size_t i=0; 
+			    i < SIZE; 
+				i++
+		){
+
+			gsl_vector_set(v, i, content[i]);
+		}
+		return v;
+	}
+	
+	static
+	Vetor2D get_ground_unit_vec_perpendicular_to( const Vetor3D& vetor ){
+		/*
+		Em inglês é bem melhor.
+		
+		Descrição:
+			Obtém vetor unitário no plano z = 0, perpendicular a um dado vetor.
+			Matematicamente, (0,0,1)x(vetor)/|vetor|.
+		*/
+
+		// Definimos como padrão os vetores convencionais, (1, 0) e (0, 1)
+		float gx = 1;
+		float gy = 0;
+		const float aux = sqrtf(vetor.x * vetor.x + vetor.y * vetor.y); // Vetor 
+
+		if(
+			aux != 0 // Já sabemos que será maior que 0
+		){
+			
+			gx = - vetor.y / aux;
+			gy =   vetor.x / aux;	
+		}
+
+		return Vetor2D( gx, gy );
+	}
+	
+	static
+	Vetor3D rotacionar_em_torno_do_eixo_do_chao( Vetor3D vetor, Vetor3D Z_vec ){
+		/*
+		Descrição:
+			Aplica uma rotação 3D em torno de um eixo no plano do chão, onde o eixo é perpendicular
+			à projeção do vetor Z_vec no plano xy.
+			
+			Semelheante à: u=(0,0,1)x(Zvec)/|Zvec|
+		*/
+
+		Vetor2D vetor_unit_perpendicular_no_plano = get_ground_unit_vec_perpendicular_to( Z_vec );
+
+		/* Desnecessário qualquer alteração de tradução */
+
+		//Angle between unit normal vector of original plane and unit normal vector of rotated plane:
+		//cos(a) = (ov.rv)/(|ov||rv|) = ((0,0,1).(rvx,rvy,rvz))/(1*1) = rvz
+		float& cos_a = Z_vec.z; 
+		//assert(cos_a <= 1);
+		if(cos_a > 1) cos_a = 1; //Fix: it happens rarely, no cause was yet detected
+		float sin_a = -sqrtf(1 - cos_a*cos_a); //invert sin_a to invert a (direction was defined in method description)
+
+		const float i_cos_a = 1 - cos_a;
+		const float uxuy_i  = vetor_unit_perpendicular_no_plano.x * vetor_unit_perpendicular_no_plano.y * i_cos_a;
+		const float uxux_i  = vetor_unit_perpendicular_no_plano.x * vetor_unit_perpendicular_no_plano.x * i_cos_a;
+		const float uyuy_i  = vetor_unit_perpendicular_no_plano.y * vetor_unit_perpendicular_no_plano.y * i_cos_a;
+		const float uxsin_a = vetor_unit_perpendicular_no_plano.x * sin_a;
+		const float uysin_a = vetor_unit_perpendicular_no_plano.y * sin_a;
+
+		float x = (cos_a  + uxux_i ) * vetor.x +             uxuy_i * vetor.y + uysin_a * vetor.z;
+		float y =             uxuy_i * vetor.x + (cos_a  + uyuy_i ) * vetor.y - uxsin_a * vetor.z;
+		float z =          - uysin_a * vetor.x +            uxsin_a * vetor.y +   cos_a * vetor.z;
+
+		return Vetor3D(x,y,z);
+	}
+
+	static
+	void    calcular_eixos_XY_a_partir_de_eixo_Z(
+		const Vetor3D& vet_unit_z, 
+		float         agent_angle, 
+		      Vetor3D&       Xvec, 
+		      Vetor3D&       Yvec
+	){
+		/*
+		Descrição:
+			Calcular vetores X e Y unitários a partir de um vetor unitário Z normal ao plano do solo.
+		*/
+
+		// Explicação Extremamente Profunda Sobre O Algoritmo Matemático
+
+		/**
+		 * There are two coordinate systems being considered in this method:
+		 * - The actual agent's vision (RELATIVE system -> RELsys)
+		 * - A rotated perspective where the agent's seen Zvec is the real Zvec (ROTATED system -> ROTsys)
+		 * 		(the agent's optical axis / line of sight is parallel to ground ) 
+		 * 
+		 * SUMMARY:
+		 * 		I provide an angle which defines the agent's rotation around Zvec (in the ROTsys)
+		 * 		E.g. suppose the agent is rotated 5deg, then in the ROTsys, the agent sees Xvec as being rotated -5deg
+		 * 		I then rotate Xvec to the RELsys, and compute the Yvec using cross product
+		 * 
+		 * STEPS:
+		 * 1st. Compute ROTsys, by finding rotation of plane defined by normal vector Zvec, in relation to seen XY plane 
+		 * (whose seen normal vector is (0,0,1)). We need: axis of rotation (unit vector lying on XY plane) and angle (rads):
+		 * 		rotation axis:  
+		 * 			u = (0,0,1)x(Zvec) (vector perpendicular to XY plane and Zvec)
+		 * 			  = (-ZvecY,ZvecX,0) (rotation will be counterclockwise when u points towards the observer)
+		 * 							     (so a negative angle will bring the agent to the ROTsys)
+		 * 		angle between Zvec and (0,0,1): 
+		 * 			a = acos( ((0,0,1).(Zvec)) / (|(0,0,1)|*|Zvec|) )
+		 *      	  =	acos( ((0,0,1).(Zvec)) )
+		 * 			  =	acos( ZvecZ )
+		 * 
+		 * 2nd. Establish Xvec in ROTsys:
+		 * 		Let agent_angle be the agent's angle. Then Xvec's angle is (b=-agent_angle).
+		 * 			Xvec = (cos(b),sin(b),0)
+		 * 
+		 * 3rd. Rotate Xvec to RELsys:
+		 * 		Let R be the rotation matrix that rotates from ROTsys to RELsys (positive angle using u):
+		 * 		Xvec = R * Xvec
+	 	 * 		     = R * (cos(b),sin(b),0)
+		 *           = (R00 * cos(b) + R01 * sin(b), R10 * cos(b) + R11 * sin(b), R20 * cos(b) + R21 * sin(b))
+		 * 		where R is: (rotation matrix from axis and angle https://en.wikipedia.org/wiki/Rotation_matrix#Rotation_matrix_from_axis_and_angle)
+		 * 			R00 = cos(a) + ux*ux(1-cos(a))    R01 = ux*uy(1-cos(a))
+		 * 			R10 = uy*ux(1-cos(a))             R11 = cos(a) + uy*uy(1-cos(a))
+		 *      	R20 = -uy*sin(a)                  R21 = ux*sin(a)
+		 * 		so Xvec becomes:
+		 * 			XvecX = cos(a)*cos(b) + (1-cos(a))*(ux*ux*cos(b) + ux*uy*sin(b))
+		 * 			XvecY = cos(a)*sin(b) + (1-cos(a))*(uy*uy*sin(b) + ux*uy*cos(b))
+		 * 			XvecZ = sin(a)*(ux*sin(b) - uy*cos(b))
+		 * 
+		 * 4th. To find Yvec we have two options:
+		 * 		A. add pi/2 to b and compute Yvec with the same expression used for Xvec
+		 * 		B. Yvec = Zvec x Xvec  (specifically in this order for original coordinate system)
+		 */
+
+		Vetor2D u = get_ground_unit_vec_perpendicular_to( vet_unit_z );
+
+		const float& cos_a = vet_unit_z.z; 
+		const float sin_a = sqrtf(1 - cos_a*cos_a);
+		const float uxuy = u.x * u.y;
+		const float b = -agent_angle; //Xvec's angle
+		const float cos_b = cosf(b);
+		const float sin_b = sinf(b);
+		const float i_cos_a = 1-cos_a;
+
+		Xvec.x = cos_a * cos_b + i_cos_a * ( u.x*u.x*cos_b + uxuy*sin_b );
+		Xvec.y = cos_a * sin_b + i_cos_a * ( u.y*u.y*sin_b + uxuy*cos_b );
+		Xvec.z = sin_a * ( u.x*sin_b - u.y*cos_b );
+
+		Yvec = vet_unit_z.CrossProduct(Xvec); //Using original coordinate system
+	}
 
 	///////////////////////////////////////////////////////////////////////////////
 	/// Métodos Privados Principais
@@ -284,7 +289,7 @@ private:
 			if(
 				// Caso haja 2 traves do mesmo  gol
 				// Comparamos x pois o campo está na horizontal.
-				lista_de_traves[0].spos_abs.x = lista_de_traves[1].spos_abs.x
+				lista_de_traves[0].spos_abs.x == lista_de_traves[1].spos_abs.x
 			){
 
 				pt_crossline = Vetor3D::ponto_medio(
@@ -1392,7 +1397,14 @@ private:
 
     	for(
     		int i = 0;
-    			i < sizeof(errorSum_fineTune_before) / sizeof(errorSum_fineTune_before[0]);
+    			// i < sizeof(errorSum_fineTune_before) / sizeof(errorSum_fineTune_before[0]);
+    			/*
+				Estes valores são alterados dentro da função de estimar_error_posicional()
+				que consta em LocalizerV2.cpp, entretanto, não consigo imaginar uma situação,
+				sem ser race-condition, que esta função será chamada no momento. 
+				Logo, acredito que seja possível isso.
+    			*/
+    			i < 7;
     			i++
     	){
 
@@ -1533,27 +1545,30 @@ public:
 	*/
 	void run();
 
-	void reportar_situacao() const {
+	void reportar_situacao(bool for_debugging = false) const {
 		/*
 		Função depuradora, providenciando um relatório estatístico de desempenho do 
 		algoritmo. Projetado para avaliar e diagnosticar a qualidade dos ajustes.
 		*/
 
-		if(
-			// Se for primeira vez
-			counter_tuneo_de_refinamento == 0
-		){
+		if (!for_debugging){
 
-			printf("LocalizerV2 reportando -> Verifique se o servidor está provendo dados privados (cheat data).\n");
-			printf("-> counter_tuneo_de_refinamento = 0.\n")
-			return;
-		}
+			if(
+				// Se for primeira vez
+				counter_tuneo_de_refinamento == 0
+			){
 
-		if(
-			counter_tuneo_de_refinamento < 2
-		){
+				printf("LocalizerV2 reportando -> Verifique se o servidor está provendo dados privados (cheat data).\n");
+				printf("-> Primeira execução: counter_tuneo_de_refinamento = 0.\n");
+				return;
+			}
 
-			return;
+			if(
+				counter_tuneo_de_refinamento < 2
+			){
+
+				return;
+			}
 		}
 
 		const int &c  = counter_tuneo_de_refinamento;

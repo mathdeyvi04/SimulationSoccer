@@ -74,7 +74,7 @@ public:
 	sVector3d ------ sVetor3D ---- svet
 	sFieldPoint ---- sPonto  ----- spt
 	sFieldSegment -- sSegmento --- segm
-	sMarker -------- sMarcador --- smkr
+	sMarker -------- sMarcador --- mkr
 	sSegment ------- sSegmMkr ---- segm_mkr
 	sFixedMarker --- sFixedMkr --- fixed_mkr -> Inglês é bem mais bonito
 	cFieldPoints --- cPontos ----- cpts
@@ -130,8 +130,11 @@ public:
 		/*
 		Para identificarmos o ponto ou apresentá-lo no 
 		Drawing do RoboViz pelo buffer, lembra?
+
+		O compilador literalmente não funcionava pq eu não
+		posso, aparentemente, inicializar o array com 0.
 		*/
-		const char tag[10] = {0}; 
+		const char tag[10]; 
 
 		Vetor3D obter_vetor() const {
 
@@ -210,8 +213,8 @@ public:
 			const sVetor3D& spos_abs_,
 			const  Vetor3D& pos_rel_esf_
 		) : spos_abs     ( spos_abs_                     ),
-			pos_rel_esf  ( pos_rel_esf_                  ),
-			pos_rel_cart ( pos_rel_esf_.para_cartesiano())
+			pos_rel_cart ( pos_rel_esf_.para_cartesiano()),
+			pos_rel_esf  ( pos_rel_esf_                  )
 			{};
 
 
@@ -220,8 +223,8 @@ public:
 			const Vetor3D& pos_rel_esf_
 		) : spos_abs     ( (*spt_).svet 				 ),
 			spt          ( spt_           				 ),
-			pos_rel_esf  ( pos_rel_esf_   				 ),
-			pos_rel_cart ( pos_rel_esf_.para_cartesiano())
+			pos_rel_cart ( pos_rel_esf_.para_cartesiano()),
+			pos_rel_esf  ( pos_rel_esf_   				 )
 			{};
 
 
@@ -229,8 +232,8 @@ public:
 			const Vetor3D& pos_abs_,
 			const Vetor3D& pos_rel_esf_
 		) : spos_abs    (sVetor3D({pos_abs_.x, pos_abs_.y, pos_abs_.z}) ),
-			pos_rel_esf (pos_rel_esf_                   			    ),
-			pos_rel_cart(pos_rel_esf_.para_cartesiano()				    )
+			pos_rel_cart(pos_rel_esf_.para_cartesiano()				    ),
+			pos_rel_esf (pos_rel_esf_                   			    )
 			{};
 
 
@@ -240,8 +243,8 @@ public:
 			const Vetor3D&  pos_rel_esf_,
 			const Vetor3D&  pos_rel_cart_
 		) : spos_abs     ( spos_abs_                   ),
-			pos_rel_esf ( pos_rel_esf_                 ),
-			pos_rel_cart( pos_rel_cart_                )
+			pos_rel_cart( pos_rel_cart_                ),
+			pos_rel_esf ( pos_rel_esf_                 )
 			{};
 
 
@@ -250,10 +253,10 @@ public:
 			const sVetor3D&  spos_abs_,
 			const Vetor3D& 	 pos_rel_esf_,
 			const Vetor3D& 	 pos_rel_cart_
-		) : segm        ( segm_                        ),
-			spos_abs    ( spos_abs_                     ),
-			pos_rel_esf ( pos_rel_esf_                 ),
-			pos_rel_cart( pos_rel_cart_                )
+		) : spos_abs    ( spos_abs_                    ),
+			segm        ( segm_                        ),
+			pos_rel_cart( pos_rel_cart_                ),
+			pos_rel_esf ( pos_rel_esf_                 )
 			{};
 
 
@@ -261,12 +264,11 @@ public:
 			const sPonto  *spt_,
 			const Vetor3D& pos_rel_esf_,
 			const Vetor3D& pos_rel_cart_
-		) : spt         ( spt_           ),
-			spos_abs    ( (*spt_).svet  ),
-			pos_rel_esf ( pos_rel_esf_   ),
-			pos_rel_cart( pos_rel_cart_  )
+		) :	spos_abs    ( (*spt_).svet   ),
+		    spt         ( spt_           ),
+			pos_rel_cart( pos_rel_cart_  ),
+			pos_rel_esf ( pos_rel_esf_   )
 			{};
-
 	};
 
 
@@ -294,18 +296,15 @@ public:
 
 
 	struct sFixedMkr {
-		/*
-
-		*/
 
 		bool se_esta_visivel;
 
-		Vetor3D pos_rel_esf;
 		Vetor3D pos_rel_cart;
+		Vetor3D pos_rel_esf;
 
-		sFixedMkr() : pos_rel_esf(Vetor3D()),
+		sFixedMkr() : se_esta_visivel (false),
 					  pos_rel_cart(Vetor3D()),
-					  se_esta_visivel(false)
+					  pos_rel_esf (Vetor3D())
 					  {};
 
 		void setar_pos_rel_a_partir_de_esf(
@@ -705,28 +704,10 @@ public:
 
 
     // Responsável por apresentar na tela. As funções desenho abaixo apenas a chamam.
-    void artista(
-    	const Matriz& Head_to_Field,
-    	int decisor
+    void ilustrador(
+    	const Matriz& Head_to_Field, // -> Transformação de coordenadas da cabeça para o campo.
+    	int decisor                  // -> Times trocam de lado após intervalo, por isso devemos saber informações como esta.
     );
-
-
-    /*
-	Desenhar todas as linhas, marcadores, posição do robô e a bola que estão vísiveis.
-    */
-    void desenhar_visiveis(
-    	const Matriz& Head_to_Field,  // -> Transformação de coordenadas da cabeça para o campo.
-    	bool  se_esta_do_lado_certo   // -> Times trocam de lado após intervalo, por isso devemos saber informações como esta.
-    ) const;
-
-
-    /*
-	Forçará o Roboviz a desenhar como se estivesse do outro lado do campo.
-    */
-    void desenhar_visiveis_trocados(
-    	const Matriz& Head_to_Field
-    ) const;
-
 
     /*////////////////////////////////////////////////////////
 

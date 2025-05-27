@@ -1,6 +1,7 @@
 #include "RobovizField.h"
 #include "RobovizLogger.h"
 #include "World.h"
+#include <cstdio>
 
 /*////////////////////////////////////////////////////////////////////////
 
@@ -255,7 +256,7 @@ lista_de_marcadores_de_chao_pesados.clear();
 
 			// Se está vísivel, devemos configurar determinadas coisas
 			if(
-				(*elemento_em_fixed_mkr).se_esta_visivel = (*landmkr).se_esta_visivel
+				(*elemento_em_fixed_mkr).se_esta_visivel == (*landmkr).se_esta_visivel
 			){
 
 				(*elemento_em_fixed_mkr).setar_pos_rel_a_partir_de_esf( (*landmkr).pos_rel_esf );
@@ -414,8 +415,10 @@ void RobovizField::atualizar_marcadores_a_partir_da_transformacao(
 					/*
 					Erro será a soma da distância do segmento de linha para ambas extremidades
 					da linha que estamos verificando, a qual tbm está no plano.
+
+					Ambas funções estão disponíveis dentro do .h
 					*/
-					float error = calcular_dist_segm_para_pt2_c(
+					float error = calcular_dist_segm_para_pt2d_c(
 																 ssegm,
 																 pontos_da_linha_abs[0].para_2D()
 															   );
@@ -425,7 +428,7 @@ void RobovizField::atualizar_marcadores_a_partir_da_transformacao(
 						error < max_dist_para_associacao
 					){
 
-						error += calcular_dist_segm_para_pt2_c(
+						error += calcular_dist_segm_para_pt2d_c(
 																 ssegm,
 																 pontos_da_linha_abs[1].para_2D()
 															   );
@@ -656,24 +659,33 @@ Métodos de Desenho
 *//////////////////////////////////////////////////////////////////////////////
 
 
-void RobovizField::artista(
+void RobovizField::ilustrador(
 	const Matriz& Head_to_Field,
 	int decisor
 ){
 	/*
-	No original, havia 2 funções quase que exatamente iguais. Reduzi para que fossem
-	as mesmas.
+	Descrição:
+		Desenhará todos os elementos vísiveis na tela.
+		No original, havia 2 funções quase que exatamente iguais. Reduzi para que fossem
+		as mesmas.
+
+		Utiliza o decisor para ter informações de lado.
 	*/
 
-	string nome_para_buffer = "localizacao";
+	string nome_para_buffer = "localization";
 
-	RobovizLogger *roboviz = Singular<RobovizLogger>::obter_instancia();
+	// Observe que isso não é um Singular<RobovizLogger>, apesar de ser semelhante.
+	// Sugiro que leia a definição em RobovizLogger.h
+	RobovizLogger *roboviz = RobovizLogger::obter_instancia(); 
 
 	/*
 	Será inicializada apenas quando a função desenhar_visiveis for chamada,
 	oq deverá ocorrer apenas uma.
 	*/
-	int resultado_da_inicializacao = (*roboviz).init();
+	int resultado_de_inicializacao = (*roboviz).init();
+
+	printf("\n-> Resultado da Inicialização do RobovizLogger dentro de ilustrador(): %d\n", resultado_de_inicializacao);
+
 
 	// Desenhar todas as linhas, não importando se estão identificadas ou não.
 	{
@@ -712,13 +724,13 @@ void RobovizField::artista(
 
 			Vetor3D mid = Vetor3D::ponto_medio(
 												ssegm_mkr.pontos_marcadores[0].spos_abs.obter_vetor(),
-												ssegm_mkr.pontos_marcadores[1].spos_abs.obter_vetor(),
+												ssegm_mkr.pontos_marcadores[1].spos_abs.obter_vetor()
 											  );
 
 			string nome_da_linha_identificada = (*ssegm_mkr.segm).tag;
 
 			(*roboviz).desenhar_anotacao(
-										  *nome_da_linha_identificada,
+										  &nome_da_linha_identificada,
 										  decisor * mid.x,
 										  decisor * mid.y,
 										  mid.z,
@@ -770,13 +782,13 @@ void RobovizField::artista(
 										);
 
 			(*roboviz).desenhar_linha(
-									   decisor * mkr.spos_abs.x.spos_abs.x,
-									   decisor * mkr.spos_abs.x.spos_abs.y,
-									   mkr.spos_abs.x.spos_abs.z,
+									   decisor * mkr.spos_abs.x,
+									   decisor * mkr.spos_abs.y,
+									   mkr.spos_abs.z,
 
-									   decisor * mkr.spos_abs.x.spos_abs.x,
-									   decisor * mkr.spos_abs.x.spos_abs.y,
-									   mkr.spos_abs.x.spos_abs.z + 0.5,
+									   decisor * mkr.spos_abs.x,
+									   decisor * mkr.spos_abs.y,
+									   mkr.spos_abs.z + 0.5,
 
 									   1,
 
@@ -809,13 +821,13 @@ void RobovizField::artista(
 										);
 
 			(*roboviz).desenhar_linha(
-									   decisor * mkr.spos_abs.x.spos_abs.x,
-									   decisor * mkr.spos_abs.x.spos_abs.y,
-									   mkr.spos_abs.x.spos_abs.z,
+									   decisor * mkr.spos_abs.x,
+									   decisor * mkr.spos_abs.y,
+									   mkr.spos_abs.z,
 
-									   decisor * mkr.spos_abs.x.spos_abs.x,
-									   decisor * mkr.spos_abs.x.spos_abs.y,
-									   mkr.spos_abs.x.spos_abs.z + 0.5,
+									   decisor * mkr.spos_abs.x,
+									   decisor * mkr.spos_abs.y,
+									   mkr.spos_abs.z + 0.5,
 
 									   1,
 
@@ -894,41 +906,4 @@ void RobovizField::artista(
 
 		(*roboviz).enviar_buffer_limpo(&nome_para_buffer);
 	}
-}
-
-
-void RobovizField::desenhar_visiveis(
-	const Matriz& Head_to_Field,
-	bool  se_esta_do_lado_certo
-) const {
-	/*
-	Desenhar todas as linhas, marcadores, posição do robô e a bola que estão vísiveis.
-    */
-
-	if(
-		se_esta_do_lado_certo
-	){
-
-		return desenhar_visiveis_trocados(Head_to_Field);
-	}
-
-
-	return artista(Head_to_Field, 1);
-}
-
-
-void RobovizField::desenhar_visiveis_trocados(
-	const Matriz& Head_to_Field
-) const {
-	/*
-	Desenhar todas as linhas, marcadores, posição do robô e a bola que estão vísiveis.
-    */
-
-	return artista(Head_to_Field, -1);
-}
-
-int main(){
-
-    printf("-> RobovizField.cpp: Compilação Bem Sucedida.");
-    return 0;
 }

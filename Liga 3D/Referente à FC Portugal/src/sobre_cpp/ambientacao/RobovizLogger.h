@@ -215,6 +215,16 @@ private:
 	
 public:	
 
+	static RobovizLogger* obter_instancia(){
+		/*
+		Mesma ideia do Singular<...>, entretanto, enquanto
+		aquele retorna referência, este retorna um ponteiro.
+		*/
+
+		static RobovizLogger instancia;
+		return &instancia;
+	}
+
 	int init(){
 		/*
 		Descrição:

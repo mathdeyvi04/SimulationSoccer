@@ -191,9 +191,3 @@ void LocalizerV2::run(){
 	
 	//reportar_situacao();
 }
-
-int main(){
-	printf("\n\nExecutado com sucesso.\n\n");
-
-	return 0;
-}
