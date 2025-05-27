@@ -12,7 +12,7 @@ all: $(obj)
 	g++ $(CXXFLAGS) -o preditor_de_curva_da_bola.so $^
 
 teste:
-	clear; python3 debug.py
+	python3 debug.py
 
 .PHONY: clean
 

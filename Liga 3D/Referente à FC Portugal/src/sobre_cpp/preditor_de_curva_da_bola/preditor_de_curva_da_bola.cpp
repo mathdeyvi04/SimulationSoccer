@@ -72,14 +72,14 @@ void obter_previsao_de_intersecao_com_bola(
 			(
 				dist_sq < max_distancia_de_contato * max_distancia_de_contato
 			) || (
-				index > quantidade_de_pontos_de_posicao
+				index >= quantidade_de_pontos_de_posicao
 			)
 		){
 
 			ret_d = sqrtf(dist_sq);
-			
-			ret_x = (fabs(posicao_da_bola[index - 2] > 1e-5)) ? posicao_da_bola[index - 2] : 0;
-			ret_y = (fabs(posicao_da_bola[index - 1] > 1e-5)) ? posicao_da_bola[index - 1] : 0;
+
+			ret_x = (fabs(posicao_da_bola[index - 2]) > 1e-6) ? posicao_da_bola[index - 2] : 0;
+			ret_y = (fabs(posicao_da_bola[index - 1]) > 1e-6) ? posicao_da_bola[index - 1] : 0;
 			
 			break;
 		}
@@ -143,7 +143,7 @@ void obter_previsao_cinematica(
 		if(
 			(
 				// Uma métrica para medirmos rapidamente distância
-				(fabs(dx) + fabs(dy)) < 0.005
+				(fabs(dx) + fabs(dy)) <  0.005
 			) or (
 				// Caso tenha passado do limite em x
 				fabs(pos_ball_x) > 15
@@ -160,10 +160,18 @@ void obter_previsao_cinematica(
 		
 		// Apesar de calcularmos em double, guardaremos em float.
 		predicao_da_speed     [ index  / 2 ] = sqrt(vel_ball_x * vel_ball_x + vel_ball_y * vel_ball_y);
+		
 		predicao_da_velocidade[ index      ] = vel_ball_x;
 		predicao_da_posicao   [ index++    ] = pos_ball_x;
+
 		predicao_da_velocidade[ index      ] = vel_ball_y;
-		predicao_da_velocidade[ index++    ] = pos_ball_y;
+		predicao_da_posicao   [ index++    ] = pos_ball_y;
+
+
+		// printf("\nIndex =  %d", index);
+		// printf("\npos   = (%.3lf, %.3lf)", pos_ball_x, pos_ball_y);
+		// printf("\nvel   = (%.3lf, %.3lf)", vel_ball_x, vel_ball_y);
+		// printf("\n|vel| =  %.3lf\n", sqrt(vel_ball_x * vel_ball_x + vel_ball_y * vel_ball_y));
 	}
 	
 	quantidade_de_pontos_de_posicao = index;

@@ -12,21 +12,27 @@ namespace py = pybind11;
 using namespace std;
 
 py::array_t<float> get_ball_kinematic_prediction(
-	py::array_t<float> parametros
+	py::array_t<float> pos_ball,
+	py::array_t<float> vel_ball
 ){
 	/*
 	Descrição:
 		Função que fornecerá a portabilidade da execução da função
 		C++ em Python.
 	*/
-	py::buffer_info buffer_de_entrada = parametros.request();
-	float* parametros_ptr = (float*) buffer_de_entrada.ptr  ;
-	
-	float pos_ball_x = parametros_ptr[ 0 ];
-	float pos_ball_y = parametros_ptr[ 1 ];
-	float vel_ball_x = parametros_ptr[ 2 ];
-	float vel_ball_y = parametros_ptr[ 3 ];
-	
+
+	py::buffer_info buffer_de_pos = pos_ball.request();
+	float* ptr_pos = (float*) buffer_de_pos.ptr;
+
+	float pos_ball_x = ptr_pos[ 0 ];
+	float pos_ball_y = ptr_pos[ 1 ];
+
+	py::buffer_info buffer_de_vel = vel_ball.request();
+	float* ptr_vel = (float*) buffer_de_vel.ptr;
+
+	float vel_ball_x = ptr_vel[ 0 ];
+	float vel_ball_y = ptr_vel[ 1 ];
+
 	obter_previsao_cinematica(
 		pos_ball_x,
 		pos_ball_y,
@@ -84,30 +90,32 @@ py::array_t<float> get_ball_kinematic_prediction(
 
 
 py::array_t<float> get_possible_intersection_with_ball(
-	py::array_t<float> parametros
+	py::array_t<float> pos_robot,
+	float max_speed_do_robo_por_passo,
+	py::array_t<float> pos_ball_predict
+
 ){
 	/*
 	Descrição:
 		Função que fornecerá a portabilidade da execução da função
 		C++ em Python.
 	*/
-	
-	py::buffer_info buffer_de_entrada = parametros.request();
-	float* param_ptr = (float*) buffer_de_entrada.ptr;
-	int quantidade_de_parametros = buffer_de_entrada.shape[0];
-	
-	float x = param_ptr[0];
-	float y = param_ptr[1];
-	float max_speed = param_ptr[2];
-	float* pos_ball = param_ptr + 3;
+
+	py::buffer_info buffer_de_pos_robot = pos_robot.request();
+	float* ptr_pos_robot = (float*) buffer_de_pos_robot.ptr;
+
+	py::buffer_info buffer_de_pos_prevista = pos_ball_predict.request();
+	float* pos_ball = (float*) buffer_de_pos_prevista.ptr;
+	int quant_de_previcoes = buffer_de_pos_prevista.shape[0];
+
 	float ret_x, ret_y, ret_d;  // Note que criamos os valores aqui!
 	
 	obter_previsao_de_intersecao_com_bola(
-		x,
-		y,
-		max_speed,
+		ptr_pos_robot[0], // x
+		ptr_pos_robot[1], // y
+		max_speed_do_robo_por_passo,
 		pos_ball,
-		quantidade_de_parametros - 3,
+		quant_de_previcoes,
 		/*
 		Resultado será retornado para os seguintes endereços de memória.
 		*/
@@ -148,17 +156,20 @@ PYBIND11_MODULE(
 
 		Parameters:
 		    The initial kinematic attributes:
-		    - float pos_ball_x
-		    - float pos_ball_y
-		    - float vel_ball_x
-		    - float vel_ball_y
+		    - float pos_ball[2]
+		    - float vel_ball[2]
 
 		Return:
 		    A super vector containing the values in sequence:
 
+			T = len(vector_returned)
+
 		    - position predictions           -> (x, y)   = (i, i + 1)
-		    - velocity vector predictions    -> (vx, vy) = (i, i + 1)
-		    - speed predictions              -> (|v|)    = (i)
+		    	which goes from 0 to T - 1.
+		    - velocity vector predictions    -> (vx, vy) = (i + T, i + 1 + T)
+		    	which goes from T to 2T - 1.
+		    - speed predictions              -> (|v|)    = (i + 1.5T)
+		    	which goes from 2T to 2.5T - 1.
 
 		    The arrows indicate the organization format. Knowing the total number of
 		    elements in the vector, you can calculate:
@@ -168,7 +179,8 @@ PYBIND11_MODULE(
 		    The value obtained from this calculation is exactly the index at which
 		    the position values end and the velocity vector values begin.
 		)pbdoc"
-		"parametros"_a
+		"pos_ball"_a,
+		"vel_ball"_a
 	);
 	
 	m.def(
@@ -192,11 +204,9 @@ PYBIND11_MODULE(
 			relative distance.
 
 		Parametros: 
-			- float pos_x: initial x position's robot
-			- float pos_y: initial y position's robot
+			- float pos_robot: initial position's robot
 			- float max_speed_do_robo_por_passo: Maximum robot displacement per time step
-			- float posicao_da_bola[]:  Vector of future positions of the ball and the respective number of points.
-			- float quantidade_de_pontos_de_posicao
+			- float posicoes_da_bola[]:  Vector of future positions of the ball and the respective number of points.
 			
 		Retorno:
 			An array thats:
@@ -204,6 +214,8 @@ PYBIND11_MODULE(
 			- [1] -> y position of the intersection point  
 			- [2] -> distance between the robot and the intersection point  
 		)pbdoc"
-		"parametros"_a
+		"pos_robot"_a,
+		"max_speed_do_robo_por_passo"_a,
+		"posicoes_da_bola"_a
 	);
 }
