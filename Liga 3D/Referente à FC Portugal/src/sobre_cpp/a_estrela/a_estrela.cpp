@@ -144,19 +144,14 @@ namespace noding{
 	/*
 	Descrição:
 		Define um espaço de nomes (namespace), que serve para organizar e 
-		agrupar funcionalidades (como classes, funções, variáveis) em um escopo
-		nomeado, evitando conflitos de nomes com outras partes do programa ou 
-		bibliotecas externas.
+		agrupar funcionalidades em um escopo nomeado, evitando conflitos 
+		de nomes com outras partes do programa ou bibliotecas externas.
 		
 		Acredito que foi feito assim pois Node não é exatamente um objeto,
 		mas uma estrutura de dados e, portanto, struct. E, por legibilidade,
 		não associamos classes<->structs, cada um no seu quadrado.
 		
 		Coloquei 'noding' porque queria relacionar com Node.
-			
-	Forma de Uso:
-		open::imprimir();
-		std::cout << open::valor;
 	*/
 		
 	int liberar(
@@ -165,6 +160,8 @@ namespace noding{
 		/*
 		Descrição:
 			Libera a memória usada pela estrutura.
+
+			ATENÇÃO: SOMENTE USE CASO ESTEJA ALOCANDO MEMÓRIA.
 		*/
 		if(
 			node == nullptr
@@ -505,7 +502,8 @@ namespace noding{
 		/*
 		Descrição:
 			Separa em casos de existência de filhos e remove nós desejados.
-			
+			Bem mais complexo quando comparado com remover_min.
+
 		Retorno:
 			Raiz da estrutura.
 		*/
@@ -836,32 +834,74 @@ namespace noding{
 		float custo_para_chegar_ao_no_desejado,
 		float limite_para_qual_custo_eh_impossivel,
 		Node* node_atual_a_ser_expandido,
-		/*
-		Representação da grid do campo
-		*/
 		Node* quadro_de_possibilidades,
-		int posicao_do_node_no_quadro,
-		/*
-		0 - Explorado
-		1 - Lista Aberta
-		*/
-		int estado_atual_do_node, 
-		bool ir_ao_gol,
-		// Coordenadas do nó
-		int linha, int coluna,
-		// Coordenadas do nó final
-		int linha_final, int coluna_final,
-		// Array que armazenará estados dos nós
+		int   posicao_do_node_no_quadro,
+		int   estado_atual_do_node, 
+		bool  ir_ao_gol,
+		int   linha, int coluna,
+		int   linha_final, int coluna_final,
 		unsigned int* estado_dos_nodes,
-		// Custo Adicional para o movimento
 		float extra
 	){
 		/*
 		Descrição:
-			Parte do algoritmo para busca de melhor caminho possível, 
-			expandindo e avaliando filhos durante busca.
-			
-			Fiz o possível para tentar decifrar o que acontece aqui.
+		    Esta função representa o processo de expansão de um nó vizinho no
+		    contexto de um algoritmo de busca (como A*), calculando o custo 
+		    atualizado para alcançar um nó adjacente (filho), comparando com custos 
+		    anteriores e decide se o novo caminho é mais eficiente.
+		    Caso seja, o nó é atualizado e inserido de volta na estrutura de dados (raiz).
+
+		    A função também trata penalidades de custo para caminhos considerados 
+		    inacessíveis e avalia heurísticas de distância até o objetivo (como o gol). 
+
+		    O objetivo final é avaliar a viabilidade de mover-se até determinado nó da 
+		    grid e manter a estrutura de busca otimizada.
+
+		Parâmetros:
+		    - Node* raiz_da_estrutura:
+		        Ponteiro para a raiz da estrutura usada no algoritmo.
+		    
+		    - float custo_para_chegar_ao_no_desejado:
+		        Custo heurístico estimado para alcançar o nó filho a partir do nó atual.
+		    
+		    - float limite_para_qual_custo_eh_impossivel:
+		        Limite acima do qual um caminho é considerado inviável e penalizado.
+		    
+		    - Node* node_atual_a_ser_expandido:
+		        Ponteiro para o nó atualmente em expansão.
+		    
+		    - Node* quadro_de_possibilidades:
+		        Vetor de todos os nós do campo, representando a malha de possibilidades.
+		    
+		    - int posicao_do_node_no_quadro:
+		        Índice do nó filho dentro do vetor `quadro_de_possibilidades`.
+		    
+		    - int estado_atual_do_node:
+	            0 = já explorado
+	            1 = está na lista aberta
+		    
+		    - bool ir_ao_gol:
+		        Indica se o destino final é o gol (para ajuste da heurística de distância).
+		    
+		    - int linha, coluna:
+		        Coordenadas (linha e coluna) do nó atual.
+		    
+		    - int linha_final, coluna_final:
+		        Coordenadas do nó de destino final (meta).
+		    
+		    - unsigned int* estado_dos_nodes:
+		        Vetor que armazena o estado de todos os nós (explorado, na estrutura, etc.).
+		    
+		    - float extra:
+		        Custo adicional associado ao movimento até o nó filho.
+
+		Retorno:
+		    - Node*:
+		        Retorna o ponteiro para a nova raiz da estrutura, 
+		        podendo ser o mesmo ou modificado conforme inserções/remoções realizadas.
+
+		        Caso o caminho até o filho não seja mais eficiente, o node não é reinserido,
+		        e a estrutura permanece inalterada.
 		*/
 
 		if(
@@ -976,8 +1016,12 @@ construir_caminho_final(
 ){
 	/*
 	Descrição:
-		Função responsável por construir o melhor a partir da estrutura de 
-		nós fornecida.
+		Função responsável por atribuir o caminho especificado pela variável 
+		melhor_node à variável que representará o caminho obtido pelo algoritmo
+		globalmente.
+
+		Reitero que esta função NÃO é responsável por qualquer calculo ou condição,
+		apenas atribui valores do array de caminho.
 	*/
 	
 	Node* ptr = melhor_node;
@@ -1301,16 +1345,17 @@ se_caminho_esta_obstruido(
 ){
 	/*
 	Descrição:
-		Verifica se um caminho completo está obstruído.
+		Verifica se um determinado caminho está obstáculo.
 		
 		O caminho está obstruído se intercepta qualquer circunferência 
 		HARD ou SOFT ou se começa dentro de circuferência HARD.
 		
-		Os números escolhidos não são aleatórios, tem haver com proporções
-		geométricas.
+		Os números escolhidos não são aleatórios, tem haver com as proporções
+		geométricas, é bem complexo.
 	
 	Retorno:
 		False - Se não for necessário que A* resolva esse problema.
+		True  - se estiver obstruído, logo A* buscará outro caminho.
 	*/
 	
 	/////////////////////////////////////////////////////////////////////////
@@ -1678,17 +1723,24 @@ a_estrela(
 ){
 	/*
 	Descrição:
-		Responsável por computar o melhor caminho possível.
+		Responsável por computar o melhor caminho possível usando
+		a métrica de distância exclusiva e algoritmo A*.
+
+		O caminho é expandido a partir da função expandir_filho()
+		presente em noding.
 		
 	Parâmetros:
-		parametros:
-		
-			[start x][start y]						-> posição inicial
-			[allow out of bounds?]					-> se está permitido sair dos limites
-			[go to goal?]							-> se há um objetivo  
-			[optional target x][optional target y]	-> posição do objetivo opcional
-			[timeout]								-> tempo limite de busca
-			[x][y][hard radius][soft radius][force] -> descrição dos obstáculos
+		[start x][start y]						-> posição inicial
+		[allow out of bounds?]					-> se está permitido sair dos limites
+		[go to goal?]							-> se há um objetivo  
+		[optional target x][optional target y]	-> posição do objetivo opcional
+		[timeout]								-> tempo limite de busca
+		[x][y][hard radius][soft radius][force] -> descrição dos obstáculos
+
+	Retorno:
+		Não há retorno prévio, dado que esta função calcula os nodes
+		que representam o melhor caminho, em seguida passa para construir_caminho_final()
+		a fim de popular o array de caminho.
 	*/
 	
 	//////////////////////////////////////////////////////////////////////

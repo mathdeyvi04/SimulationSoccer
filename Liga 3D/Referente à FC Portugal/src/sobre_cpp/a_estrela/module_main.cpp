@@ -8,27 +8,27 @@ Matheus Deyvisson, 2025
 Simplesmente loucura, nunca ouvi falar disso.
 
 Apesar de termos instalado com pip install, esta biblioteca
-pybind11 somente de cabeÃ§alho expÃµe tipos C++ em Python e
+pybind11 — somente de cabeçalho — expõe tipos C++ em Python e
 vice-versa, principalmente para criar vinculações Python de
 código C++ existente.
 
-Apesar de seu próposito ser integração com Python, ela foi
+Apesar de seu propósito ser integração com Python, ela foi
 escrita em C++ e usada dentro de código C++.
 
 O compilador C++ gera um módulo nativo (ex: a_star.so)
 No Python:
 '''
 import a_estrela
-a_estrela.find_optimal_path(params)
+a_estrela.find_optimal_path()
 '''
 */
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
 
 /*
-Usar 'using namespace pybind11' traria todos as funções e
-variáveis de pybind11, fazendo dessa forma criamos apenas um
-atalho, mantendo o cÃ³digo mais seguro.
+Usar 'using namespace pybind11' traria todas as funções e
+variáveis de pybind11; fazendo dessa forma, criamos apenas um
+atalho, mantendo o código mais seguro.
 
 Ao ver 'py::' saiba que vem imediatamente de pybind11.
 */
@@ -42,31 +42,31 @@ find_optimal_path(
     /*
     Descrição:
         Em poucas palavras, implementa o algoritmo para que
-        possa ser usado em python. Permitindo que cálculos
+        possa ser usado em python, permitindo que cálculos
         intensivos do A* sejam realizados em C++ enquanto
         mantém uma interface limpa com Python.
 
     Parâmetros:
-		Rapaz, somente vendo a função a_estrela(), disponível
-		no arquivo correspondente a_estrela.cpp, já sanará suas
-		necessidades.
-		
-		Entretanto, um resumo rápido é que:
-			Vetor de valores específicos que informam sobre 
-			posição no campo, objetivo e seu local no campo,
-			obstaculos e respectivas posições.	
-	
+        Somente vendo a função a_estrela(), disponível
+        no arquivo correspondente a_estrela.cpp, já sanará suas
+        necessidades.
+        
+        Entretanto, um resumo rápido é que:
+            Vetor de valores específicos que informam sobre 
+            posição no campo, objetivo e seu local no campo,
+            obstáculos e respectivas posições.  
+
     Retorno:
         Caminho a ser executado pelo agente.
     */
 
     /*
-    Com isso que passamos um array numpy do Python direto
+    Com isso passamos um array numpy do Python direto
     para C++ via pybind11. Essa biblioteca é tão bizarra de
     impressionante.
 
     .request()
-        Permite acessar os dados de forma eficiente sem cópia,
+        Permite acessar os dados de forma eficiente, sem cópia,
         manipulando diretamente a memória compartilhada entre
         Python e C++.
 
@@ -109,7 +109,7 @@ find_optimal_path(
         /*
         Preenchemos o buffer_de_saida a partir do ponteiro.
 
-        Não podemos retornar o ponteiro de caminho final pois
+        Não podemos retornar o ponteiro de caminho_final pois
         ele será reutilizado e alterado.
         */
         ptr[index] = caminho_final[index];
@@ -119,10 +119,10 @@ find_optimal_path(
 }
 
 /*
-Usamos esse módulo para possibilitar a adição de argumentos de nomes.
+Usamos esse módulo para possibilitar a adição de argumentos nomeados.
 
 Define o operador _a, que é usado para associar um nome a um argumento
-na definição da função. Por exemplo, "parametros"_a é equivalente à
+na definição da função. Por exemplo, "parametros"_a é equivalente a
 pybind11::arg("parametros").
 */
 using namespace pybind11::literals;
@@ -138,7 +138,7 @@ PYBIND11_MODULE(
     m.doc() = "Module responsible for providing optimized design tools to obtain a valid path to an objective";
 
     m.def(
-        "find_optimal_path",    // Nome da função que será executada em python.
+        "find_optimal_path",    // Nome da função que será executada em Python.
         &find_optimal_path,     // Ponteiro para a função C++
         R"pbdoc(
         Description:
@@ -164,6 +164,6 @@ PYBIND11_MODULE(
             A trajectory or path that avoids obstacles and is optimal with respect to
             time and space constraints.
         )pbdoc"
-        "parametros"_a  // nomeamos o argumento da função.
+        "parametros"_a  // Nomeamos o argumento da função.
     );
 }

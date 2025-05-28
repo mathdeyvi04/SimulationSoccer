@@ -12,7 +12,7 @@ all: $(obj)
 	g++ $(CXXFLAGS) -o a_estrela.so $^
 
 teste:
-	g++ -g debug.cc -o main; valgrind ./main;
+	g++ -g debug.cc -o main; ./main;
 
 .PHONY: clean
 

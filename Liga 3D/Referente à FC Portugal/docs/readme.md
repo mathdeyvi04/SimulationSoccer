@@ -29,10 +29,11 @@ de realizar o `make` anteriormente.
 
 Arquivo específico **responsável pela portabilidade das aplicações para o Python**.
 
-Caso deseje alterar algo, saiba que o _pybind somente aceitará caracteres ASCII_, 
-não tente colocar UTF-8 nas documentações ou nomes.
+Para compreender como o pybind funciona de verdade, sugiro verificar o arquivo 
+[module_main referente à estrela.cpp](../src/sobre_cpp/a_estrela/module_main.cpp).
 
-Quando descobri isso, preferi reescrever inglês mesmo.
+Caso deseje alterar algo, saiba que o _pybind somente aceitará caracteres ASCII_, 
+não tente colocar UTF-8 nas documentações ou nomes. Quando descobri isso, preferi reescrever inglês mesmo.
 
 Utilizando `help(nome_do_modulo)` pode-se obter mais informações sobre o módulo e 
 suas funcionalidades.

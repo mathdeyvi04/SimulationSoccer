@@ -19,3 +19,42 @@ Módulo C++ focado no algoritmo A*, o qual foi criado em C++ para ser usado em P
   * Utilização de um algoritmo insano para calcular distâncias, criado e desenvolvido pela equipe de Portugal exclusivamente para aprimorar a velocidade da busca pelo melhor caminho possível.
   * Excelente demonstração de como codar como um Deus, agradeço ao Miguel Abreu por disponibilzar essa obra de arte.
   * Acredito que, para posteriores avanços, pode-se implementar métodos de testes automáticos a fim de apresentar e verificar o algoritmo e respectivos avanços.
+
+#  Highlights
+
+## Problema de Performance
+
+Ao realizar testes de valor e de tempo das respectivas funções principais, vulgo `estrela()` e `a_star()`,
+obtive uma surpresa.
+
+Apesar de estar obtendo valores iguais de resposta, os resultados temporais estavam sendo **significativamente diferentes**.
+
+<div align="center">
+<img src="https://github.com/user-attachments/assets/e178be56-2bc3-4984-8c62-94ef8c0a75d9" width="1300"/>
+</div>
+
+Observe que em meu código, referente ao terminal `a_estrela`, o tempo médio de cada execução é aproximadamente
+o **dobro** do tempo para as mesmas execuções do código original, referente ao temrinal `a_star`.
+
+A partir dessa informação de perfomance, busquei comparar linha a linha dos códigos. Até que descobri o motivo:
+
+* Em meu código, por melhores práticas, achei necessário definir os construtores para a struct Node, 
+entretanto, apesar de ser uma boa prática e não influenciar o resultado final, a perfomance foi seriamente
+prejudicada.
+
+Após comentar toda a parte referente aos construtores, pude verificar que:
+
+<div align="center">
+<img src="https://github.com/user-attachments/assets/3af0851c-c24c-47ba-903f-7eb535fd1d3b" width="1300"/>
+</div>
+
+Agora, os códigos geram a mesma resposta com a mesma perfomance. :ok:
+
+## Consequências da solução
+
+No arquivo `debug.cc`, há uma gama de funções que estão comentadas. Ambas somente funcionarão 
+caso você, obviamente as descomente, e descomente os construtores presentes dentro da definição
+da struct `Node`.
+
+Como estarei deixando o padrão dos construtores comentados, deixarei apenas um teste referente
+à função principal `a_estrela()`.

@@ -21,52 +21,51 @@ struct Node{
     float custo_pontual;
     float valor;
     
+    // Vamos deixar aqui apenas para efeitos de testes posteriores
+    // Node() :
+	// 	left         ( nullptr ),
+	// 	right        ( nullptr ),
+	// 	up           ( nullptr ),
+	// 	parente      ( nullptr ),
+	// 	custo_pontual( 0       ),
+	// 	valor        ( 0  	   )
+	// {}
     
-    // Inicializações
-    Node() :
-		left         ( nullptr ),
-		right        ( nullptr ),
-		up           ( nullptr ),
-		parente      ( nullptr ),
-		custo_pontual( 0       ),
-		valor        ( 0  	   )
-	{}
-    
-    Node(
-		float valor
-	) :
-		left         ( nullptr ),
-		right        ( nullptr ),
-		up           ( nullptr ),
-		parente      ( nullptr ),
-		custo_pontual( 0       ),
-		valor        ( valor   ) 
-	{}
+    // Node(
+	// 	float valor
+	// ) :
+	// 	left         ( nullptr ),
+	// 	right        ( nullptr ),
+	// 	up           ( nullptr ),
+	// 	parente      ( nullptr ),
+	// 	custo_pontual( 0       ),
+	// 	valor        ( valor   ) 
+	// {}
 	
-	Node(
-		float valor,
-		Node* left
-	) : 
-		left         ( left    ),
-		right        ( nullptr ),
-		up           ( nullptr ),
-		parente      ( nullptr ),
-		custo_pontual( 0       ),
-		valor        ( valor   )
-	{}
+	// Node(
+	// 	float valor,
+	// 	Node* left
+	// ) : 
+	// 	left         ( left    ),
+	// 	right        ( nullptr ),
+	// 	up           ( nullptr ),
+	// 	parente      ( nullptr ),
+	// 	custo_pontual( 0       ),
+	// 	valor        ( valor   )
+	// {}
 	
-	Node(
-		float valor,
-		Node* left,
-		Node* right
-	) : 
-		left         ( left    ),
-		right        ( right   ),
-		up           ( nullptr ),
-		parente      ( nullptr ),
-		custo_pontual( 0       ),
-		valor        ( valor   )
-	{}
+	// Node(
+	// 	float valor,
+	// 	Node* left,
+	// 	Node* right
+	// ) : 
+	// 	left         ( left    ),
+	// 	right        ( right   ),
+	// 	up           ( nullptr ),
+	// 	parente      ( nullptr ),
+	// 	custo_pontual( 0       ),
+	// 	valor        ( valor   )
+	// {}
 	
 };
 
