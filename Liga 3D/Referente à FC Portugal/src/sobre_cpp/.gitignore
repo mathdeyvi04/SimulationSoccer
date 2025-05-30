@@ -1,2 +1,5 @@
-a_star/
 localization/
+ambientacao_estuprado/
+*.o
+*.so
+.gitignore

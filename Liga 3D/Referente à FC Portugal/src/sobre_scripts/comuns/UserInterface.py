@@ -33,9 +33,7 @@ class UserInterface:
     """
     Oq significa @staticmethod?
         * Um método estático é um método que não depende da instância da classe (self) nem da classe em si (cls).
-
         * Ele é como uma função comum, mas está organizado dentro de uma classe por questões de organização ou semântica.
-
         * Como não acessa self ou cls, ele não pode modificar o estado da instância ou da classe.
     """
 
@@ -733,8 +731,5 @@ class UserInterface:
 
 if __name__ == '__main__':
     # Desenvolvimento de testes unitários para cada método.
-
-    #
-
 
     pass
