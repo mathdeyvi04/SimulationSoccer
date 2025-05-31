@@ -2,4 +2,6 @@ localization/
 ambientacao_estuprado/
 *.o
 *.so
-.gitignore
+*.exe
+*
+teste.cpp
