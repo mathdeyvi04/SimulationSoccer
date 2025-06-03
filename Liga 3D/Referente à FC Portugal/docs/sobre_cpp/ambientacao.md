@@ -19,8 +19,8 @@ Houve condensação de arquivos, quando comparado com o original, e alterações
   * Criação e Implementação de modelo de consideração de ruído.
   * Sabendo como o ruído afeta os dados, pode-se aplicar uma espécie de inversa 
   do ruído e assim conseguimos lidar com os dados reais.
-  * Há uma determinada interpretação modificada quando comparada com o original.
   * Possuindo forte caráter matemático, **há parâmetros que afetam a aplicação geral.**
+  * Há uma determinada função que na minha interpretação está errado.
 
 * [RobovizDraw.h](../../src/sobre_cpp/ambientacao/RobovizDraw.h)
   * Criação e Implementação de funções esteticamente construídas em C que fornecem 
