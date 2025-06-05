@@ -223,6 +223,7 @@ RobovizField::atualizar_marcadores(){
             list_landmarks.push_back( mkr_visto );
             list_known_markers.push_back( mkr_visto );
 
+
             ( (landmark->eh_canto) ? list_landmarks_corners : list_landmarks_goalposts ).push_back(mkr_visto);
         }
         else{
@@ -530,7 +531,7 @@ RobovizField::atualizar_marcadores_desconhecidos_por_transformacao( const Matriz
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
 void 
-RobovizField::ilustrador( const Matriz4D& Head_to_Field, bool is_right_side ) const {
+RobovizField::ilustrador( const Matriz4D& Head_to_Field, int compensador ) const {
 	/*
 	Descrição:
 	    Responsável por ilustrar graficamente, via RobovizLogger, os elementos visíveis no campo de visão do agente.
@@ -558,8 +559,6 @@ RobovizField::ilustrador( const Matriz4D& Head_to_Field, bool is_right_side ) co
 	    - Nenhum valor é retornado.
 	      A função realiza chamadas ao RobovizLogger para desenhar graficamente os elementos no campo.
 	*/
-
-	int compensador = (is_right_side) ? -1 : 1;
 
     string nome_buffer = "ambientacao";
 

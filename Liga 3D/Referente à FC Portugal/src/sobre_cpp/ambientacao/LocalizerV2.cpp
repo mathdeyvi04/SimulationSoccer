@@ -1,5 +1,5 @@
 #include "LocalizerV2.h"
-
+#include <cstdio>
 static World& mundo_existente = Singular<World>::obter_instancia();
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -153,6 +153,7 @@ LocalizerV2::run(){
 
     int lines_no     = campo_existente.list_segments.size();
     int landmarks_no = campo_existente.list_landmarks.size();
+
     if ((landmarks_no == 0 && lines_no < 2) || (lines_no == 0)) {
 
         atualizar_estado_do_sistema( (lines_no == 0 && landmarks_no == 0) ? BLIND : MINFAIL );
@@ -161,17 +162,18 @@ LocalizerV2::run(){
 
     // FLUXO DE TRABALHO: 1-2
 
-    if( ! calcular_orientacao_eixo_z() ){ return; }
+    if( !calcular_orientacao_eixo_z() ){ return; }
 
     // FLUXO DE TRABALHO: 3-4
 
-    if(! (  landmarks_no >1 ? calcular_translacao_rotacao_xy() : estimar_translacao_rotacao_xy()  ) ){ return; }
+    if( !(  landmarks_no > 1 ? calcular_translacao_rotacao_xy() : estimar_translacao_rotacao_xy()  ) ){ return; }
 
     // Atualiza variáveis públicas
-
     commit_system();
 
     atualizar_estado_do_sistema(DONE);
+
+    printf("--------------------------------------");
 
     // Estatísticas da posição da bola
     if(

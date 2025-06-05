@@ -599,7 +599,7 @@ public:
 	atualizar_marcadores_desconhecidos_por_transformacao( const Matriz4D& Head_to_Field );
 
 	void 
-	ilustrador( const Matriz4D& Head_to_Field, bool lado_direito ) const;
+	ilustrador( const Matriz4D& Head_to_Field, int compensador ) const;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

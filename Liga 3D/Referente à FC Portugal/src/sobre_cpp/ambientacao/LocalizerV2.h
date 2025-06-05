@@ -232,9 +232,10 @@ private:
 	    float seno_angulo = - sqrtf(1.0f - cosseno_angulo * cosseno_angulo);
 
 	    // Auxiliares para o cálculo da matriz de rotação
-		const float eixo_x2_um_menos_cosseno = eixo_rotacao.x * eixo_rotacao.x * (1.0f - cosseno_angulo);
-		const float eixo_y2_um_menos_cosseno = eixo_rotacao.y * eixo_rotacao.y * (1.0f - cosseno_angulo);
-		const float eixo_xy_um_menos_cosseno = eixo_rotacao.x * eixo_rotacao.y * (1.0f - cosseno_angulo);
+	    const float um_menos_cosseno = 1.0f - cosseno_angulo;
+		const float eixo_x2_um_menos_cosseno = eixo_rotacao.x * eixo_rotacao.x * um_menos_cosseno;
+		const float eixo_y2_um_menos_cosseno = eixo_rotacao.y * eixo_rotacao.y * um_menos_cosseno;
+		const float eixo_xy_um_menos_cosseno = eixo_rotacao.x * eixo_rotacao.y * um_menos_cosseno;
 		const float eixo_x_seno              = eixo_rotacao.x * seno_angulo;
 		const float eixo_y_seno              = eixo_rotacao.y * seno_angulo;
 
@@ -1111,7 +1112,7 @@ private:
 		Vetor3D seenVec(m2->pos_rel_cart - m1->pos_rel_cart);
 		Vetor3D rotated_abs_vec = rotacao_rapida_em_torno_eixo_solo(seenVec, Zvec);
 		float seen_angle = atan2f(rotated_abs_vec.y, rotated_abs_vec.x); // ângulo do vetor observado (após rotação)
-		
+
 		// não é necessário normalizar
 		float AgentAngle = real_angle - seen_angle; 
 		

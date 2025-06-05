@@ -7,7 +7,7 @@ obj = $(src:.cpp=.o)
 # E substitua o termo $(PYBIND_INCLUDES) por $(FLAGS_DE_COMPILACAO_MANUAL)
 
 LDFLAGS = -lgsl -lgslcblas
-CXXFLAGS = -O3 -shared -std=c++11 -fPIC -Wall $(PYBIND_INCLUDES)
+CXXFLAGS = -O3 -shared -std=c++11 -fPIC -Wall $(PYBIND_INCLUDES) 
 
 all: $(obj)
 	g++ $(CXXFLAGS) -o ambientacao.so $^ $(LDFLAGS) 

@@ -668,7 +668,7 @@ public:
             i++
         ){
             
-            this->conteudo[i] = this->conteudo[i] + outra_matriz.conteudo[i];
+            this->conteudo[i] = outra_matriz.conteudo[i];
         }
 
         return *this;

@@ -202,6 +202,7 @@ localize_agent_pose(
         mundo_existente.landmark[i].pos_relativa.x = landmarks[5];
         mundo_existente.landmark[i].pos_relativa.y = landmarks[6];
         mundo_existente.landmark[i].pos_relativa.z = landmarks[7];
+
         landmarks += 8;
     }
 
@@ -211,13 +212,11 @@ localize_agent_pose(
     for(int i=0; i<lines_no; i++){
         Vetor3D s(lines[0],lines[1],lines[2]);
         Vetor3D e(lines[3],lines[4],lines[5]);
-        printf("\nValores que estou vendo em uma linha de informações: ");
-        printf("\n(%f, %f, %f) e (%f, %f, %f)", s.x, s.y, s.z, e.x, e.y, e.z);
         mundo_existente.linhas_esfericas.emplace_back(s, e); 
         lines += 6;
     }
 
-    apresentar_infos_gerais();
+    //apresentar_infos_gerais();
     
     // ================================================= 2. Compute 6D pose
 
@@ -226,28 +225,28 @@ localize_agent_pose(
     // ================================================= 3. Prepare data to return
     
     float *ptr = retval;
-    printf("\n-Head_to_Field\n");
+    // printf("\n-Head_to_Field\n");
     for(int i=0; i<16; i++){
         ptr[i] = loc.Head_to_Field_Transform.conteudo[i];
-        printf("\n(index, valor) = (%d, %.6lf)", i, ptr[i]);
+        // printf("\n(index, valor) = (%d, %.6lf)", i, ptr[i]);
     }
-    printf("\n");
+    // printf("\n");
     ptr += 16;
-    printf("\n-Field_to_Head-\n");
+    // printf("\n-Field_to_Head-\n");
     for(int i=0; i<16; i++){
         ptr[i] = loc.Field_to_Head_Transform.conteudo[i];
-        printf("\n(index, valor) = (%d, %.6lf)", i, ptr[i]);
+        // printf("\n(index, valor) = (%d, %.6lf)", i, ptr[i]);
     }
     ptr += 16;
-    printf("\n");
+    // printf("\n");
 
     ptr[0] = (float) loc.is_uptodate;
     ptr[1] = loc.head_z;
     ptr[2] = (float) loc.is_head_z_uptodate;
 
-    printf("\nis_uptodate = %f", ptr[0]);
-    printf("\nhead_z = %f", ptr[1]);
-    printf("\nis_head_z_uptodate = %f\n", ptr[2]);
+    // printf("\nis_uptodate = %f", ptr[0]);
+    // printf("\nhead_z = %f", ptr[1]);
+    // printf("\nis_head_z_uptodate = %f\n", ptr[2]);
 
     return retval;
 }
