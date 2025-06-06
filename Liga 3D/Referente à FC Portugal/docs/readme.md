@@ -22,8 +22,8 @@ Dentro de cada, há 3 arquivos essenciais para a portabilidade.
   
 Arquivo específico para realização de testes das funções implementadas no módulo.
 
-Usando `make teste` é possível realizar as verificações. Lembre-se que há a necessidade
-de realizar o `make` anteriormente.
+Usando `make teste` é possível realizar as verificações. Para o caso de `preditor_de_curva_da_bola` é
+necessário usar `make` antes.
 
 * module_main.cpp
 
@@ -61,17 +61,21 @@ do interpretador e o caminho da biblioteca pybind11.
 * Como é feito a automação?
 
 Estes módulos são compilados e construídos a partir de um método específico da classe 
-[Script](../src/sobre_scripts/comuns/Script.py).
+[Script](../src/sobre_scripts/commons/Script.py).
 
-... Descrição sucinta do que acontece.
+É possível que novos módulos sejam construídos, basta que respeite dois pontos que eu acho interessantes: _independência_ e _necessidade real_.
 
+## [sobre_scripts](sobre_scripts)
 
+* [commons](../src/sobre_scripts/commons)
+  * [UserInterface](../src/sobre_scripts/commons/UserInterface.py)
+    * Disponibilizar ferramentas de estilização de apresentação no terminal.
+  
+  * [Script](../src/sobre_scripts/commons/Script.py)
+    * Argumentos intrínsecos ao time estão disponíveis aqui e em [config.json](../src/config.json).
+    * Existe uma função responsável pela compilação de código cpp.
+    * Em geral, responsável por providenciar ferramentas de execução de ações em terminal.
 
+* [gyms]
 
-
-
-
-
-
-
-
+* [utils]

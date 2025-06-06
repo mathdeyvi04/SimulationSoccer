@@ -1,0 +1,34 @@
+{
+    "i": [
+        "Servidor IP",
+        "localhost"
+    ],
+    "p": [
+        "Porta do Agente",
+        "3100"
+    ],
+    "m": [
+        "Porta do Monitor",
+        "3200"
+    ],
+    "t": [
+        "Nome do Time",
+        "RoboIME"
+    ],
+    "u": [
+        "N\u00famero do Uniforme",
+        "1"
+    ],
+    "r": [
+        "Tipo do Rob\u00f4",
+        "1"
+    ],
+    "P": [
+        "Disputa de Pen\u00e2ltis",
+        "0"
+    ],
+    "D": [
+        "Debug",
+        "1"
+    ]
+}

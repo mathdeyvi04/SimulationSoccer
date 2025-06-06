@@ -20,7 +20,7 @@ Houve condensação de arquivos, quando comparado com o original, e alterações
   * Sabendo como o ruído afeta os dados, pode-se aplicar uma espécie de inversa 
   do ruído e assim conseguimos lidar com os dados reais.
   * Possuindo forte caráter matemático, **há parâmetros que afetam a aplicação geral.**
-  * Há uma determinada função que na minha interpretação está errado.
+  * Há uma determinada função que na minha interpretação está errada.
 
 * [RobovizDraw.h](../../src/sobre_cpp/ambientacao/RobovizDraw.h)
   * Criação e Implementação de funções esteticamente construídas em C que fornecem 
@@ -59,7 +59,7 @@ Houve condensação de arquivos, quando comparado com o original, e alterações
     * Criação, definição do método de localização 3D utilizado e 
     desenvolvimento pela equipe FC portugal.
     * Código extremamente mais robusto e complexo, complexo mesmo! Sua documentação completa
-    está disponível em [doc_LocalizerV2.md](../../src/sobre_cpp/ambientacao/doc_LocalizerV2.md)
+    está disponível em [doc_LocalizerV2.md](../../src/sobre_cpp/ambientacao/LocalizerV2.md)
     * **Parâmetos alterados aqui influenciam o funcionamento global.**
     * Métodos de ajuste de curva e de solução de sistemas lineares são utilizados aqui.
 
