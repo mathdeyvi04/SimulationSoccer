@@ -4,7 +4,7 @@
         "localhost"
     ],
     "p": [
-        "Porta dos Agentes",
+        "Porta do Agente",
         "3100"
     ],
     "m": [
@@ -16,15 +16,15 @@
         "RoboIME"
     ],
     "u": [
-        "Numero do Uniforme",
+        "N\u00famero do Uniforme",
         "1"
     ],
     "r": [
-        "Tipo do Robo",
+        "Tipo do Rob\u00f4",
         "1"
     ],
     "P": [
-        "Disputa de Penaltis",
+        "Disputa de Pen\u00e2ltis",
         "0"
     ],
     "D": [

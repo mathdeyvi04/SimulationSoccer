@@ -4,7 +4,7 @@ import json
 import sys
 from time import sleep
 
-from UserInterface import UserInterface
+from sobre_scripts.commons.UserInterface import UserInterface
 
 # ISTO NÃO É TRIVIAL
 """

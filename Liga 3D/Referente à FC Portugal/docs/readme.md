@@ -2,15 +2,21 @@
 
 A seguir, uma breve explicação organizada dos arquivos e pastas do código.
 
-Se você deseja reconstruir ou aprender do zero a aplicação, sugiro seguir a ordem
-de apresentação e explicação.
+Cada pasta principal será um link de referência para a mesma. 
 
+* Caso a pasta possua outras pastas dentro dela, o link será referido a uma pasta dentro docs que conterá outros markdowns
+referentes a cada uma das subpastas.
+
+* Caso a pasta possua apenas arquivos ou pecualiariedades, não haverá pasta referente no docs e 
+os arquivos serão explicados aqui mesmo.
+
+---
 ## [sobre_cpp](sobre_cpp)
 
 Pasta responsável por gerenciar as funcionalidades mais pesadas e/ou mais frequentemente
 usadas, todas construídas em C++ com portabilidade para serem utilizadas no Python.
 
-Os módulos são independentes entre si e cada um é fundamental para o funcionamento da aplicação geral:
+Os módulos presentes são independentes entre si e cada um é fundamental para o funcionamento da aplicação geral:
 
 * [preditor_de_curva_da_bola](sobre_cpp/preditor_de_curva_da_bola.md)
 * [a_estrela](sobre_cpp/a_estrela.md)
@@ -57,7 +63,6 @@ Logo, meus caminhos são esses e essas são as respectivas versões. Caso você 
 fazer o make manualmente para testes e verificações, você deve colocar o caminho 
 do interpretador e o caminho da biblioteca pybind11.
 
-
 * Como é feito a automação?
 
 Estes módulos são compilados e construídos a partir de um método específico da classe 
@@ -65,17 +70,33 @@ Estes módulos são compilados e construídos a partir de um método específico
 
 É possível que novos módulos sejam construídos, basta que respeite dois pontos que eu acho interessantes: _independência_ e _necessidade real_.
 
+---
+
+## [math_ops](../src/math_ops)
+
+Pasta responsável por gerir operações matemáticas complexas dentro do Python.
+
+_breve_explicação_
+
+
+
+---
+
 ## [sobre_scripts](sobre_scripts)
 
-* [commons](../src/sobre_scripts/commons)
-  * [UserInterface](../src/sobre_scripts/commons/UserInterface.py)
-    * Disponibilizar ferramentas de estilização de apresentação no terminal.
-  
-  * [Script](../src/sobre_scripts/commons/Script.py)
-    * Argumentos intrínsecos ao time estão disponíveis aqui e em [config.json](../src/config.json).
-    * Existe uma função responsável pela compilação de código cpp.
-    * Em geral, responsável por providenciar ferramentas de execução de ações em terminal.
+Pasta responsável por automatizar o lançamento e execução de processos. Em outras palavras,
+lida com o terminal distribuindo responsabilidades à outras pastas de código.
+
+### [commons](../src/sobre_scripts/commons)
+
+Pasta responsável por lidar com os acessos mais comuns ao terminal. Como execução da aplicação
+ou de ações específicas com os agentes.
+
+Há um arquivo inerente à construção dos módulos C++ e outro relacionado a configurações básicas
+do time.
 
 * [gyms]
 
 * [utils]
+
+--- 

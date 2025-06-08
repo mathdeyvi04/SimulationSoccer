@@ -7,6 +7,8 @@ intelectual da mesma.
 Portanto, afirma-se que o que será tratado neste local se trata apenas de um estudo
 dirigido, focado no conhecimento disponibilizado publicamente pela equipe e explicado, aprimorado e compreendido pelo mesmo que vos escreve.
 
+---
+
 # Visão Geral do Código
 
 Há duas opções de documentação para o código-fonte, seja o original da equipe
@@ -22,18 +24,20 @@ ou o modificado da RoboIME.
 
 * [Documentação Traduzida e Explicada Por Mim para Você](Uma_Visao_Geral.md)
 
-	* Explicação Base de Diversos Componentes Básicos da Aplicação.
+	* Explicação Base de Diversos Componentes Base da Aplicação.
 
-	* [Hierarquia de Arquivos e Pastas](docs/readme.md)
+	* [Dissertação sobre Pastas e Arquivos](docs/readme.md)
     
 		* Como ocorre a distrbuição de arquivos e de módulos, e suas respectivas responsabilidades.
 
+---
 
+# Meus Principais Aprendizados
 
-
-
-
-
+* Programar em C++
+  * Linguagem de baixo nível sucessora de C.
+* Conhecimento da biblioteca pybind
+  * Essencial para portabilidade de C++ em Python.
 
 
 
