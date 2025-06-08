@@ -1,6 +1,7 @@
 from math import asin, atan2, pi, sqrt
 import numpy as np
 
+
 class Matriz3x3:
     """
     Descrição:
@@ -21,6 +22,7 @@ class Matriz3x3:
         - rotate_rad: rotaciona em torno de um vetor e de um ângulo em radianos.
         - rotate_deg: rotaciona em torno de um vetor e de ângulo em graus.
         - invert
+        - create_sup_matrix_rotation: cria matriz de rotação geral.
     """
 
     def __init__(self, matriz: np.ndarray[float] = None) -> None:
@@ -141,7 +143,7 @@ class Matriz3x3:
 
         return 90 - (asin(self.matriz[2, 2]) * 180 / pi)
 
-    def multiply(self, mat: np.ndarray[float] | Matriz3x3, in_place: bool = False, reverse_order: bool = False):
+    def multiply(self, mat: np.ndarray[float], in_place: bool = False, reverse_order: bool = False):
         """
         Descrição:
             Multiplica a matriz de rotação atual pela matriz ou vetor fornecido em `mat`.
@@ -182,7 +184,7 @@ class Matriz3x3:
         else:  # multiplication by matrix, return new Matrix_3x3
             return Matrix3x3(np.matmul(a, b))
 
-    def rotate_x_rad(self, rotation_rad: float, in_place: bool = False) -> Matriz3x3:
+    def rotate_x_rad(self, rotation_rad: float, in_place: bool = False):
         """
         Descrição:
             Aplica uma rotação 3D à matriz atual ao redor do eixo X, com base em um ângulo fornecido
@@ -219,7 +221,7 @@ class Matriz3x3:
 
         return self.multiply(mat, in_place)
 
-    def rotate_y_rad(self, rotation_rad: float, in_place: bool = False) -> Matriz3x3:
+    def rotate_y_rad(self, rotation_rad: float, in_place: bool = False):
         """Veja documentação de rotate_x_rad"""
         if rotation_rad == 0:
             return self if in_place else Matrix_3x3(self)
@@ -234,7 +236,7 @@ class Matriz3x3:
 
         return self.multiply(mat, in_place)
 
-    def rotate_z_rad(self, rotation_rad: float, in_place: bool = False) -> Matriz3x3:
+    def rotate_z_rad(self, rotation_rad: float, in_place: bool = False):
         """Veja documentação de rotate_x_rad"""
         if rotation_rad == 0:
             return self if in_place else Matrix_3x3(self)
@@ -249,28 +251,28 @@ class Matriz3x3:
 
         return self.multiply(mat, in_place)
 
-    def rotate_x_deg(self, rotation_deg: float, in_place=False) -> Matriz3x3:
+    def rotate_x_deg(self, rotation_deg: float, in_place=False):
         return self.rotate_x_rad(rotation_deg * (pi / 180), in_place)
 
-    def rotate_y_deg(self, rotation_deg: float, in_place=False) -> Matriz3x3:
+    def rotate_y_deg(self, rotation_deg: float, in_place=False):
         return self.rotate_y_rad(rotation_deg * (pi / 180), in_place)
 
-    def rotate_z_deg(self, rotation_deg: float, in_place=False) -> Matriz3x3:
+    def rotate_z_deg(self, rotation_deg: float, in_place=False):
         return self.rotate_z_rad(rotation_deg * (pi / 180), in_place)
 
-    def _rotate_x_neg_rad(self, rotation_rad: float, in_place: bool = False) -> Matriz3x3:
+    def _rotate_x_neg_rad(self, rotation_rad: float, in_place: bool = False):
         """Veja documentação de rotate_x_rad"""
         return self.rotate_x_rad(-rotation_rad, in_place)
 
-    def _rotate_y_neg_rad(self, rotation_rad: float, in_place: bool = False) -> Matriz3x3:
+    def _rotate_y_neg_rad(self, rotation_rad: float, in_place: bool = False):
         """Veja documentação de rotate_x_rad"""
         return self.rotate_y_rad(-rotation_rad, in_place)
 
-    def _rotate_z_neg_rad(self, rotation_rad: float, in_place: bool = False) -> Matriz3x3:
+    def _rotate_z_neg_rad(self, rotation_rad: float, in_place: bool = False):
         """Veja documentação de rotate_x_rad"""
         return self.rotate_z_rad(-rotation_rad, in_place)
 
-    def rotate_rad(self, rotation_vec: np.ndarray[float | int], rotation_rad: float, in_place=False) -> Matriz3x3:
+    def rotate_rad(self, rotation_vec: np.ndarray[float | int], rotation_rad: float, in_place=False):
         """
         Descrição:
             Aplica uma rotação 3D à matriz de rotação atual, com base em um vetor de rotação arbitrário
@@ -334,7 +336,7 @@ class Matriz3x3:
 
         return self.multiply(mat, in_place)
 
-    def rotate_deg(self, rotation_vec: np.ndarray[float | int], rotation_deg: float, in_place=False) -> Matriz3x3:
+    def rotate_deg(self, rotation_vec: np.ndarray[float | int], rotation_deg: float, in_place=False):
         """
         Descrição:
             Rotaciona a matriz de rotação atual por um determinado ângulo (em graus) ao redor de um vetor de rotação.
@@ -361,7 +363,7 @@ class Matriz3x3:
         """
         return self.rotate_rad(rotation_vec, rotation_deg * (pi / 180), in_place)
 
-    def invert(self, in_place=False) -> Matriz3x3:
+    def invert(self, in_place=False):
         """
         Descrição:
             Inverte a matriz de rotação atual (matriz 3x3). A inversão de uma matriz de rotação
@@ -388,3 +390,29 @@ class Matriz3x3:
             return self
         else:
             return Matrix_3x3(np.linalg.inv(self.matriz))
+
+    @classmethod
+    def create_sup_matrix_rotation(cls, euler_vec: np.ndarray[float]):
+        """
+        Descrição:
+            Cria uma matriz de rotação 3D a partir de ângulos de Euler fornecidos em graus, utilizando a convenção
+            de rotação composta na ordem ZYX (RotZ * RotY * RotX), também conhecida como yaw-pitch-roll.
+
+            Essa função aplica rotações sequenciais nos eixos Z, Y e X correspondentes, respectivamente,
+            aos ângulos de yaw (z), pitch (y) e roll (x).
+
+        Parâmetros:
+            euler_vec: array_like, comprimento 3
+                Vetor contendo os ângulos de Euler em graus no formato (x, y, z), ou seja, (roll, pitch, yaw).
+
+        Retorno:
+            result: Matrix_3x3
+                Instância da classe Matrix_3x3 representando a matriz de rotação composta.
+
+        Exemplo:
+            Matrix_3x3.from_rotation_deg((roll, pitch, yaw))
+                Gera a matriz composta RotZ(yaw) * RotY(pitch) * RotX(roll)
+        """
+
+        mat = cls().rotate_z_deg(euler_vec[2], True).rotate_y_deg(euler_vec[1], True).rotate_x_deg(euler_vec[0], True)
+        return mat
