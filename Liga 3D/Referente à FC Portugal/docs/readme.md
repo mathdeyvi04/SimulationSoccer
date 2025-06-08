@@ -76,9 +76,19 @@ Estes módulos são compilados e construídos a partir de um método específico
 
 Pasta responsável por gerir operações matemáticas complexas dentro do Python.
 
-_breve_explicação_
+* [Neural_Network.py](../src/math_ops/Neural_Network.py)
 
+Desenvolvido função responsável por executar o algoritmo de machine learning por perceptron.
+**Nunca feito por mim, muito foda**
 
+* [General.py](../src/math_ops/General.py)
+
+Classe responsável por aglutinar funções matemáticas triviais e/ou não dispostas no numpy.
+Há uma variável responsável por informar se o ambiente está sendo executado como binário.
+
+* [Matriz3x3](../src/math_ops/Matriz3x3.py)
+
+Classe responsável por aglutinar funções de rotação ligadas às matriz 3x3.
 
 ---
 

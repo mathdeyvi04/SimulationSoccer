@@ -1,4 +1,5 @@
 /sobre_cpp/
+/math_ops/
 scripts/commons/UserInterface.py
 scripts/commons/Script.py
 scripts/commons/Server.py
