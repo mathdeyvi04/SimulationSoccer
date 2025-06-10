@@ -143,7 +143,7 @@ class Matriz3x3:
 
         return 90 - (asin(self.matriz[2, 2]) * 180 / pi)
 
-    def multiply(self, mat: np.ndarray[float], in_place: bool = False, reverse_order: bool = False):
+    def multiply(self, mat: np.ndarray, in_place: bool = False, reverse_order: bool = False):
         """
         Descrição:
             Multiplica a matriz de rotação atual pela matriz ou vetor fornecido em `mat`.
@@ -179,7 +179,7 @@ class Matriz3x3:
         if mat.ndim == 1:
             return np.matmul(a, b)  # multiplication by 3D vector
         elif in_place:
-            np.matmul(a, b, self.m)  # multiplication by matrix, in place
+            np.matmul(a, b, self.matriz)  # multiplication by matrix, in place
             return self
         else:  # multiplication by matrix, return new Matrix_3x3
             return Matrix3x3(np.matmul(a, b))
