@@ -4,10 +4,10 @@ A seguir, uma breve explicação organizada dos arquivos e pastas do código.
 
 Cada pasta principal será um link de referência para a mesma. 
 
-* Caso a pasta possua outras pastas dentro dela, o link será referido a uma pasta dentro docs que conterá outros markdowns
+* Caso a pasta possua outras pastas dentro dela, o link será referido a uma pasta dentro de `/docs/` que conterá outros markdowns
 referentes a cada uma das subpastas.
 
-* Caso a pasta possua apenas arquivos ou pecualiariedades, não haverá pasta referente no docs e 
+* Caso a pasta possua apenas arquivos ou peculiariedades, não haverá pasta referente em `/docs/` e 
 os arquivos serão explicados aqui mesmo.
 
 ---
@@ -81,32 +81,49 @@ Pasta responsável por gerir operações matemáticas complexas dentro do Python
 Desenvolvido função responsável por executar o algoritmo de machine learning por perceptron.
 **Nunca feito por mim, muito foda**
 
-* [General.py](../src/math_ops/General.py)
+* [GeneralMath.py](../src/math_ops/GeneralMath.py)
 
 Classe responsável por aglutinar funções matemáticas triviais e/ou não dispostas no numpy.
 Há uma variável responsável por informar se o ambiente está sendo executado como binário.
 
 * [Matriz3x3](../src/math_ops/Matriz3x3.py)
 
-Classe responsável por aglutinar funções de rotação ligadas às matriz 3x3.
+Classe responsável por aglutinar funções de rotação ligadas às matrizes 3x3.
+
+* [Matriz4x4](../src/math_ops/Matriz4x4.py)
+
+Classe responsável por aglutinar funções de rotação e de translação ligadas às matrizes 4x4.
+
+* [InverseKinematics](../src/math_ops/InverseKinematics.py)
+
+Classe não-trivial responsável por gerenciar e calcular movimentos relativos ao corpo do robô, possuindo
+métodos relacionados à trajetória das pernas.
+
+Apesar de ser construída a partir de uma entrada com classe específica, não há a importação explicíta
+dela, logo a construção desse arquivo não precisa depender de outros anteriores.
 
 ---
 
+## [sobre_logs](../src/sobre_logs)
+
+Pasta responsável por armazenar todas as informações de execução como log info.
+
+Há a classe responsável pela organização e registro das mensagens nos arquivos de log: [Logger](../src/sobre_logs/Logger.py).
+
+---
 ## [sobre_scripts](sobre_scripts)
 
 Pasta responsável por automatizar o lançamento e execução de processos. Em outras palavras,
-lida com o terminal distribuindo responsabilidades à outras pastas de código.
+lida com o terminal distribuindo responsabilidades a outras pastas de código.
 
 ### [commons](../src/sobre_scripts/commons)
 
-Pasta responsável por lidar com os acessos mais comuns ao terminal. Como execução da aplicação
-ou de ações específicas com os agentes.
+Pasta responsável por lidar com os acessos mais comuns ao terminal, possuindo método de construção de 
+módulos C++, classe de verificação de servidores pré-existentes, automação de ações de treinamento e 
+tantas outras funcionalidades.
 
-Há um arquivo inerente à construção dos módulos C++ e outro relacionado a configurações básicas
-do time.
+### [gyms]
 
-* [gyms]
-
-* [utils]
+### [utils]
 
 --- 

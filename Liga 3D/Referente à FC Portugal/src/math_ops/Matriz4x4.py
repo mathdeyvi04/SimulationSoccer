@@ -3,8 +3,8 @@ from typing import Sequence
 import numpy as np
 
 # Consertar interseção de módulos
-from GeneralMath import GeneralMath
-from Matriz3x3 import Matriz3x3
+from math_ops.GeneralMath import GeneralMath
+from math_ops.Matriz3x3 import Matriz3x3
 
 
 class Matriz4x4:
@@ -23,14 +23,6 @@ class Matriz4x4:
         - get_pitch_deg
         - get_yaw_deg
         - get_inclination_deg
-        -
-        -
-        -
-        -
-        -
-        -
-        -
-        -
 
     Metódos não contemplados:
         - get_x, get_y, get_z -> basta utilizar o obter_vetor_de_translacao

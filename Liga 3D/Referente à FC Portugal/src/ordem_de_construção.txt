@@ -1,5 +1,6 @@
 /sobre_cpp/
 /math_ops/
+logs/Logger.py
 scripts/commons/UserInterface.py
 scripts/commons/Script.py
 scripts/commons/Server.py
