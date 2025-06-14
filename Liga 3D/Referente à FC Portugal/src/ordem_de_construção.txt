@@ -1,6 +1,10 @@
+--- Relacionados ao Robô e seu comportamento
 /sobre_cpp/
 /math_ops/
-logs/Logger.py
+logs/Logger.py  # exceção
+/sobre_world/
+
+--- Relacionados ao Terminal e Gerenciamento Geral
 scripts/commons/UserInterface.py
 scripts/commons/Script.py
 scripts/commons/Server.py

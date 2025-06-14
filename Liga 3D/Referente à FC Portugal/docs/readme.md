@@ -111,6 +111,22 @@ Pasta responsável por armazenar todas as informações de execução como log i
 Há a classe responsável pela organização e registro das mensagens nos arquivos de log: [Logger](../src/sobre_logs/Logger.py).
 
 ---
+
+## [world](../src/world)
+
+Pasta responsável por agrupar as principais funcionalidades do robô em campo,
+gerenciando informações do robô e do campo, e métodos intrínsecos à ação do robô.
+
+### [commons](world/commons.md)
+
+Pasta responsável por agrupar todo o gerenciamento de informações básicas do robô, seja
+partes corporais básicas, como ele verifica outros robôs e como calcula seu próprio caminho.
+
+* [Robot.py]
+* [World.py]
+
+---
+
 ## [sobre_scripts](sobre_scripts)
 
 Pasta responsável por automatizar o lançamento e execução de processos. Em outras palavras,
