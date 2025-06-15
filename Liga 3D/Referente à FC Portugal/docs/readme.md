@@ -122,8 +122,19 @@ gerenciando informações do robô e do campo, e métodos intrínsecos à ação
 Pasta responsável por agrupar todo o gerenciamento de informações básicas do robô, seja
 partes corporais básicas, como ele verifica outros robôs e como calcula seu próprio caminho.
 
-* [Robot.py]
-* [World.py]
+* [Robot.py](../src/world/Robot.py)
+
+Classe focada no robô e suas capacidades, sendo responsável por agrupar ferramentas de atualização,
+de transformação e de informações gerais do robô.
+
+* [World.py](../src/world/World.py)
+
+Classe focada na interpretação do robô para com o mundo, reunindo funcionalidades ligadas aos módulos
+C++ disponíveis em `/sobre_cpp/`, às atualizações de pose e às previsões de trajetória da bola.
+
+
+Ambos arquivo possuem responsabilidades, caracterísitcas e padrões muito semelhantes, não devem
+ser compreendidos isoladamente.
 
 ---
 
@@ -137,6 +148,8 @@ lida com o terminal distribuindo responsabilidades a outras pastas de código.
 Pasta responsável por lidar com os acessos mais comuns ao terminal, possuindo método de construção de 
 módulos C++, classe de verificação de servidores pré-existentes, automação de ações de treinamento e 
 tantas outras funcionalidades.
+
+
 
 ### [gyms]
 

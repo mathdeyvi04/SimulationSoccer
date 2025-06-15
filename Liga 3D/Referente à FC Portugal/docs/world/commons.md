@@ -16,3 +16,8 @@ Classe responsável por representar outros robôs e como o self.robô representa
 Não é trivial e possui apenas atributos condensadores de informações.
 
 * [Draw.py](../../src/world/commons/Draw.py)
+
+Classe responsável por agrupar ferramentas de comunicação com software Roboviz. 
+Basicamente igual à como fizemos em RobovizLogger e RobovizDraw, o que me faz repensar o
+porquê nos dedicamos a essas.
+

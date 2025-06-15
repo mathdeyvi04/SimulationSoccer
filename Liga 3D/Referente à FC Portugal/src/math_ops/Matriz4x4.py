@@ -410,18 +410,17 @@ class Matriz4x4:
 
     def invert(self, in_place=False):
         """
-        Inverts the current transformation matrix
+        Descrição:
+            Inverts the current transformation matrix
 
-        Parameters
-        ----------
-        in_place: bool, optional
-            * True: the internal matrix is changed in-place (default)
-            * False: a new matrix is returned and the current one is not changed
+        Parameters:
+            in_place: bool, optional
+                * True: the internal matrix is changed in-place (default)
+                * False: a new matrix is returned and the current one is not changed
 
         Returns
-        -------
-        result : Matriz4x4
-            self is returned if in_place is True
+            result : Matriz4x4
+                self is returned if in_place is True
         """
 
         if in_place:

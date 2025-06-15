@@ -50,14 +50,16 @@ class Logger:
 
         Parâmetros:
             - msg: str
+
                   Mensagem a ser escrita no arquivo de log.
 
             - timestamp: bool, opcional (padrão: True)
+
                   Indica se o carimbo de tempo atual deve ser adicionado antes da mensagem.
 
             - step: int, opcional
-                  Número da etapa da simulação. Se fornecido, ele será incluído na linha do log logo após o timestamp (se ativado).
 
+                  Número da etapa da simulação. Se fornecido, ele será incluído na linha do log logo após o timestamp (se ativado).
         Retorno:
             None
         """
