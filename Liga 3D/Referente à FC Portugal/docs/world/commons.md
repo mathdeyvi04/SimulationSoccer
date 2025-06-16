@@ -21,3 +21,7 @@ Classe responsável por agrupar ferramentas de comunicação com software Robovi
 Basicamente igual à como fizemos em RobovizLogger e RobovizDraw, o que me faz repensar o
 porquê nos dedicamos a essas.
 
+* [PathManager.py](../../src/world/commons/PathManager.py)
+
+Classe focada no gerenciamento e cálculo dos caminhos para o robô, possui diversas funcionalidades
+e configurações relativas a isso.

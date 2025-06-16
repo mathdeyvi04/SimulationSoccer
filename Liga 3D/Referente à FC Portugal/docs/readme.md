@@ -117,7 +117,7 @@ Há a classe responsável pela organização e registro das mensagens nos arquiv
 Pasta responsável por agrupar as principais funcionalidades do robô em campo,
 gerenciando informações do robô e do campo, e métodos intrínsecos à ação do robô.
 
-### [commons](world/commons.md)
+#### [commons](world/commons.md)
 
 Pasta responsável por agrupar todo o gerenciamento de informações básicas do robô, seja
 partes corporais básicas, como ele verifica outros robôs e como calcula seu próprio caminho.
@@ -133,7 +133,7 @@ Classe focada na interpretação do robô para com o mundo, reunindo funcionalid
 C++ disponíveis em `/sobre_cpp/`, às atualizações de pose e às previsões de trajetória da bola.
 
 
-Ambos arquivo possuem responsabilidades, caracterísitcas e padrões muito semelhantes, não devem
+Ambos arquivos possuem responsabilidades, caracterísitcas e padrões muito semelhantes, não devem
 ser compreendidos isoladamente.
 
 ---
@@ -143,16 +143,14 @@ ser compreendidos isoladamente.
 Pasta responsável por automatizar o lançamento e execução de processos. Em outras palavras,
 lida com o terminal distribuindo responsabilidades a outras pastas de código.
 
-### [commons](../src/sobre_scripts/commons)
+#### [commons](../src/sobre_scripts/commons)
 
 Pasta responsável por lidar com os acessos mais comuns ao terminal, possuindo método de construção de 
 módulos C++, classe de verificação de servidores pré-existentes, automação de ações de treinamento e 
 tantas outras funcionalidades.
 
+#### [gyms]
 
-
-### [gyms]
-
-### [utils]
+#### [utils]
 
 --- 
