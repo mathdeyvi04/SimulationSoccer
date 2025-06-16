@@ -1,8 +1,9 @@
 --- Relacionados ao Robô e seu comportamento
 /sobre_cpp/
 /math_ops/
-logs/Logger.py  # exceção
+logs/Logger.py  # exceção à regra de ligados puramente ao robô
 /sobre_world/
+/communication/
 
 --- Relacionados ao Terminal e Gerenciamento Geral
 scripts/commons/UserInterface.py

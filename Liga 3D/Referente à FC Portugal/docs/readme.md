@@ -127,6 +127,8 @@ partes corporais básicas, como ele verifica outros robôs e como calcula seu pr
 Classe focada no robô e suas capacidades, sendo responsável por agrupar ferramentas de atualização,
 de transformação e de informações gerais do robô.
 
+É nesta classe que há o método responsável pela execução dos comandos do robô.
+
 * [World.py](../src/world/World.py)
 
 Classe focada na interpretação do robô para com o mundo, reunindo funcionalidades ligadas aos módulos
@@ -135,6 +137,20 @@ C++ disponíveis em `/sobre_cpp/`, às atualizações de pose e às previsões d
 
 Ambos arquivos possuem responsabilidades, caracterísitcas e padrões muito semelhantes, não devem
 ser compreendidos isoladamente.
+
+---
+
+## [communication](../src/communication)
+
+Pasta responsável por agrupar funcionalidades de comunicação com os softwares SimSparks e Roboviz.
+É um prazer ver todos os métodos e classes se interligando, recomendo a leitura detalhada.
+
+* [Radio.py]
+* [ServerComm]
+* [WorldParser](../src/communication/WorldParser.py)
+
+Classe focada na interpretação da mensagem raiz recebida pelo SimSpark, conseguindo interpretá-la e
+interligar as informações com a classe World provida em `world/World.py`
 
 ---
 
