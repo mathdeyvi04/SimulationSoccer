@@ -145,14 +145,23 @@ ser compreendidos isoladamente.
 Pasta responsável por agrupar funcionalidades de comunicação com os softwares SimSparks e Roboviz.
 É um prazer ver todos os métodos e classes se interligando, recomendo a leitura detalhada.
 
-* [Radio.py]
-* [ServerComm]
-* [WorldParser](../src/communication/WorldParser.py)
+* [Radio.py](../src/communication/Radio.py)
 
-Classe focada na interpretação da mensagem raiz recebida pelo SimSpark, conseguindo interpretá-la e
+Classe dedicada à interpretação e ao gerenciamento das mensagens ouvidas por cada agente em campo.
+
+* [ServerComm.py](../src/communication/ServerComm.py)
+
+Classe responsável pelo gerenciamento das mensagens e conexões entre o agente e o servidor.
+
+* [WorldParser.py](../src/communication/WorldParser.py)
+
+Classe focada na interpretação da mensagem raiz recebida pelo Servidor, conseguindo interpretá-la e
 interligar as informações com a classe World provida em `world/World.py`
 
 ---
+
+## [sobre_behaviors]
+
 
 ## [sobre_scripts](sobre_scripts)
 
