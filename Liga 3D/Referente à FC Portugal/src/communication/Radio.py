@@ -33,6 +33,14 @@ class Radio:
         - SLEN: Comprimento da lista de símbolos válidos
         - SYMB_TO_IDX: Mapeamento de código ordinal do caractere para índice na tabela de símbolos
 
+    Métodos Disponíveis:
+        - get_player_combination
+        - get_ball_combination
+        - get_ball_position
+        - get_player_position
+        - check_broadcast_requirements
+        - broadcast
+        - receive
     """
 
     # Constantes para discretização e codificação das posições de jogadores e bola

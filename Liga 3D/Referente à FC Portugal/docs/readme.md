@@ -162,6 +162,28 @@ interligar as informações com a classe World provida em `world/World.py`
 
 ## [sobre_behaviors]
 
+#### [custom](../src/sobre_behaviors/custom)
+
+Pasta responsável por agrupar o código focado em comportações/ações
+específicos. 
+
+Recomendo a leitura desta pasta.
+
+#### [slot](../docs/sobre_behaviors/custom.md)
+
+Pasta responsável por agrupar arquivos `.xml` que são utilizados pelo `SlotEngine`
+para realizar ações básicas. Ainda não está claro quais as diferenças entre custom, slot e SlotEngine.
+
+* [Head.py](../src/sobre_behaviors/Head.py)
+
+Classe focada no movimento da cabeça, conseguindo focar o campo de visão na bola e realizando outras
+lógicas inteligentes.
+
+* [Pose.py](../src/sobre_behaviors/Poses.py)
+
+Classe focada no movimento geral das juntas, conseguindo coordenar o robô a realizar determinações
+ações e poses. É possível adicionar novas poses ao robô, basta seguir o padrão.
+
 
 ## [sobre_scripts](sobre_scripts)
 

@@ -4,6 +4,8 @@
 logs/Logger.py  # exceção à regra de ligados puramente ao robô
 /sobre_world/
 /communication/
+/sobre_behaviors/custom
+/sobre_behaviors/
 
 --- Relacionados ao Terminal e Gerenciamento Geral
 scripts/commons/UserInterface.py
