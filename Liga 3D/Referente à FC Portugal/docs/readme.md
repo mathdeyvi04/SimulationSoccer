@@ -160,19 +160,23 @@ interligar as informações com a classe World provida em `world/World.py`
 
 ---
 
-## [sobre_behaviors]
+## [sobre_behaviors](../src/sobre_behaviors)
 
 #### [custom](../src/sobre_behaviors/custom)
 
 Pasta responsável por agrupar o código focado em comportações/ações
-específicos. 
+específicos, contém algoritmos complexos ou resultados de aprendizado por reforço.
 
 Recomendo a leitura desta pasta.
 
 #### [slot](../docs/sobre_behaviors/custom.md)
 
 Pasta responsável por agrupar arquivos `.xml` que são utilizados pelo `SlotEngine`
-para realizar ações básicas. Ainda não está claro quais as diferenças entre custom, slot e SlotEngine.
+para realizar ações básicas. 
+
+Cada slot descreve um conjunto de ângulos alvo para determinadas juntas e o 
+tempo necessário para atingi-los, permitindo a execução precisa de movimentos 
+complexos como levantar, abaixar, gesticular, entre outros.
 
 * [Head.py](../src/sobre_behaviors/Head.py)
 
@@ -184,6 +188,42 @@ lógicas inteligentes.
 Classe focada no movimento geral das juntas, conseguindo coordenar o robô a realizar determinações
 ações e poses. É possível adicionar novas poses ao robô, basta seguir o padrão.
 
+* [SlotEngine.py](../src/sobre_behaviors/SlotEngine.py)
+
+responsável por gerenciar e executar comportamentos de movimento baseados em sequências 
+de slots (etapas), definidos via arquivos XML. 
+
+* [Behavior.py](../src/sobre_behaviors/Behavior.py)
+
+gerencia e orquestra os diferentes comportamentos de um robô, integrando tanto comportamentos
+padrão (como poses e sequências de slots) quanto comportamentos customizados (como andar, 
+driblar e chutar). Ela oferece métodos para executar, monitorar, resetar e compor esses 
+comportamentos, além de manter o controle do comportamento atual e do anterior, suas durações
+e estados internos.
+
+---
+## [Agent](../src/Agent)
+
+* [BaseAgent](../src/Agent/BaseAgent.py)
+
+Classe fundamental para agentes, responsável por inicializar, gerenciar e finalizar
+todos os subsistemas essenciais do agente, como comunicação, comportamentos, mensagens e
+controle do mundo simulado.
+
+* [AgentPenalty](../src/Agent/AgentPenalty.py)
+
+Representa um agente capaz de atuar como goleiro ou kicker de acordo com seu número de
+identificação. Implementa a lógica de decisão e ação do robô em cada ciclo, controlando
+comportamentos como movimentação, chute, defesa e transições de estado.
+
+A classe também gerencia a comunicação, execução de comandos e pode gerar anotações
+visuais para depuração.
+
+* [Agent](../src/Agent/Agent.py)
+
+Responsável por controlar o comportamento de um jogador dentro do ambiente.
+Classe gerencia a tomada de decisões do robô, como movimentação, reposicionamento 
+instantâneo (beam), chutes e execução de comandos especiais (modo fat proxy). 
 
 ## [sobre_scripts](sobre_scripts)
 

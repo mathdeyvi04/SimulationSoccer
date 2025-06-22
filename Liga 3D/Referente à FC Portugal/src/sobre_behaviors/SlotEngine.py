@@ -222,19 +222,3 @@ class SlotEngine:
 
         # Retorna True se a sequência está concluída (última etapa e tempo esgotado)
         return bool(elapsed_ms + 20 >= delta_ms and self.state_slot_number + 1 == len(self.behaviors[name]))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

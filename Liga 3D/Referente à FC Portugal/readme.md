@@ -22,7 +22,7 @@ ou o modificado da RoboIME.
 
         * Repositório da equipe responsável.
 
-* [Documentação Traduzida e Explicada Por Mim para Você](Uma_Visao_Geral.md)
+* [Documentação Traduzida e Explicada Por Mim para Você](Visao_Superficial.md)
 
 	* Explicação Base de Diversos Componentes Base da Aplicação.
 
@@ -32,12 +32,54 @@ ou o modificado da RoboIME.
 
 ---
 
-# Meus Principais Aprendizados
+# Principais Possíveis Melhorias Observadas
 
-* Programar em C++
-  * Linguagem de baixo nível sucessora de C.
-* Conhecimento da biblioteca pybind
-  * Essencial para portabilidade de C++ em Python.
+### Presença de código inútil em [ambientacao](src/sobre_cpp/ambientacao)
+
+Dentro de [communication](src/communication), há classes e métodos que realizam comunicações
+sockets entre o agente e o robô, e entre o usuário e os softwares Roboviz e Simsparks.
+
+Entretanto, dentro do desenvolvimento da pasta `ambientacao`, também são definidos classes e métodos
+que realizam tais comunicações. 
+
+Acredito que isso ocorra devido à migração da aplicação geral de C++ para Python e a não eliminação do
+código obsoleto.
+
+### Tratamento de Importações
+
+Alguns arquivos, como os presentes em [communication](src/communication) ou em [sobre_behaviors](src/sobre_behaviors),
+possuem uma gambiarra de importação, pois o original gostaria de evitar importações circulares e preservar o 
+type hinting.
+
+### Inovações 
+
+A aplicação apresenta baixa extensibilidade para a introdução de novas funcionalidades, apesar da existência,
+por exemplo, de possibilidades de extensão em [Behavior](src/sobre_behaviors/Behavior.py).
+
+Poderia se introduzir um caminho específico a ser trilhado que permitiria a criação e implementação
+de novas funcionalidades e comportamentos para os robôs.
+
+### Lógica de Conclusão
+
+Atualmente, todos os comportamentos representados por classes, como `GetUp` ou `Fall`, possuem
+um método `is_ready()`, o qual não possui nenhuma lógica, sempre retorna True.
+
+A ideia é desenvolver uma métrica capaz de realmente saber se está pronto.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

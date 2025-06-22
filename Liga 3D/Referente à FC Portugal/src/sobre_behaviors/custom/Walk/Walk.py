@@ -47,11 +47,11 @@ class Walk:
         with open(
                 GeneralMath.obter_diretorio_ativo(
                     [
-                     "/behaviors/custom/Walk/walk_R0.pkl",
-                     "/behaviors/custom/Walk/walk_R1_R3.pkl",
-                     "/behaviors/custom/Walk/walk_R2.pkl",
-                     "/behaviors/custom/Walk/walk_R1_R3.pkl",
-                     "/behaviors/custom/Walk/walk_R4.pkl"
+                     "/sobre_behaviors/custom/Walk/walk_R0.pkl",
+                     "/sobre_behaviors/custom/Walk/walk_R1_R3.pkl",
+                     "/sobre_behaviors/custom/Walk/walk_R2.pkl",
+                     "/sobre_behaviors/custom/Walk/walk_R1_R3.pkl",
+                     "/sobre_behaviors/custom/Walk/walk_R4.pkl"
                 ][self.world.robot.type]),
                 'rb'
         ) as f:

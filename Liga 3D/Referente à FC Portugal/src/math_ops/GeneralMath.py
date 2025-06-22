@@ -15,7 +15,7 @@ except Exception as error:
     GLOBAL_DIR = "."
 
 
-class GeneralMath:
+class GeneralMathMath:
     """
     Descrição:
         Classe responsável por aglutinar funções triviais e necessárias nas operações que serão
@@ -35,6 +35,7 @@ class GeneralMath:
         - deg_to_rad
         - rad_to_deg
         - angle_horizontal_from_vector2D
+        - target_abs_angle
         - unit_vector_by_angle
         - angle_rel_between_target_position
         - rotate_vector_2D
@@ -209,8 +210,8 @@ class GeneralMath:
 
         angle_rad = acos(
             np.dot(
-                General.normalize(vector_1),
-                General.normalize(vector_2)
+                GeneralMath.normalize(vector_1),
+                GeneralMath.normalize(vector_2)
             )
         )
 
@@ -223,7 +224,7 @@ class GeneralMath:
             Vetor Unitário com direção determinada pelo ângulo.
         """
 
-        return np.array([cos(angle), sin(angle)], float) if is_rad else np.array([General.cos_deg(angle), General.sin_deg(angle)], float)
+        return np.array([cos(angle), sin(angle)], float) if is_rad else np.array([GeneralMath.cos_deg(angle), GeneralMath.sin_deg(angle)], float)
 
     @staticmethod
     def angle_rel_between_target_position(position_2D: np.ndarray[float], orientacao: float, target: np.ndarray[float], is_rad: bool = False) -> float:
@@ -233,9 +234,17 @@ class GeneralMath:
         """
 
         if is_rad:
-            return General.normalize_rad(atan2(target[1] - position_2D[1], target[0] - position_2D[0]) - orientacao)
+            return GeneralMath.normalize_rad(atan2(target[1] - position_2D[1], target[0] - position_2D[0]) - orientacao)
         else:
-            return General.normalize_deg(atan2(target[1] - position_2D[1], target[0] - position_2D[0]) * 180 / pi - orientacao)
+            return GeneralMath.normalize_deg(atan2(target[1] - position_2D[1], target[0] - position_2D[0]) * 180 / pi - orientacao)
+
+    @staticmethod
+    def target_abs_angle(pos2d, target, is_rad=False):
+        """ angle (degrees or radians) of vector (target-pos2d) """
+        if is_rad:
+            return atan2(target[1] - pos2d[1], target[0] - pos2d[0])
+        else:
+            return atan2(target[1] - pos2d[1], target[0] - pos2d[0]) * 180 / pi
 
     @staticmethod
     def rotate_vector_2D(vector_2D: np.ndarray[float], angle: float, is_rad: bool = False) -> np.ndarray:
@@ -307,7 +316,7 @@ class GeneralMath:
         ap = ponto - ponto_inicial
         ab = ponto_final - ponto_inicial
 
-        ad = General.vector_projection(ap, ab)
+        ad = GeneralMath.vector_projection(ap, ab)
 
         # Is d in ab? We can find k in (ad = k * ab) without computing any norm
         # we use the largest dimension of ab to avoid division by 0
@@ -329,7 +338,7 @@ class GeneralMath:
         """
 
         rp = p - ray_start
-        rd = General.vector_projection(rp, ray_direction)
+        rd = GeneralMath.vector_projection(rp, ray_direction)
 
         # Is d in ray? We can find k in (rd = k * ray_direction) without computing any norm
         # we use the largest dimension of ray_direction to avoid division by 0
@@ -348,7 +357,7 @@ class GeneralMath:
         """
 
         rp = p - ray_start
-        rd = General.vector_projection(rp, ray_direction)
+        rd = GeneralMath.vector_projection(rp, ray_direction)
 
         # Is d in ray? We can find k in (rd = k * ray_direction) without computing any norm
         # we use the largest dimension of ray_direction to avoid division by 0
@@ -370,7 +379,7 @@ class GeneralMath:
         ap = centro - ponto_inicial
         ab = ponto_final - ponto_inicial
 
-        ad = General.vector_projection(ap, ab)
+        ad = GeneralMath.vector_projection(ap, ab)
 
         # Is d in ab? We can find k in (ad = k * ab) without computing any norm
         # we use the largest dimension of ab to avoid division by 0
