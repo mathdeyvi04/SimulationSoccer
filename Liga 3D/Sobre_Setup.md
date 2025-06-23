@@ -61,7 +61,8 @@ rcssserver3d
 
 Caso surja diversas mensagens de erro, está funcionando, não se preocupe. (não ironicamente)
 
-Para desligar o servidor, ou usaremos o RoboViz ou feche o terminal. 
+Para desligar o servidor, ou usaremos o RoboViz ou feche o terminal executando
+`pkill rcssserver3d -e -9; pkill simspark -e -9` em outro terminal.
 
 # Instalando RoboViz
 
@@ -73,23 +74,35 @@ java -version
 
 Caso não exista, deve instalá-lo.
 
-#### Procedimentos
+#### Procedimentos para instalação de Roboviz
 
-* Entre no [link](https://github.com/magmaOffenburg/RoboViz/releases) e baixe o arquivo _.gz_.
+* Entre no [link](https://github.com/magmaOffenburg/RoboViz/releases) e copie o endereço de link para o arquivo `.gz` mais recente.
 
-* Descompacte-o, levando a pasta _bin_ para um local mais adequado e desejado.
-  * Experimente renomeá-la para algo mais adequado.
+* Execute no terminal:
+
+```
+sudo wget https://github.com/magmaOffenburg/RoboViz/releases/download/2.0.1/RoboViz.tar.gz
+```
+
+* Descompacte o arquivo baixado da seguinte forma e renomeie a pasta gerada:
+
+```
+sudo mkir RoboViz && sudo tar -vzvf RoboViz.tar.gz -C RoboViz
+```
+
+Os arquivos referentes ao software estarão em `~./RoboViz/bin`.
+
 * O arquivo _config.txt_ contém parâmetros essenciais para a simulação gráfica.
   * Experimente modificar termos gráficos para ampliar perfomance.
   * Em especial, as portas de conexão com o servidor. Caso esteja rodando tudo na mesma máquina, não se preocupe. Mas caso esteja em máquinas diferentes, experimente modificar os valores das portas.
 
-* Para executar o RoboVIz:
+* Dentro da pasta, experimente rodar:
 
 ```
 ./roboviz.sh
 ```
 
-Para que algo seja exibido, ele pedirá por isso, ligue o servidor principal, vulgo rcssserver3d.
+Para que algo seja exibido, ligue o servidor principal, vulgo rcssserver3d.
 
 > [!TIP]
 > * Como gravar partidas?
