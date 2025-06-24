@@ -81,13 +81,13 @@ Caso não exista, deve instalá-lo.
 * Execute no terminal:
 
 ```
-sudo wget https://github.com/magmaOffenburg/RoboViz/releases/download/2.0.1/RoboViz.tar.gz
+wget https://github.com/magmaOffenburg/RoboViz/releases/download/2.0.1/RoboViz.tar.gz
 ```
 
 * Descompacte o arquivo baixado da seguinte forma e renomeie a pasta gerada:
 
 ```
-sudo mkir RoboViz && sudo tar -vzvf RoboViz.tar.gz -C RoboViz
+mkdir RoboViz && tar -xvzf RoboViz.tar.gz -C RoboViz
 ```
 
 Os arquivos referentes ao software estarão em `~./RoboViz/bin`.
@@ -104,6 +104,20 @@ Os arquivos referentes ao software estarão em `~./RoboViz/bin`.
 
 Para que algo seja exibido, ligue o servidor principal, vulgo rcssserver3d.
 
+#### Caso surja erro:
+
+```
+libEGL warning: DRI3: Screen seems not DRI3 capable
+MESA: error: ZINK: failed to choose pdev
+MESA: error: ZINK: failed to choose pdev
+libEGL warning: egl: failed to create dri2 screen
+```
+
+Execute exatamente o que está descrito no [link](https://stackoverflow.com/questions/79151910/how-to-fix-errors-in-wsl-gui).
+
+
+
+
 > [!TIP]
 > * Como gravar partidas?
 > 
@@ -117,21 +131,23 @@ Antes de poder usar o ServidorProxy, você precisa configurar o RCSServer3D para
 
 ### Instalando MagmaProxy
 
-* Entre neste [link](https://github.com/magmaOffenburg/magmaProxy/releases) e baixe o arquivo .zip referente ao magmaproxy mais recente.
+* Entre neste [link](https://github.com/magmaOffenburg/magmaProxy/releases) e copie o arquivo .zip referente ao magmaproxy mais recente.
   * Este _software_ foi uma solução criada por este time para aprimorar a eficiência entre as conexões dos times e servidor.
 
 Pelo terminal, você deve fazer:
 
 ```
-cd Downloads
+wget https://github.com/magmaOffenburg/magmaProxy/releases/download/3.0.0/magmaproxy-3.0.0.zip
 unzip magmaproxy-(código-da-versao)
 cd magmaproxy-(codigo-da-versao)/
 sudo chmod 777 start.sh
 ```
 
+O código 777 garante que todos possam ler, escrever e executar o arquivo.
+
 Nada vai acontecer, à vista nu, e estará tudo bem. (não ironicamente)
 
-* Experimente modificar o nome das pastas, visto que a única importante é o arquivo ```./start.sh```
+* Experimente modificar o nome das pastas, visto que o essencial é o arquivo ```./start.sh```
 
 ### Ligando o ServidorProxy
 
@@ -196,6 +212,13 @@ Experimente:
 git clone https://github.com/m-abr/FCPCodebase.git
 ```
 
+Ou caso não tenha git:
+
+```
+wget https://github.com/m-abr/FCPCodebase/archive/refs/heads/main.zip
+unzip main.zip
+```
+
 De posse disso, devemos conseguir gerenciar algumas dependências:
 
 ```
@@ -205,7 +228,7 @@ pip3 install numpy pybind11 psutil
 
 Seguinte: Eu tive um trabalho **ABSURDO**, pois ler a documentação
 dos desenvolvedores infelizmente não foi a primeira coisa que
-fiz. Na mesma pasta do repositório, execute
+fiz. Na pasta do repositório, execute
 
 ```
 python Run_Utils.py
