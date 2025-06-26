@@ -34,7 +34,7 @@ ou o modificado da RoboIME.
 
 # Principais Possíveis Melhorias Observadas
 
-### Presença de código inútil em [ambientacao](src/sobre_cpp/ambientacao)
+* ### Presença de código inútil em [ambientacao](src/sobre_cpp/ambientacao)
 
 Dentro de [communication](src/communication), há classes e métodos que realizam comunicações
 sockets entre o agente e o robô, e entre o usuário e os softwares Roboviz e Simsparks.
@@ -45,13 +45,13 @@ que realizam tais comunicações.
 Acredito que isso ocorra devido à migração da aplicação geral de C++ para Python e a não eliminação do
 código obsoleto.
 
-### Tratamento de Importações
+* ### Tratamento de Importações
 
 Alguns arquivos, como os presentes em [communication](src/communication) ou em [sobre_behaviors](src/sobre_behaviors),
 possuem uma gambiarra de importação, pois o original gostaria de evitar importações circulares e preservar o 
 type hinting.
 
-### Inovações 
+* ### Inovações 
 
 A aplicação apresenta baixa extensibilidade para a introdução de novas funcionalidades, apesar da existência,
 por exemplo, de possibilidades de extensão em [Behavior](src/sobre_behaviors/Behavior.py).
@@ -59,7 +59,7 @@ por exemplo, de possibilidades de extensão em [Behavior](src/sobre_behaviors/Be
 Poderia se introduzir um caminho específico a ser trilhado que permitiria a criação e implementação
 de novas funcionalidades e comportamentos para os robôs.
 
-### Lógica de Conclusão
+* ### Lógica de Conclusão
 
 Atualmente, todos os comportamentos representados por classes, como `GetUp` ou `Fall`, possuem
 um método `is_ready()`, o qual não possui nenhuma lógica, sempre retorna True.

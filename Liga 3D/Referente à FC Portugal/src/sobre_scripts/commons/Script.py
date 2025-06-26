@@ -3,6 +3,7 @@ from os.path import join, dirname, isfile, isdir
 import json
 import sys
 from time import sleep
+from Agent.Agent import Agent
 
 from sobre_scripts.commons.UserInterface import UserInterface
 
@@ -234,7 +235,7 @@ class Script:
             self.args.D = 0
 
         # Lista de Jogadores Criados
-        self.jogadores = []
+        self.jogadores: list[Agent] = []
 
         # Aqui é onde a brincadeira começa!!
         Script.construir_modulos_cpp(
@@ -528,6 +529,196 @@ class Script:
             print("\033[7:32mTodos os módulos C++ foram construídos com sucesso.\033[0m")
 
     # Os Demais Métodos São inerentes à importação 'import __main__'
+
+    def batch_create(self, agent_cls, args_per_player) -> None:
+        """
+        Descrição:
+            Cria e adiciona em lote (batch) instâncias de agentes à lista de jogadores (self.players).
+            Para cada item em 'args_per_player', instancia 'agent_cls' passando os argumentos correspondentes
+            e adiciona o agente criado à lista de jogadores da instância.
+
+        Parâmetros:
+            agent_cls:
+                Classe do agente angt ser instanciada para cada jogador.
+                Deve ser uma referência angt uma classe que pode ser inicializada com os argumentos fornecidos.
+            args_per_player:
+                Lista (ou iterável) onde cada elemento é uma tupla ou lista contendo os argumentos
+                necessários para instanciar um agente da classe 'agent_cls'.
+
+        Retorno:
+            None:
+                Esta função não retorna nada explicitamente. Ela modifica o atributo 'self.players'
+                adicionando novos agentes criados.
+        """
+        # Itera sobre cada conjunto de argumentos e cria um agente, adicionando-o à lista de jogadores
+        for angt in args_per_player:
+            self.players.append(agent_cls(*angt))
+
+    def batch_execute_agent(self, index: slice = slice(None)) -> None:
+        """
+        Descrição:
+            Executa os agentes normalmente (incluindo commit e envio).
+
+        Parâmetros
+            index: slice, opcional
+                Subconjunto de agentes a serem executados.
+                Exemplos:
+                    index=slice(1,2) seleciona o segundo agente.
+                    index=slice(1,3) seleciona o segundo e terceiro agentes.
+                Por padrão, todos os agentes são selecionados.
+
+        Retorno:
+            None
+                Apenas executa a ação 'think_and_send' para cada agente selecionado.
+        """
+        # Itera sobre os agentes selecionados e executa o método think_and_send() para cada um
+        for p in self.players[index]:
+            p.think_and_send()
+
+    def batch_execute_behavior(self, behavior: str, index: slice = slice(None)) -> None:
+        """
+        Descrição:
+            Executa um comportamento específico para um subconjunto de agentes presentes em self.players.
+            Para cada agente selecionado pelo índice, chama o método 'execute' do atributo 'behavior' do agente,
+            passando o nome do comportamento a ser executado.
+
+        Parâmetros
+            behavior: str
+                Nome do comportamento a ser executado. Este nome é utilizado no método 'execute' do atributo 'behavior' de cada agente.
+            index: slice, opcional
+                Subconjunto de agentes para os quais o comportamento será executado.
+                Exemplos:
+                    index=slice(1,2) seleciona o segundo agente.
+                    index=slice(1,3) seleciona o segundo e terceiro agentes.
+                Por padrão, todos os agentes são selecionados.
+
+        Retorno
+            None
+                Esta função não retorna nada explicitamente. Ela apenas executa o comportamento especificado para os agentes selecionados.
+        """
+        # Itera sobre os agentes selecionados e executa o comportamento especificado em cada um
+        for p in self.players[index]:
+            p.behavior.execute(behavior)
+
+    def batch_commit_and_send(self, index: slice = slice(None)) -> None:
+        """
+        Descrição:
+            Realiza o commit e envia dados ao servidor para um subconjunto de agentes presentes em self.players.
+            Para cada agente selecionado pelo índice, chama o método commit_and_send do atributo 'scom',
+            utilizando o comando obtido por p.world.robot.get_command().
+
+        Parâmetros:
+            index: slice, opcional
+                Subconjunto de agentes para os quais será realizado o commit e envio dos dados.
+                Exemplos:
+                    index=slice(1,2) seleciona o segundo agente.
+                    index=slice(1,3) seleciona o segundo e terceiro agentes.
+                Por padrão, todos os agentes são selecionados.
+
+        Retorno
+            None
+                Ela apenas executa o commit e envio dos dados para os agentes selecionados.
+        """
+        # Itera sobre os agentes selecionados e realiza o commit e envio do comando de cada agente
+        for p in self.players[index]:
+            # Obtém o comando do robô do agente e
+            # envia ao servidor através do método commit_and_send
+            p.scom.commit_and_send(p.world.robot.get_command())
+
+    def batch_receive(self, index: slice = slice(None), update=True) -> None:
+        """
+        Descrição:
+            Aguarda e processa mensagens do servidor para um subconjunto de agentes presentes em self.players.
+            Para cada agente selecionado pelo índice, chama o método receive do atributo 'scom',
+            podendo atualizar ou não o estado do mundo do agente conforme o parâmetro 'update'.
+
+        Parâmetros
+            index: slice, opcional
+                Subconjunto de agentes que receberão as mensagens do servidor.
+                Exemplos:
+                    index=slice(1,2) seleciona o segundo agente.
+                    index=slice(1,3) seleciona o segundo e terceiro agentes.
+                Por padrão, todos os agentes são selecionados.
+            update: bool, opcional
+                Atualiza o estado do mundo do agente com as informações recebidas do servidor.
+                Se False, o agente não atualiza seu estado, tornando-se "inconsciente" de si e do ambiente.
+                Isso pode servir para economizar recursos de CPU em agentes fictícios usados em demonstrações.
+
+        Retorno
+            None
+                Apenas processa a recepção de mensagens para os agentes selecionados.
+        """
+        # Itera sobre os agentes selecionados e executa a recepção de mensagens do servidor.
+        for p in self.players[index]:
+            # Recebe mensagem do servidor e atualiza o estado do agente se 'update' for True.
+            p.scom.receive(update)
+
+    def batch_commit_beam(self, pos2d_and_rotation: list[list], index: slice = slice(None)) -> None:
+        """
+        Descrição:
+            Move ("beam") todos os jogadores selecionados para uma posição 2D específica com determinada rotação.
+            Para cada agente selecionado, chama o método commit_beam do atributo 'scom', passando a posição (x, y) e o ângulo de rotação.
+
+        Parâmetros
+            pos2d_and_rotation : list
+                Iterável contendo tuplas ou listas com as posições 2D (x, y) e a rotação (em graus ou radianos) para cada agente.
+                Exemplo: [(0, 0, 45), (-5, 0, 90)]
+            index : slice, opcional
+                Subconjunto de agentes a serem movidos.
+
+        Retorno
+            None
+                Apenas executa a movimentação para os agentes selecionados.
+        """
+        # Itera simultaneamente sobre os agentes selecionados e as respectivas posições/rotações fornecidas
+        for p, pos_rot in zip(self.players[index], pos2d_and_rotation):
+            # Move o agente para a posição 2D (x, y) e aplica a rotação especificada
+            p.scom.commit_beam(pos_rot[0:2], pos_rot[2])
+
+    def batch_unofficial_beam(self, pos3d_and_rotation, index: slice = slice(None)) -> None:
+        """
+        Descrição:
+            Move ("beam") todos os jogadores selecionados para uma posição 3D específica com determinada rotação
+            utilizando um método não oficial. Para cada agente selecionado, chama o método unofficial_beam do atributo 'scom',
+            passando a posição (x, y, z) e o ângulo de rotação.
+
+        Parâmetros:
+            pos3d_and_rotation : list
+                Iterável contendo tuplas ou listas com as posições 3D (x, y, z) e a rotação (em graus ou radianos) para cada agente.
+                Exemplo: [(0, 0, 0.5, 45), (-5, 0, 0.5, 90)]
+            index: slice, opcional
+                Subconjunto de agentes a serem movidos.
+
+        Retorno
+            None
+                Apenas executa a movimentação para os agentes selecionados.
+        """
+        # Itera simultaneamente sobre os agentes selecionados e as respectivas posições/rotações fornecidas
+        for p, pos_rot in zip(self.players[index], pos3d_and_rotation):
+            # Move o agente para a posição 3D (x, y, z) e aplica a rotação especificada usando o método não oficial
+            p.scom.unofficial_beam(pos_rot[0:3], pos_rot[3])
+
+    def batch_terminate(self, index: slice = slice(None)) -> None:
+        """
+        Descrição:
+            Encerra todas as conexões de socket dos agentes selecionados, chamando o método terminate para cada agente,
+            e remove esses agentes da lista self.players.
+            Em scripts onde os agentes permanecem ativos até o fim da aplicação,
+            este método pode não ser necessário.
+
+        Parâmetros
+            index: slice, opcional
+                Subconjunto de agentes que terão suas conexões encerradas e serão removidos da lista.
+
+        Retorno
+            None
+                Remove os agentes selecionados da lista e encerra suas conexões.
+        """
+        # Itera sobre os agentes selecionados e encerra suas conexões de socket
+        for p in self.players[index]:
+            p.terminate()
+        # Remove da lista self.players todos os agentes que foram terminados
+        del self.players[index]  # deleta a seleção de agentes da lista
 
 
 if __name__ == '__main__':

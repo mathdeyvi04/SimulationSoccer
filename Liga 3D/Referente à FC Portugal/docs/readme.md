@@ -1,3 +1,18 @@
+# Instalações Externas
+
+As seguintes instalações são amplamente necessárias para o funcionamento geral.
+
+```
+sudo apt install libgsl-dev
+pip3 install numpy pybind11 psutil
+```
+
+Para realizar operações de Machine Learning, é necessário que utilize:
+
+```
+pip3 install stable-baselines3 gym shimmy
+```
+
 # Dissertação Sobre Funcionalidades Individuais e Hierarquia
 
 A seguir, uma breve explicação organizada dos arquivos e pastas do código.
