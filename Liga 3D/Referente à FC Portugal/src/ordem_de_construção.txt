@@ -9,10 +9,9 @@ logs/Logger.py  # exceção à regra de ligados puramente ao robô
 /Agent/
 
 --- Relacionados ao Terminal e Gerenciamento Geral
-scripts/commons/UserInterface.py
-scripts/commons/Script.py
-scripts/commons/Server.py
-
+sobre_scripts/commons/
+sobre_scripts/gyms/
+sobre_scripts/utils/
 
 
 

@@ -251,8 +251,22 @@ Pasta responsável por lidar com os acessos mais comuns ao terminal, possuindo m
 módulos C++, classe de verificação de servidores pré-existentes, automação de ações de treinamento e 
 tantas outras funcionalidades.
 
-#### [gyms]
+#### [gyms](../src/sobre_scripts/gyms)
 
-#### [utils]
+Contém ambientes customizados desenvolvidos no padrão **OpenAI Gym**, focados em simulações de
+controle e aprendizado por reforço aplicados a robôs.
+
+O objetivo da pasta é fornecer uma coleção modular de ambientes de simulação que possam ser utilizados
+
+#### [utils](../src/sobre_scripts/utils)
+
+Contém um compilado de arquivos experimentais, responsáveis unicamente por criar um ambiente de 
+simulação capaz de experimentar tecnologias implementadas.
+
+Por exemplo, o arquivo PathFinding é focado em testar a implementação do algoritmo de caminho.
+O arquivo TeamCommuncation providencia testes na comunicação do time.
+
+Após a criação de uma nova tecnologia, é interessante criar um arquivo correspondente aqui para realizar
+os testes.
 
 --- 

@@ -199,6 +199,48 @@ class UserInterface:
                     f"Error: Entrada Inválida! Escolha um número entre {minimo} e {maximo - 1}"
                 )
 
+    @staticmethod
+    def obter_float(
+            prompt: str,
+            default: float,
+            minimo: int = -100,
+            maximo: int = 100
+    ) -> float:
+        """
+        Descrição:
+            Solicita ao usuário um número inteiro em um intervalo específico.
+
+        Parâmetros:
+            prompt (str):
+                Mensagem exibida ao usuário no terminal antes da entrada.
+
+            default (float):
+                Valor padrão que será retornado caso a entrada seja inválida.
+
+            minimo (int):
+                Limite inferior do intervalo (inclusivo).
+
+            maximo (int):
+                Limite superior do intervalo (exclusivo).
+
+        Retorno:
+            int:
+                O valor inteiro fornecido pelo usuário que está no intervalo [minimo, maximo).
+        """
+
+        inp = ''
+        try:
+
+            inp = input(prompt)
+
+            return float(inp)
+        except ValueError:
+            if inp != '':
+
+                print("Illegal input:", inp, "\n")
+
+            return default
+
     # Vamos desenvolver novas funcionalidades com PrettyTable
     @staticmethod
     def apresentar_tabela(
