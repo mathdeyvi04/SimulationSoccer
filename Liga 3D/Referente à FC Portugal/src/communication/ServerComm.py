@@ -48,7 +48,7 @@ class ServerComm:
             unum: int,
             robot_type: int,
             team_name: str,
-            world_parser: World_Parser,
+            world_parser: WorldParser,
             world: World,
             other_players: list,  # list[BaseAgent] | list[Agent]
             wait_for_server: bool = True

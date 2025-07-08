@@ -1,7 +1,7 @@
 --- Relacionados ao Robô e seu comportamento
 /sobre_cpp/
 /math_ops/
-logs/Logger.py  # exceção à regra de ligados puramente ao robô
+logs/Logger.py
 /sobre_world/
 /communication/
 /sobre_behaviors/custom

@@ -3,7 +3,6 @@ from os.path import join, dirname, isfile, isdir
 import json
 import sys
 from time import sleep
-from Agent.Agent import Agent
 
 from sobre_scripts.commons.UserInterface import UserInterface
 
@@ -158,11 +157,9 @@ class Script:
         )
     )
 
-    # Em meu caso é: C:\Users\deyvi\Documents\ImperioPy\TheBigOnes\RoboCup_RoboIME\Liga 3D\Referente à FC Portugal\src
-
     def __init__(
             self,
-            construtor_cpp=0
+            construtor_cpp: int = 0
     ) -> None:
         #######################################################################
         # Específicando variáveis e argumentos.
@@ -179,7 +176,7 @@ class Script:
             'u': ('Número do Uniforme', '1'),
             'r': ('Tipo do Robô', '1'),
             'P': ('Disputa de Penâltis', '0'),
-            # 'F': ('magmaFatProxy',      '0'),
+            'F': ('magmaFatProxy',      '0'),
             'D': ('Debug', '1')
         }
 
@@ -191,7 +188,7 @@ class Script:
             'u': (int, range(1, 12)),
             'r': (int, [0, 1, 2, 3, 4]),
             'P': (int, [0, 1]),
-            # 'F': (int, [0,1]),
+            'F': (int, [0,1]),
             'D': (int, [0, 1])
         }
 
@@ -235,7 +232,7 @@ class Script:
             self.args.D = 0
 
         # Lista de Jogadores Criados
-        self.jogadores: list[Agent] = []
+        self.jogadores = []
 
         # Aqui é onde a brincadeira começa!!
         Script.construir_modulos_cpp(

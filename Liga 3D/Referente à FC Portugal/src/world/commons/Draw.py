@@ -482,6 +482,12 @@ class Draw:
         # Realiza uma atualização que limpa todos os conteúdos
         Draw._send(b'\x00\x00', self._prefix, True)
 
+    @staticmethod
+    def clear_all():
+        """ Clear all drawings of all players """
+        if Draw._socket is not None:
+            Draw._send(b'\x00\x00\x00\x00\x00', b'', False)  # swap buffer twice using no id
+
     class Color:
         """
         Descrição:

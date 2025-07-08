@@ -587,7 +587,7 @@ class WorldParser:
                                 self.world.ball_rel_head_sph_pos[0], end = self.read_float(end + 1)
                                 self.world.ball_rel_head_sph_pos[1], end = self.read_float(end + 1)
                                 self.world.ball_rel_head_sph_pos[2], end = self.read_float(end + 1)
-                                self.world.ball_rel_head_cart_pos = M.deg_sph2cart(self.world.ball_rel_head_sph_pos)
+                                self.world.ball_rel_head_cart_pos = GeneralMath.spherical_deg_simspark_to_cart(self.world.ball_rel_head_sph_pos)
                                 self.world.ball_is_visible = True
                                 self.world.ball_last_seen = self.world.time_local_ms
 

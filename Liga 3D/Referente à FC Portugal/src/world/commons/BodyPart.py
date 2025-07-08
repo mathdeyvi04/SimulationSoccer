@@ -8,8 +8,8 @@ class BodyPart:
         juntas e massa geral.
     """
 
-    def __init__(self, massa: int | float) -> None:
-        self.mass = massa
+    def __init__(self, massa) -> None:
+        self.mass = float(massa)
         self.joints = []
         # Matriz de transformação da parte do corpo para cabeça
         self.transform = Matriz4x4()

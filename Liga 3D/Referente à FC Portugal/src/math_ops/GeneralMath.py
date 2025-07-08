@@ -15,7 +15,7 @@ except Exception as error:
     GLOBAL_DIR = "."
 
 
-class GeneralMathMath:
+class GeneralMath:
     """
     Descrição:
         Classe responsável por aglutinar funções triviais e necessárias nas operações que serão

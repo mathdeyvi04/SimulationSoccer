@@ -1,10 +1,10 @@
-from agent.BaseAgent import BaseAgent
+from Agent.BaseAgent import BaseAgent
 from math_ops.GeneralMath import GeneralMath
 import math
 import numpy as np
 
 
-class Agent(Base_Agent):
+class Agent(BaseAgent):
     """
     Descrição:
 

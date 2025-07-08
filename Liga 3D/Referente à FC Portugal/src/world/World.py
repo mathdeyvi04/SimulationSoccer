@@ -5,7 +5,7 @@ from sobre_logs.Logger import Logger
 from math import atan2, pi
 from math_ops.Matriz4x4 import Matriz4x4
 from world.commons.Draw import Draw
-from world.commons.Other_Robot import Other_Robot
+from world.commons.OtherRobot import OtherRobot
 from world.Robot import Robot
 import numpy as np
 
@@ -187,8 +187,8 @@ class World:
         self.vision_last_update = 0  # Momento (World.time_local_ms) da última atualização da visão
         self.vision_is_up_to_date = False  # Verdadeiro se a visão foi atualizada na última mensagem
 
-        self.teammates = [Other_Robot(i, True) for i in range(1, 12)]  # Lista de colegas de time, classificados pelo número
-        self.opponents = [Other_Robot(i, False) for i in range(1, 12)]  # Lista de oponentes, classificados pelo número
+        self.teammates = [OtherRobot(i, True) for i in range(1, 12)]  # Lista de colegas de time, classificados pelo número
+        self.opponents = [OtherRobot(i, False) for i in range(1, 12)]  # Lista de oponentes, classificados pelo número
 
         self.teammates[unum - 1].is_self = True  # Este é o robô propriamente dicho
 
@@ -479,7 +479,7 @@ class World:
 
         i_am_the_robot.update_imu(self.time_local_ms)  # update imu (must be executed after localization)
 
-    def update_other_robot(self, other_robot: Other_Robot):
+    def update_other_robot(self, other_robot: OtherRobot):
         """
         Descrição:
             Atualiza o estado de outro robô com base nas posições relativas das partes visíveis do corpo.
@@ -493,7 +493,7 @@ class World:
             A orientação é calculada em graus, com a convenção de 0° apontando para o eixo Y positivo (topo do campo).
 
         Parâmetros:
-            other_robot : Other_Robot
+            other_robot : OtherRobot
                 Instância do robô a ser atualizada, contendo informações sobre partes do corpo, velocidade,
                 posição e outros estados.
 

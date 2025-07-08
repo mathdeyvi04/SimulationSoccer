@@ -31,16 +31,16 @@ class Matriz3x3:
             Inicializa uma matriz desta classe.
 
         Exemplos:
-            - a = Matriz_3x3()                            # Identidade
-            - b = Matrix_3x3( [[1,1,1],[2,2,2],[3,3,3]] ) # manually initialize matrix
-            - c = Matrix_3x3( [1,1,1,2,2,2,3,3,3] )       # manually initialize matrix
-            - d = Matrix_3x3( b )                         # copy constructor
+            - a = Matriz3x3()                            # Identidade
+            - b = Matriz3x3( [[1,1,1],[2,2,2],[3,3,3]] ) # manually initialize matrix
+            - c = Matriz3x3( [1,1,1,2,2,2,3,3,3] )       # manually initialize matrix
+            - d = Matriz3x3( b )                         # copy constructor
         """
 
         if matriz is None:
 
             self.matriz = np.identity(3)
-        elif isinstance(matriz, Matriz_3x3):
+        elif isinstance(matriz, Matriz3x3):
 
             self.matriz = np.copy(matriz.matriz)
         else:
@@ -154,7 +154,7 @@ class Matriz3x3:
             Se `mat` for um vetor 3D, retorna o vetor resultante da multiplicação.
 
         Parâmetros:
-            mat: Matrix_3x3 ou array_like
+            mat: Matriz3x3 ou array_like
                 Matriz multiplicadora ou vetor 3D a ser multiplicado pela matriz atual.
 
             in_place: bool, opcional
@@ -166,8 +166,8 @@ class Matriz3x3:
                 - True: realiza a multiplicação na ordem mat * self.
 
         Retorno:
-            result: Matrix_3x3 ou array_like
-                Retorna uma instância Matrix_3x3 se `mat` for matriz (retorna `self` se `in_place=True`),
+            result: Matriz3x3 ou array_like
+                Retorna uma instância Matriz3x3 se `mat` for matriz (retorna `self` se `in_place=True`),
                 ou um vetor 3D se `mat` for vetor.
         """
 
@@ -181,7 +181,7 @@ class Matriz3x3:
         elif in_place:
             np.matmul(a, b, self.matriz)  # multiplication by matrix, in place
             return self
-        else:  # multiplication by matrix, return new Matrix_3x3
+        else:  # multiplication by matrix, return new Matriz3x3
             return Matrix3x3(np.matmul(a, b))
 
     def rotate_x_rad(self, rotation_rad: float, in_place: bool = False):
@@ -204,12 +204,12 @@ class Matriz3x3:
                 - False: a matriz original é preservada e uma nova matriz rotacionada é retornada.
 
         Retorno:
-            result: Matrix_3x3
+            result: Matriz3x3
                 A própria instância (`self`) se `in_place=True`, ou uma nova matriz rotacionada se `in_place=False`.
         """
 
         if rotation_rad == 0:
-            return self if in_place else Matrix_3x3(self)
+            return self if in_place else Matriz3x3(self)
 
         c = np.math.cos(rotation_rad)
         s = np.math.sin(rotation_rad)
@@ -224,7 +224,7 @@ class Matriz3x3:
     def rotate_y_rad(self, rotation_rad: float, in_place: bool = False):
         """Veja documentação de rotate_x_rad"""
         if rotation_rad == 0:
-            return self if in_place else Matrix_3x3(self)
+            return self if in_place else Matriz3x3(self)
 
         c = np.math.cos(rotation_rad)
         s = np.math.sin(rotation_rad)
@@ -239,7 +239,7 @@ class Matriz3x3:
     def rotate_z_rad(self, rotation_rad: float, in_place: bool = False):
         """Veja documentação de rotate_x_rad"""
         if rotation_rad == 0:
-            return self if in_place else Matrix_3x3(self)
+            return self if in_place else Matriz3x3(self)
 
         c = np.math.cos(rotation_rad)
         s = np.math.sin(rotation_rad)
@@ -298,7 +298,7 @@ class Matriz3x3:
                 - False: a matriz original é preservada e uma nova matriz rotacionada é retornada.
 
         Retorno:
-            result: Matrix_3x3
+            result: Matriz3x3
                 A própria instância (`self`) se `in_place=True`, ou uma nova matriz rotacionada se `in_place=False`.
         """
 
@@ -357,7 +357,7 @@ class Matriz3x3:
                 - False: retorna uma nova matriz com a rotação aplicada.
 
         Retorno:
-            result: Matrix_3x3
+            result: Matriz3x3
                 Se `in_place=True`, retorna o próprio objeto `self` com a matriz modificada.
                 Caso contrário, retorna uma nova instância da matriz rotacionada.
         """
@@ -380,7 +380,7 @@ class Matriz3x3:
                 - False: a matriz original é preservada e uma nova instância com a inversa é retornada.
 
         Retorno:
-            result: Matrix_3x3
+            result: Matriz3x3
                 A própria instância (`self`) se `in_place=True`, ou uma nova instância com a
                 matriz invertida se `in_place=False`.
         """
@@ -389,7 +389,7 @@ class Matriz3x3:
             self.matriz = np.linalg.inv(self.matriz)
             return self
         else:
-            return Matrix_3x3(np.linalg.inv(self.matriz))
+            return Matriz3x3(np.linalg.inv(self.matriz))
 
     @classmethod
     def create_sup_matrix_rotation(cls, euler_vec: np.ndarray[float]):
@@ -406,11 +406,11 @@ class Matriz3x3:
                 Vetor contendo os ângulos de Euler em graus no formato (x, y, z), ou seja, (roll, pitch, yaw).
 
         Retorno:
-            result: Matrix_3x3
-                Instância da classe Matrix_3x3 representando a matriz de rotação composta.
+            result: Matriz3x3
+                Instância da classe Matriz3x3 representando a matriz de rotação composta.
 
         Exemplo:
-            Matrix_3x3.from_rotation_deg((roll, pitch, yaw))
+            Matriz3x3.from_rotation_deg((roll, pitch, yaw))
                 Gera a matriz composta RotZ(yaw) * RotY(pitch) * RotX(roll)
         """
 

@@ -1,4 +1,4 @@
-from agent.BaseAgent import BaseAgent
+from Agent.BaseAgent import BaseAgent
 from math_ops.GeneralMath import GeneralMath
 import numpy as np
 from random import choice

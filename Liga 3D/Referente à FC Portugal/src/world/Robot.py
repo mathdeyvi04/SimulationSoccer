@@ -281,7 +281,7 @@ class Robot:
         self.J_RTOE_PITCH = 23
 
         # Carregar o modelo 3D
-        dir_ = M.get_active_directory("/world/commons/robots/")
+        dir_ = GeneralMath.obter_diretorio_ativo("/world/commons/robots/")
         robot_xml_root = xmlp.parse(dir_ + robot_xml).getroot()
 
         joint_no = 0
@@ -444,7 +444,7 @@ class Robot:
             self.loc_torso_pitch = t.get_pitch_deg()
             self.loc_torso_roll = t.get_roll_deg()
             self.loc_torso_inclination = t.get_inclination_deg()
-            vet_trans = t.get_translation()
+            vet_trans = t.obter_vetor_de_translacao()
             self.loc_torso_velocity = (vet_trans - self.loc_torso_position) / time_diff
             self.loc_torso_position = vet_trans
             self.loc_torso_acceleration = self.loc_torso_to_field_rotation.multiply(self.acc) + Robot.GRAVITY
@@ -587,10 +587,11 @@ class Robot:
             child_body_part.transform.translate(ji.anchor1_axes_neg, True)
 
         # Posição do Centro de Massa
-        self.rel_cart_CoM_position = np.average([b.transform.obter_vetor_de_translacao()
-                                                 for b in self.body_parts.values()],
-                                                0,
-                                                [bp.mass for bp in self.body_parts.values()])
+        self.rel_cart_CoM_position = np.average(
+            [bp.transform.obter_vetor_de_translacao() for bp in self.body_parts.values()],
+                                                                                      0,
+            [bp.mass                                  for bp in self.body_parts.values()]
+        )
 
     def update_imu(self, time_local_ms: int) -> None:
         """
@@ -651,7 +652,7 @@ class Robot:
         else:
             g = self.gyro / 50  # convert degrees per second to degrees per step
 
-            self.imu_torso_to_field_rotation.multiply(Matrix_3x3.from_rotation_deg(g), in_place=True, reverse_order=True)
+            self.imu_torso_to_field_rotation.multiply(Matriz3x3.from_rotation_deg(g), in_place=True, reverse_order=True)
 
             self.imu_torso_orientation = self.imu_torso_to_field_rotation.get_yaw_deg()
             self.imu_torso_pitch = self.imu_torso_to_field_rotation.get_pitch_deg()

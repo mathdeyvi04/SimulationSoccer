@@ -453,7 +453,7 @@ class Matriz4x4:
             mat = np.asarray(mat)  # conversion to array, if needed
             if mat.ndim == 1:  # multiplication by 3D vector
                 vec = np.append(mat, 1)  # conversion to 4D vector
-                return np.matmul(Matriz4x4, vec)[0:3]  # conversion to 3D vector
+                return np.matmul(self.matriz, vec)[0:3]  # conversion to 3D vector
 
         if in_place:
             np.matmul(self.matriz, mat, self.matriz)

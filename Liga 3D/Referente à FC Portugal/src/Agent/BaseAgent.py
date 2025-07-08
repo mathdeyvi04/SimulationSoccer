@@ -49,7 +49,7 @@ class BaseAgent:
             incluindo comunicação com o servidor, parser de mundo, controle de comportamento, cinemática inversa, rádio (mensagens),
             gerenciamento de caminho, e logging.
             
-            - Registra o agente na lista global de agentes (`Base_Agent.all_agents`).
+            - Registra o agente na lista global de agentes (`BaseAgent.all_agents`).
             - Permite flexibilidade na configuração do ambiente e integração de callbacks customizados para mensagens.
             - O rádio é inicializado após a comunicação para garantir que receba anúncios corretamente.
             - O agente pode ser removido/terminado de forma segura via o método `terminate`.
@@ -78,12 +78,12 @@ class BaseAgent:
             hear_callback: callable, opcional
                 Função alternativa de callback para mensagens de rádio (padrão: None, usa método interno).
         """
-        self.radio = None  # Inicializa como None, pois a recepção pode ocorrer durante a instância de Server_Comm
+        self.radio = None  # Inicializa como None, pois a recepção pode ocorrer durante a instância de ServerComm
         self.logger = Logger(enable_log, f"{team_name}_{unum}")
         self.world = World(robot_type, team_name, unum, apply_play_mode_correction, enable_draw, self.logger, host)
-        self.world_parser = World_Parser(self.world, self.hear_message if hear_callback is None else hear_callback)
-        self.scom = Server_Comm(host, agent_port, monitor_port, unum, robot_type, team_name, self.world_parser,
-                                self.world, Base_Agent.all_agents, wait_for_server)
+        self.world_parser = WorldParser(self.world, self.hear_message if hear_callback is None else hear_callback)
+        self.scom = ServerComm(host, agent_port, monitor_port, unum, robot_type, team_name, self.world_parser,
+                                self.world, BaseAgent.all_agents, wait_for_server)
         self.inv_kinematics = Inverse_Kinematics(self.world.robot)
         self.behavior = Behavior(self)
         self.path_manager = Path_Manager(self.world)
@@ -144,6 +144,6 @@ class BaseAgent:
         - Fecha o socket de monitoramento compartilhado para todos.
         - Limpa a lista de agentes garantindo que não haja vazamento de recursos.
         """
-        for o in Base_Agent.all_agents:
+        for o in BaseAgent.all_agents:
             o.scom.close(True)  # Fecha o monitoramento compartilhado, se existir
         BaseAgent.all_agents = []
