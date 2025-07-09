@@ -1,4 +1,4 @@
-from agent.BaseAgent import BaseAgent
+from Agent.BaseAgent import BaseAgent
 from sobre_scripts.commons.Script import Script
 from world.commons.Draw import Draw
 import numpy as np
@@ -83,7 +83,7 @@ class Joints:
         # Altura extra dos labels para evitar sobreposição entre anotações das juntas
         label_z = [3 * zstep, 5 * zstep, 0, 0, zstep, zstep, 2 * zstep, 2 * zstep, 0, 0, 0, 0, zstep, zstep, 0, 0, zstep, zstep, 4 * zstep, 4 * zstep, 5 * zstep, 5 * zstep, 0, 0]
         for j, transf in enumerate(player.world.robot.joints_transform):
-            rp = transf.get_translation()
+            rp = transf.obter_vetor_de_translacao()
             pos = player.world.robot.loc_head_to_field_transform(rp, False)
             j_id = f"{j}"
             j_name = f"{j}"

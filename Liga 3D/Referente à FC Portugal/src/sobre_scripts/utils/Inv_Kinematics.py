@@ -1,4 +1,4 @@
-from agent.BaseAgent import BaseAgent
+from Agent.BaseAgent import BaseAgent
 from itertools import count
 from math_ops.InverseKinematics import InverseKinematics
 from sobre_scripts.commons.Script import Script
@@ -110,7 +110,7 @@ class Inv_Kinematics:
             except Exception:
                 print("Illegal value conversion!")
 
-    def _draw_labels(self, player: Agent):
+    def _draw_labels(self, player: BaseAgent):
         """
         Descrição:
             Desenha, para cada tornozelo, anotações e linhas que mostram as posições/rotações definidas pelo usuário (cinemática inversa)

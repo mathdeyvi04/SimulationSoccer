@@ -39,7 +39,7 @@ class Localization:
                 if p.world.robot.loc_is_up_to_date:  # localization will draw the world of the last agent to be executed
                     ambientacao.expose_runtime_data()  # print data received by the localization module
                     ambientacao.illustrator(not p.world.team_side_is_left)  # draw visible elements
-                    ambientacao.report_calculation_status()  # print report with stats
+                    ambientacao.report_calculation_status(False)  # print report with stats
                     print("\nPress ctrl+c to return.")
                     d.circle(p.world.ball_abs_pos, 0.1, 6, Draw.Color.purple_magenta, "world", False)
                 else:
@@ -55,7 +55,7 @@ class Localization:
 
                 d.flush("world")
 
-    def _draw_other_robot(self, p: Agent, o: Other_Robot, team_color):
+    def _draw_other_robot(self, p: Agent, o: OtherRobot, team_color):
         # p - player that sees
         # o - other robot (player that is seen)
 

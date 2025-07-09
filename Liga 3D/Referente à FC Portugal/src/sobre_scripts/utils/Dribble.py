@@ -82,7 +82,7 @@ class Dribble:
                 p.scom.unofficial_set_play_mode("PlayOn")
 
             # Executa comportamento de recuperação ou inicia drible conforme contexto de queda/beam
-            if behavior.is_ready("Get_Up") or w.play_mode_group in [w.MG_ACTIVE_BEAM, w.MG_PASSIVE_BEAM]:
+            if behavior.is_ready("GetUp") or w.play_mode_group in [w.MG_ACTIVE_BEAM, w.MG_PASSIVE_BEAM]:
                 # Reposiciona o driblador atrás da bola e executa postura de recuperação
                 p.scom.unofficial_beam((*(w.ball_abs_pos[:2] - (1, 0)), r.beam_height), 0)
                 behavior.execute("Zero_Bent_Knees")

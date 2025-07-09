@@ -22,6 +22,9 @@ class StepGenerator:
             Altura base do centro de massa.
     """
 
+    GRAVITY = 9.81
+    Z0 = 0.2
+
     def __init__(self, feet_y_dev, sample_time, max_ankle_z) -> None:
         """
         Inicializa o gerador de caminhos de passo para um robô bípede.

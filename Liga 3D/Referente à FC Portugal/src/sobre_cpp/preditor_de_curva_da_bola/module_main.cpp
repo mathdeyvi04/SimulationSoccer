@@ -204,7 +204,7 @@ PYBIND11_MODULE(
 			relative distance.
 
 		Parametros: 
-			- float pos_robot: initial position's robot
+			- float pos_robot[2]: initial position's robot
 			- float max_speed_do_robo_por_passo: Maximum robot displacement per time step
 			- float posicoes_da_bola[]:  Vector of future positions of the ball and the respective number of points.
 			

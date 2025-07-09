@@ -321,7 +321,8 @@ PYBIND11_MODULE(
             made by the optimizer.
 
         Parameters:
-            None
+            - for_debugging (bool): False if not for debug.
+                This paramter exists only to prevent a big segment fault.
 
         Return:
             None, but the visual information given.

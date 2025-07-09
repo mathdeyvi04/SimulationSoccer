@@ -1,4 +1,4 @@
-from sobre_behaviors.custom.Step.Step_Generator import Step_Generator
+from sobre_behaviors.custom.Step.StepGenerator import StepGenerator
 from math_ops.GeneralMath import GeneralMath
 import math
 import numpy as np
@@ -45,7 +45,7 @@ class Env:
                 Fator máximo de altura do pé em relação ao comprimento da perna.
             leg_length: float
                 Comprimento total da perna do robô (coxa + canela).
-            step_generator: Step_Generator
+            step_generator: StepGenerator
                 Instância responsável por gerar as trajetórias dos passos.
             DEFAULT_ARMS: np.ndarray
                 Vetor com valores padrão para as juntas dos braços.
@@ -83,7 +83,7 @@ class Env:
         max_ankle_z = nao_specs[5]  # Altura máxima do tornozelo durante o passo
 
         # Inicializa o gerador de passos
-        self.step_generator = Step_Generator(feet_y_dev, sample_time, max_ankle_z)
+        self.step_generator = StepGenerator(feet_y_dev, sample_time, max_ankle_z)
 
         # Valores padrão para as juntas dos braços (posição de repouso ou neutra)
         self.DEFAULT_ARMS = np.array([-90, -90, 8, 8, 90, 90, 70, 70], np.float32)

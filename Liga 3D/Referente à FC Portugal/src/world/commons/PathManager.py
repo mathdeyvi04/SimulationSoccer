@@ -7,7 +7,7 @@ import numpy as np
 
 class PathManager:
     """
-    A classe Path_Manager é responsável pelo gerenciamento e pelo cálculo de caminhos para um robô
+    A classe PathManager é responsável pelo gerenciamento e pelo cálculo de caminhos para um robô
     se mover pelo campo, evitando obstáculos, considerando diferentes estratégias de locomoção.
     Ele controla tanto o modo de desvio quanto o status do caminho encontrado, aumentando ou
     diminuindo margens de segurança conforme o contexto.
@@ -157,7 +157,7 @@ class PathManager:
 
         # Get recently seen close teammates
         if include_teammates:
-            soft_radius = 1.1 if mode == Path_Manager.MODE_DRIBBLE else 0.6  # soft radius: repulsive force is max at center and fades
+            soft_radius = 1.1 if mode == PathManager.MODE_DRIBBLE else 0.6  # soft radius: repulsive force is max at center and fades
 
             def get_hard_radius(t):
                 if t.unum in priority_unums:
@@ -177,10 +177,10 @@ class PathManager:
 
             # É impressionante relembrar como usamos esses dados dentro do /sobre_cpp/a_estrela
             # soft radius: repulsive force is max at center and fades
-            if mode == Path_Manager.MODE_AGGRESSIVE:
+            if mode == PathManager.MODE_AGGRESSIVE:
                 soft_radius = 0.6
                 hard_radius = lambda o: 0.2
-            elif mode == Path_Manager.MODE_DRIBBLE:
+            elif mode == PathManager.MODE_DRIBBLE:
                 soft_radius = 2.3
                 hard_radius = lambda o: o.state_ground_area[1] + 0.9
             else:
@@ -256,7 +256,7 @@ class PathManager:
         """
 
         if self.last_update > 0 and (self.world.time_local_ms - self.last_update) == 20 and self.last_start_dist == start_distance:
-            return self.world.robot.loc_head_position[:2] + GeneralMath.angle_horizontal_from_vector2D(self.last_direction_rad, is_rad=True) * start_distance
+            return self.world.robot.loc_head_position[:2] + GeneralMath.unit_vector_by_angle(self.last_direction_rad, is_rad=True) * start_distance
         else:
             # return cold start if start_distance was different or the position was not updated in the last step
             return self.world.robot.loc_head_position[:2]
@@ -427,7 +427,7 @@ class PathManager:
         # obter o alvo
         ####################
 
-        front_unit_vec = GeneralMath.angle_horizontal_from_vector2D(x_ori)
+        front_unit_vec = GeneralMath.unit_vector_by_angle(x_ori)
         left_unit_vec = np.array([-front_unit_vec[1], front_unit_vec[0]])
 
         rel_target = front_unit_vec * dev[0] + left_unit_vec * dev[1]
@@ -450,7 +450,7 @@ class PathManager:
         obstacles = self.get_obstacles(
             include_teammates=True, include_opponents=True, include_play_mode_restrictions=True,
             ball_safety_margin=safety_margin,
-            mode=Path_Manager.MODE_AGGRESSIVE if is_aggressive else Path_Manager.MODE_CAUTIOUS,
+            mode=PathManager.MODE_AGGRESSIVE if is_aggressive else PathManager.MODE_CAUTIOUS,
             priority_unums=priority_unums
         )
 
@@ -468,7 +468,7 @@ class PathManager:
         ####################
 
         # veja a explicação para o contexto na seção de atualização do hot start
-        start_pos = self._get_hot_start(Path_Manager.HOT_START_DIST_WALK) if target_dist > 0.4 else self.world.robot.loc_head_position[:2]
+        start_pos = self._get_hot_start(PathManager.HOT_START_DIST_WALK) if target_dist > 0.4 else self.world.robot.loc_head_position[:2]
 
         path, path_len, path_status, path_cost = self.get_path(start_pos, True, obstacles, target, timeout)
         path_end = path[-2:]  # última posição permitida pelo A*
@@ -518,8 +518,8 @@ class PathManager:
         ''' Definindo a distância do hot start:
         - se o path_len é zero, não existe um hot start, pois já estamos no destino (dist=0)
         - se o destino é próximo, o hot start não é aplicado (veja acima)
-        - se a nova posição é muito próxima (devido a um obstáculo), o hot start é a nova posição (dist < Path_Manager.HOT_START_DIST_WALK)
-        - caso contrário, o hot start é uma distância constante (dist = Path_Manager.HOT_START_DIST_WALK)
+        - se a nova posição é muito próxima (devido a um obstáculo), o hot start é a nova posição (dist < PathManager.HOT_START_DIST_WALK)
+        - caso contrário, o hot start é uma distância constante (dist = PathManager.HOT_START_DIST_WALK)
         '''
         if path_len != 0:
             next_pos_vec = next_pos - self.world.robot.loc_head_position[:2]
@@ -584,7 +584,7 @@ class PathManager:
         ##################
 
         obstacles = self.get_obstacles(include_teammates=True, include_opponents=True, include_play_mode_restrictions=True,
-                                       mode=Path_Manager.MODE_AGGRESSIVE if is_aggressive else Path_Manager.MODE_CAUTIOUS,
+                                       mode=PathManager.MODE_AGGRESSIVE if is_aggressive else PathManager.MODE_CAUTIOUS,
                                        priority_unums=priority_unums)
 
         ##################
@@ -592,7 +592,7 @@ class PathManager:
         ##################
 
         # Veja a explicação na seção de atualização do hot start
-        start_pos = self._get_hot_start(Path_Manager.HOT_START_DIST_WALK) if target_dist > 0.4 else self.world.robot.loc_head_position[:2]
+        start_pos = self._get_hot_start(PathManager.HOT_START_DIST_WALK) if target_dist > 0.4 else self.world.robot.loc_head_position[:2]
 
         path, path_len, path_status, path_cost = self.get_path(start_pos, True, obstacles, target, timeout)
         path_end = path[-2:]  # última posição permitida pelo A*
@@ -628,7 +628,7 @@ class PathManager:
         if path_len != 0:
             next_pos_vec = next_pos - self.world.robot.loc_head_position[:2]
             next_pos_dist = np.linalg.norm(next_pos_vec)
-            self._update_hot_start(GeneralMath.angle_horizontal_from_vector2D(next_pos_vec, is_rad=True), min(Path_Manager.HOT_START_DIST_WALK, next_pos_dist))
+            self._update_hot_start(GeneralMath.angle_horizontal_from_vector2D(next_pos_vec, is_rad=True), min(PathManager.HOT_START_DIST_WALK, next_pos_dist))
 
         distance_to_final_target = np.linalg.norm(path_end - w.robot.loc_head_position[:2])
 
@@ -676,11 +676,11 @@ class PathManager:
         # ------------------------------------------- get obstacles
 
         obstacles = self.get_obstacles(include_teammates=True, include_opponents=True, include_play_mode_restrictions=False,
-                                       max_distance=5, max_age=1000, goalpost_safety_margin=goalpost_safety_margin, mode=Path_Manager.MODE_DRIBBLE)
+                                       max_distance=5, max_age=1000, goalpost_safety_margin=goalpost_safety_margin, mode=PathManager.MODE_DRIBBLE)
 
         # ------------------------------------------- get path
 
-        start_pos = self._get_hot_start(Path_Manager.HOT_START_DIST_DRIBBLE)
+        start_pos = self._get_hot_start(PathManager.HOT_START_DIST_DRIBBLE)
 
         path, path_len, path_status, path_cost = self.get_path(start_pos, False, obstacles, optional_2d_target, timeout)
 
@@ -695,10 +695,10 @@ class PathManager:
         # ------------------------------------------ update hot start for next run
 
         if path_len != 0:
-            self._update_hot_start(GeneralMath.deg_to_rad(r.imu_torso_orientation), Path_Manager.HOT_START_DIST_DRIBBLE)
+            self._update_hot_start(GeneralMath.deg_to_rad(r.imu_torso_orientation), PathManager.HOT_START_DIST_DRIBBLE)
 
         # ------------------------------------------ draw
-        if self._draw_path and path_status != Path_Manager.STATUS_DIRECT:
+        if self._draw_path and path_status != PathManager.STATUS_DIRECT:
             d = self.world.team_draw if self._use_team_channel else self.world.draw
             d.point(next_pos, 2, d.Color.pink, "path_next_pos", False)  # will not draw if drawing object is internally disabled
             d.line(ball_2d, next_pos, 2, d.Color.pink, "path_next_pos")  # will not draw if drawing object is internally disabled

@@ -1,6 +1,4 @@
 import os
-
-import os
 import subprocess
 
 class Server:
@@ -231,4 +229,4 @@ if __name__ == "__main__":
         s.change_config(*sys.argv[i:i + 5])
 else:
     import subprocess
-    from scripts.commons.UserInterface import UserInterface
+    from sobre_scripts.commons.UserInterface import UserInterface

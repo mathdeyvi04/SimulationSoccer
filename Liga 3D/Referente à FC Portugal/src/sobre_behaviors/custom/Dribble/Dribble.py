@@ -1,6 +1,6 @@
 from sobre_behaviors.custom.Dribble.Env import Env
 from math_ops.GeneralMath import GeneralMath
-from math_ops.Neural_Network import run_mlp
+from math_ops.NeuralNetwork import run_mlp
 import numpy as np
 import pickle
 
@@ -219,7 +219,7 @@ class Dribble:
 
             # 2B. Bola não visível, caminha para último alvo conhecido
             elif w.time_local_ms - w.ball_last_seen > 200:
-                abs_ori = M.vector_angle(b - me)
+                abs_ori = GeneralMath.angle_horizontal_from_vector2D(b - me)
                 behavior.execute_sub_behavior("Walk", reset_walk, b, True, abs_ori, True, None)
 
             # 2C. Bola visível, caminha para posição relativa ao robô
@@ -229,7 +229,7 @@ class Dribble:
                     reset_dribble = True
                 else:
                     rel_target = b_rel + (-0.23, 0)  # alvo relativo é um círculo ao redor da bola
-                    rel_ori = M.vector_angle(b_rel)  # orientação em relação à bola
+                    rel_ori = GeneralMath.angle_horizontal_from_vector2D(b_rel)  # orientação em relação à bola
                     dist = max(0.08, np.linalg.norm(rel_target) * 0.7)
                     behavior.execute_sub_behavior("Walk", reset_walk, rel_target, False, rel_ori, False, dist)
 

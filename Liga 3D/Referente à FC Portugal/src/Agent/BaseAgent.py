@@ -84,9 +84,9 @@ class BaseAgent:
         self.world_parser = WorldParser(self.world, self.hear_message if hear_callback is None else hear_callback)
         self.scom = ServerComm(host, agent_port, monitor_port, unum, robot_type, team_name, self.world_parser,
                                 self.world, BaseAgent.all_agents, wait_for_server)
-        self.inv_kinematics = Inverse_Kinematics(self.world.robot)
+        self.inv_kinematics = InverseKinematics(self.world.robot)
         self.behavior = Behavior(self)
-        self.path_manager = Path_Manager(self.world)
+        self.path_manager = PathManager(self.world)
         # Inicialização do rádio após comunicação e parser
         self.radio = Radio(self.world, self.scom.commit_announcement)
         self.behavior.create_behaviors()

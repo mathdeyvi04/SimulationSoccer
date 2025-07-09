@@ -143,10 +143,10 @@ class ServerComm:
             exit()
 
         # O socket do monitor é compartilhado por todos os agentes na mesma thread
-        if Server_Comm.monitor_socket is None and monitor_port is not None:
+        if ServerComm.monitor_socket is None and monitor_port is not None:
             print("Conectando à porta de monitoramento do servidor em ", host, ":", monitor_port, sep="", end=".", flush=True)
-            Server_Comm.monitor_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            Server_Comm.monitor_socket.connect((host, monitor_port))
+            ServerComm.monitor_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            ServerComm.monitor_socket.connect((host, monitor_port))
             print("Conexão concluída!")
 
     def _receive_async(
@@ -249,9 +249,9 @@ class ServerComm:
         if update:
             # Loga aviso caso múltiplos pacotes tenham sido recebidos sem update
             if i == 1:
-                self.world.log("Server_Comm.py: O agente perdeu 1 pacote! O modo de sincronização está ativado?")
+                self.world.log("ServerComm.py: O agente perdeu 1 pacote! O modo de sincronização está ativado?")
             if i > 1:
-                self.world.log(f"Server_Comm.py: O agente perdeu {i} pacotes consecutivos! O modo de sincronização está desabilitado?")
+                self.world.log(f"ServerComm.py: O agente perdeu {i} pacotes consecutivos! O modo de sincronização está desabilitado?")
 
             # Atualiza o estado do mundo com as novas informações
             # O parsing permite que usemos as variáveis.
@@ -261,7 +261,7 @@ class ServerComm:
             # select é uma função que permite verificar se há dados prontos para leitura,
             # escrita ou erro em sockets, sem bloquear a execução do programa.
             if len(select([self.socket], [], [], 0.0)[0]) != 0:
-                self.world.log("Server_Comm.py: Recebeu um novo pacote em world.update()!")
+                self.world.log("ServerComm.py: Recebeu um novo pacote em world.update()!")
                 self.receive()
 
     def send_immediate(self, msg: bytes) -> None:
@@ -299,7 +299,7 @@ class ServerComm:
             self.send_immediate(b''.join(self.send_buff))  # Envia todas as mensagens concatenadas
         else:
             # Se um novo pacote foi recebido enquanto o agente pensava, registra no log
-            self.world.log("Server_Comm.py: Recebeu um novo pacote enquanto estava pensando.")
+            self.world.log("ServerComm.py: Recebeu um novo pacote enquanto estava pensando.")
 
         self.send_buff = []  # Limpa o buffer após o envio
 
@@ -542,7 +542,7 @@ class ServerComm:
         # Fecha o socket principal do agente
         self.socket.close()
         # Fecha o monitor_socket compartilhado, se solicitado e se existir
-        if close_monitor_socket and Server_Comm.monitor_socket is not None:
-            Server_Comm.monitor_socket.close()
-            Server_Comm.monitor_socket = None
+        if close_monitor_socket and ServerComm.monitor_socket is not None:
+            ServerComm.monitor_socket.close()
+            ServerComm.monitor_socket = None
 

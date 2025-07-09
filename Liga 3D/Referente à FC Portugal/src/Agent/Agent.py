@@ -347,7 +347,7 @@ class Agent(BaseAgent):
                     self.state = 0 if self.kick(abort=True) else 2
                 else:
                     # Move-se para posição entre bola e gol
-                    self.move(slow_ball_pos + GeneralMath.normalize_vec((-16, 0) - slow_ball_pos) * 0.2, is_aggressive=True)
+                    self.move(slow_ball_pos + GeneralMath.normalize((-16, 0) - slow_ball_pos) * 0.2, is_aggressive=True)
             else:
                 # Ataca: tenta chutar para o gol
                 self.state = 0 if self.kick(goal_dir, 9, False, enable_pass_command) else 2
@@ -370,7 +370,7 @@ class Agent(BaseAgent):
             if active_player_unum == r.unum:
                 d.point(slow_ball_pos, 3, d.Color.pink, "status", False)  # Bola prevista
                 d.point(w.ball_2d_pred_pos[-1], 5, d.Color.pink, "status", False)  # Última previsão
-                d.annotation((*my_head_pos_2d, 0.6), "I've got it!", d.Color.yellow, "status")
+                d.annotation((*my_head_pos_2d, 0.6), "Alopra!", d.Color.yellow, "status")
             else:
                 d.clear("status")
 

@@ -1,6 +1,6 @@
 from Agent.BaseAgent import BaseAgent
 from sobre_scripts.commons.Script import Script
-from sobre_scripts.commons.UserInterface import Interface
+from sobre_scripts.commons.UserInterface import UserInterface
 
 
 class Behaviors:
@@ -37,7 +37,7 @@ class Behaviors:
         """
         names, descriptions = self.player.behavior.get_all_behaviors()
 
-        UserInterface.apresentar_lista(
+        UserInterface.print_table(
             [names, descriptions],
             ["Nome do Comportamento", "Descrição"],
             numbering=[True, False]
@@ -86,7 +86,7 @@ class Behaviors:
         """
 
         a = self.script.args
-        self.player = Agent(a.i, a.p, a.m, a.u, a.r, a.t)  # Args: Server IP, Agent Port, Monitor Port, Uniform No., Robot Type, Team Name
+        self.player = BaseAgent(a.i, a.p, a.m, a.u, a.r, a.t)  # Args: Server IP, Agent Port, Monitor Port, Uniform No., Robot Type, Team Name
         behavior = self.player.behavior
 
         self.beam()

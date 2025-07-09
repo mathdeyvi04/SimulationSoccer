@@ -1,4 +1,4 @@
-from behaviors.custom.Step.Step_Generator import Step_Generator
+from sobre_behaviors.custom.Step.StepGenerator import StepGenerator
 from math_ops.GeneralMath import GeneralMath
 import math
 import numpy as np
@@ -47,7 +47,7 @@ class Env:
                 Altura máxima permitida para o pé durante a trajetória do passo.
             leg_length: float
                 Comprimento total da perna (coxa + canela), baseado nas especificações do robô NAO.
-            step_generator: Step_Generator
+            step_generator: StepGenerator
                 Instância do gerador de trajetórias de passos, configurado conforme especificações do robô.
             DEFAULT_ARMS: np.array
                 Array com as posições padrão dos braços durante a caminhada.
@@ -84,7 +84,7 @@ class Env:
         max_ankle_z = nao_specs[5]  # Altura máxima permitida do tornozelo
 
         # Inicializa o gerador de passos com parâmetros ajustados
-        self.step_generator = Step_Generator(feet_y_dev, sample_time, max_ankle_z)
+        self.step_generator = StepGenerator(feet_y_dev, sample_time, max_ankle_z)
         self.DEFAULT_ARMS = np.array([-90, -90, 8, 8, 90, 90, 70, 70], np.float32)  # Posição padrão dos braços
 
         # Variáveis de controle de caminhada (inicialmente None, usadas durante o planejamento de caminhada)

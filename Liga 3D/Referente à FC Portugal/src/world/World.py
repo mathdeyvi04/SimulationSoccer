@@ -299,8 +299,8 @@ class World:
             intersection_distance : float
                 Distância entre a posição atual do robô e o ponto de interseção (m).
         """
-        params = np.array([*self.robot.loc_head_position[:2], player_speed * 0.02, *self.ball_2d_pred_pos.flat], np.float32)
-        pred_ret = preditor_de_curva_da_bola.get_possible_intersection_with_ball(params)
+        # params = np.array([*self.robot.loc_head_position[:2], player_speed * 0.02, *self.ball_2d_pred_pos.flat], np.float32)
+        pred_ret = preditor_de_curva_da_bola.get_possible_intersection_with_ball(self.robot.loc_head_position[:2], player_speed * 0.02, self.ball_2d_pred_pos.flat)
         return pred_ret[:2], pred_ret[2]
 
     def update(self):
@@ -465,8 +465,7 @@ class World:
 
         elif self.ball_abs_pos_last_update == self.time_local_ms:  # make new prediction for new ball position (from vision or radio)
 
-            params = np.array([*self.ball_abs_pos[:2], *np.copy(self.get_ball_abs_vel(6)[:2])], np.float32)
-            pred_ret = preditor_de_curva_da_bola.get_ball_kinematic_prediction(params)
+            pred_ret = preditor_de_curva_da_bola.get_ball_kinematic_prediction(self.ball_abs_pos[:2], np.copy(self.get_ball_abs_vel(6)[:2]))
             sample_no = len(pred_ret) // 5 * 2
             self.ball_2d_pred_pos = pred_ret[:sample_no].reshape(-1, 2)
             self.ball_2d_pred_vel = pred_ret[sample_no:sample_no * 2].reshape(-1, 2)

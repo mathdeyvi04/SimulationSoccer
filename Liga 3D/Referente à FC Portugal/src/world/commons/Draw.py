@@ -272,6 +272,32 @@ class Draw:
 
         Draw._send(msg, self._prefix + id_.encode(), flush)
 
+    def sphere(self, pos, radius, color:bytes, id:str, flush=True):
+        ''' 
+        Draw sphere
+
+        Examples
+        ----------
+        Sphere in 3D: sphere((1,1,1), 3, Draw.Color.red, "my_sphere")
+        Sphere in 2D (z=0): sphere((1,1), 3, Draw.Color.red, "my_sphere")
+        '''
+        if not self.enabled: return
+        assert type(color)==bytes, "The RGB color must be a bytes object, e.g. red: b'\xFF\x00\x00'"
+        assert not np.isnan(pos).any(), "Argument 'pos' contains 'nan' values"
+
+        z = pos[2] if len(pos)==3 else 0
+
+        if self._is_team_right: 
+            pos = (-pos[0],-pos[1],pos[2]) if len(pos)==3 else (-pos[0],-pos[1])
+
+        msg = b'\x01\x03' + (
+        f'{f"{pos[0]  :.4f}":.6s}'
+        f'{f"{pos[1]  :.4f}":.6s}'
+        f'{f"{z       :.4f}":.6s}'
+        f'{f"{radius    :.4f}":.6s}').encode() + color
+        
+        Draw._send(msg, self._prefix + id.encode(), flush)
+
     def polygon(self, vertices: list[tuple] | np.ndarray[tuple], color: bytes, alpha: int, id_: str, flush: bool = True) -> None:
         """
         Descrição:

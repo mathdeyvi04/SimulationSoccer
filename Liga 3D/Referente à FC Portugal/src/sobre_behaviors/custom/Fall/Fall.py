@@ -1,7 +1,7 @@
 import numpy as np
 import pickle
 from math_ops.GeneralMath import GeneralMath
-from math_ops.Neural_Network import run_mlp
+from math_ops.NeuralNetwork import run_mlp
 
 
 class Fall:

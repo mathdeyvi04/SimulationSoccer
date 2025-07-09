@@ -182,7 +182,7 @@ class Matriz3x3:
             np.matmul(a, b, self.matriz)  # multiplication by matrix, in place
             return self
         else:  # multiplication by matrix, return new Matriz3x3
-            return Matrix3x3(np.matmul(a, b))
+            return Matriz3x3(np.matmul(a, b))
 
     def rotate_x_rad(self, rotation_rad: float, in_place: bool = False):
         """

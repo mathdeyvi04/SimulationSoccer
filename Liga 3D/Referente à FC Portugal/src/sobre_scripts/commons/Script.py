@@ -232,7 +232,7 @@ class Script:
             self.args.D = 0
 
         # Lista de Jogadores Criados
-        self.jogadores = []
+        self.players = []
 
         # Aqui é onde a brincadeira começa!!
         Script.construir_modulos_cpp(

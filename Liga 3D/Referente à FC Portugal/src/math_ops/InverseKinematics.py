@@ -121,9 +121,9 @@ class InverseKinematics:
         """
 
         if is_batch:
-            return [c + (Inverse_Kinematics.TORSO_HIP_X, 0, Inverse_Kinematics.TORSO_HIP_Z) for c in coords]
+            return [c + (InverseKinematics.TORSO_HIP_X, 0, InverseKinematics.TORSO_HIP_Z) for c in coords]
         else:
-            return coords + (Inverse_Kinematics.TORSO_HIP_X, 0, Inverse_Kinematics.TORSO_HIP_Z)
+            return coords + (InverseKinematics.TORSO_HIP_X, 0, InverseKinematics.TORSO_HIP_Z)
 
     def head_to_hip_transform(self, coords: np.ndarray | list[np.ndarray], is_batch: bool = False):
         """
@@ -169,7 +169,7 @@ class InverseKinematics:
                 ndarray
                 Vetor 3D representando a posição da parte do corpo no referencial do centro entre as articulações dos quadris.
         """
-        bp_rel_head = self.robot.body_parts[body_part_name].transform.get_translation()
+        bp_rel_head = self.robot.body_parts[body_part_name].transform.obter_vetor_de_translacao()
         return self.head_to_hip_transform(bp_rel_head)
 
     def get_ankle_pos_relative_to_hip(self, is_left: bool):
@@ -272,9 +272,9 @@ class InverseKinematics:
         m = Matriz3x3().rotate_y_rad(raw_hip_pitch).rotate_x_rad(raw_hip_roll).rotate_z_deg(raw_hip_yaw).rotate_x_deg(-45 * sign)
 
         # Get actual hip angles considering the yaw joint orientation
-        hip_roll = (pi / 4) - (sign * asin(m.m[1, 2]))  # Add pi/4 due to 45deg rotation
-        hip_pitch = - atan2(m.m[0, 2], m.m[2, 2])
-        hip_yaw = sign * atan2(m.m[1, 0], m.m[1, 1])
+        hip_roll = (pi / 4) - (sign * asin(m.matriz[1, 2]))  # Add pi/4 due to 45deg rotation
+        hip_pitch = - atan2(m.matriz[0, 2], m.matriz[2, 2])
+        hip_yaw = sign * atan2(m.matriz[1, 0], m.matriz[1, 1])
 
         # Convert rad to deg
         values = np.array([hip_yaw, hip_roll, hip_pitch, -knee_angle, foot_pitch, foot_roll]) * 57.2957795  # rad to deg

@@ -1,10 +1,10 @@
-from agent.BaseAgent import BaseAgent
+from Agent.BaseAgent import BaseAgent
 from itertools import count
-from scripts.commons.Script import Script
+from sobre_scripts.commons.Script import Script
 import numpy as np
 
 
-class Get_Up:
+class GetUp:
 
     def __init__(self, script: Script) -> None:
         self.script = script

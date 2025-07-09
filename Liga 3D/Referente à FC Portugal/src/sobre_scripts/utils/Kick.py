@@ -1,6 +1,6 @@
-from agent.BaseAgent import BaseAgent
+from Agent.BaseAgent import BaseAgent
 from math_ops.GeneralMath import GeneralMath
-from scripts.commons.Script import Script
+from sobre_scriptsA.commons.Script import Script
 import numpy as np
 
 

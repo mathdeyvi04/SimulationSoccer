@@ -652,7 +652,7 @@ class Robot:
         else:
             g = self.gyro / 50  # convert degrees per second to degrees per step
 
-            self.imu_torso_to_field_rotation.multiply(Matriz3x3.from_rotation_deg(g), in_place=True, reverse_order=True)
+            self.imu_torso_to_field_rotation.multiply(Matriz3x3.create_sup_matrix_rotation(g), in_place=True, reverse_order=True)
 
             self.imu_torso_orientation = self.imu_torso_to_field_rotation.get_yaw_deg()
             self.imu_torso_pitch = self.imu_torso_to_field_rotation.get_pitch_deg()
@@ -671,7 +671,7 @@ class Robot:
 
             # convert proper acceleration to coordinate acceleration and fix rounding bias
             self.imu_weak_torso_acceleration = self.imu_torso_to_field_rotation.multiply(self.acc) + Robot.GRAVITY
-            self.imu_weak_torso_to_field_transform = Matrix_4x4.from_3x3_and_translation(self.imu_torso_to_field_rotation, self.imu_weak_torso_position)
+            self.imu_weak_torso_to_field_transform = Matriz4x4.create_matrix_rot_and_trans(self.imu_torso_to_field_rotation, self.imu_weak_torso_position)
             self.imu_weak_head_to_field_transform = self.imu_weak_torso_to_field_transform.multiply(self.body_parts["torso"].transform.invert())
             self.imu_weak_field_to_head_transform = self.imu_weak_head_to_field_transform.invert()
             p = self.imu_weak_head_to_field_transform(self.rel_cart_CoM_position)

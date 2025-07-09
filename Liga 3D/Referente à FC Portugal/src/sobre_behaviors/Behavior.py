@@ -14,12 +14,6 @@ class Behavior:
         - get_current
         - get_previous
         - force_reset
-        -
-        -
-        -
-        -
-        -
-        -
     """
 
     def __init__(self, base_agent) -> None:
@@ -95,10 +89,10 @@ class Behavior:
         # Para adicionar um novo comportamento:
         # 1. Importe a classe abaixo.
         # 2. Adicione-a à lista 'classes'.
-        from sobre_behaviors.custom.Basic_Kick.BasicKick import BasicKick
+        from sobre_behaviors.custom.BasicKick.BasicKick import BasicKick
         from sobre_behaviors.custom.Dribble.Dribble import Dribble
         from sobre_behaviors.custom.Fall.Fall import Fall
-        from sobre_behaviors.custom.Get_Up.GetUp import GetUp
+        from sobre_behaviors.custom.GetUp.GetUp import GetUp
         from sobre_behaviors.custom.Step.Step import Step
         from sobre_behaviors.custom.Walk.Walk import Walk
         classes = [BasicKick, Dribble, Fall, GetUp, Step, Walk]

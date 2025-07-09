@@ -1,4 +1,4 @@
-from agent.BaseAgent import BaseAgent
+from Agent.BaseAgent import BaseAgent
 from math_ops.Matriz3x3 import Matriz3x3
 from math_ops.Matriz4x4 import Matriz4x4
 from sobre_scripts.commons.Script import Script
@@ -273,9 +273,9 @@ class IMU:
         """
         r = self.player.world.robot
         # Copia transformações de rotação, torso->campo e cabeça->campo do IMU do robô
-        self.imu_torso_to_field_rotation[i].m[:] = r.imu_torso_to_field_rotation.m
-        self.imu_torso_to_field_transform[i].m[:] = r.imu_weak_torso_to_field_transform.m
-        self.imu_head_to_field_transform[i].m[:] = r.imu_weak_head_to_field_transform.m
+        self.imu_torso_to_field_rotation[i].matriz[:] = r.imu_torso_to_field_rotation.matriz
+        self.imu_torso_to_field_transform[i].matriz[:] = r.imu_weak_torso_to_field_transform.matriz
+        self.imu_head_to_field_transform[i].matriz[:] = r.imu_weak_head_to_field_transform.matriz
         # Copia posição, velocidade e aceleração do torso
         self.imu_torso_position[i][:] = r.imu_weak_torso_position
         self.imu_torso_velocity[i][:] = r.imu_weak_torso_velocity
@@ -302,7 +302,7 @@ class IMU:
         """
         a = self.script.args
         # Instancia o agente principal
-        self.player = Agent(a.i, a.p, a.m, a.u, a.r, a.t)  # Args: Server IP, Agent Port, Monitor Port, Uniform No., Robot Type, Team Name
+        self.player = BaseAgent(a.i, a.p, a.m, a.u, a.r, a.t)  # Args: Server IP, Agent Port, Monitor Port, Uniform No., Robot Type, Team Name
 
         # Reposiciona o agente para a posição inicial desejada (beam)
         self.player.scom.unofficial_beam((-3, 0, self.player.world.robot.beam_height), 15)

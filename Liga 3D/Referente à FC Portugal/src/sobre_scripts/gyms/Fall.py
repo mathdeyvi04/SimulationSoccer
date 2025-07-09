@@ -84,7 +84,7 @@ class Fall(gym.Env):
         )
 
         # Verifica se as funções de "cheat" estão habilitadas no servidor
-        assert np.any(self.player.world.robot.cheat_abs_pos), "Cheats não estão permitidos! Run_Utils.py -> Server -> Cheats"
+        assert np.any(self.player.world.robot.cheat_abs_pos), "Cheats não estão permitidos! Run_Player.py -> Server -> Cheats"
 
     def observe(self) -> np.ndarray:
         """

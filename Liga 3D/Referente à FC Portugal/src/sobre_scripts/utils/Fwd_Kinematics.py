@@ -73,7 +73,7 @@ class Fwd_Kinematics:
 
                 # Para cada parte do corpo, desenha linha e anota o nome
                 for key, val in p.world.robot.body_parts.items():
-                    rp = val.transform.get_translation()
+                    rp = val.transform.obter_vetor_de_translacao()
                     pos = p.world.robot.loc_head_to_field_transform(rp, False)
                     label_rp = np.array([rp[0] - 0.0001, rp[1] * 0.5, 0])
                     label_rp /= np.linalg.norm(label_rp) / 0.4  # Posicionamento do label a 0.4m

@@ -1,4 +1,4 @@
-from behaviors.custom.Walk.Env import Env
+from sobre_behaviors.custom.Walk.Env import Env
 from math_ops.GeneralMath import GeneralMath
 from math_ops.NeuralNetwork import run_mlp
 import numpy as np

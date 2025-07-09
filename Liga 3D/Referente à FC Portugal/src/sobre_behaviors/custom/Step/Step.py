@@ -14,7 +14,7 @@ class Step:
             - `feet_y_dev` define o desvio lateral dos pés, multiplicado por 1.2 para dar um passo mais largo que o padrão.
             - `sample_time` determina o intervalo de amostragem dos passos, obtido dos parâmetros do robô.
             - `max_ankle_z` define a altura máxima do tornozelo durante o passo.
-            - O gerador de passos (`Step_Generator`) é inicializado com esses parâmetros para garantir movimentos naturais e seguros.
+            - O gerador de passos (`StepGenerator`) é inicializado com esses parâmetros para garantir movimentos naturais e seguros.
 
 
         Parâmetros:
@@ -33,7 +33,7 @@ class Step:
                 Indica se a orientação automática da cabeça está habilitada neste primitivo.
             leg_length: float
                 Comprimento total da perna do robô, calculado como a soma dos comprimentos da coxa e da canela.
-            step_generator: Step_Generator
+            step_generator: StepGenerator
                 Instância do gerador de passos, configurada com os parâmetros específicos do robô.
         """
 
@@ -56,7 +56,7 @@ class Step:
         max_ankle_z = nao_specs[5]
 
         # Inicializa o gerador de passos com os parâmetros calculados
-        self.step_generator = Step_Generator(feet_y_dev, sample_time, max_ankle_z)
+        self.step_generator = StepGenerator(feet_y_dev, sample_time, max_ankle_z)
 
     def execute(self, reset, ts_per_step=7, z_span=0.03, z_max=0.8):
         """

@@ -1,4 +1,4 @@
-from behaviors.custom.Step.Step_Generator import Step_Generator
+from sobre_behaviors.custom.Step.StepGenerator import StepGenerator
 from math_ops.GeneralMath import GeneralMath
 
 
