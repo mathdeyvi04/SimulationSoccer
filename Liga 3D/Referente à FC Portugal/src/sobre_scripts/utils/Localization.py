@@ -75,7 +75,7 @@ class Localization:
             line_tip = o.state_abs_pos + (0.5 * GeneralMath.cos_deg(o.state_orientation), 0.5 * GeneralMath.sin_deg(o.state_orientation), 0)
             d.line(o.state_abs_pos, line_tip, 3, white, "world", False)
         else:
-            temp_pos = GeneralMath.to_3d(o.state_abs_pos, 0.3)
+            temp_pos = GeneralMath.to_3D(o.state_abs_pos, 0.3)
             line_tip = temp_pos + (0.5 * GeneralMath.cos_deg(o.state_orientation), 0.5 * GeneralMath.sin_deg(o.state_orientation), 0)
             d.line(temp_pos, line_tip, 3, Draw.Color.yellow, "world", False)
 

@@ -428,11 +428,11 @@ class Draw:
 
         # Converte para 3D se os vetores estão em 2D
         if len(p1) == 2:
-            p1 = M.to_3d(p1)
+            p1 = GeneralMath.to_3D(p1)
         else:
             p1 = np.asarray(p1)
         if len(p2) == 2:
-            p2 = M.to_3d(p2)
+            p2 = GeneralMath.to_3D(p2)
         else:
             p2 = np.asarray(p2)
 

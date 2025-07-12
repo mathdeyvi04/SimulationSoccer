@@ -135,4 +135,4 @@ class Agent(BaseAgent):
             else:
                 d.annotation((*my_head_pos_2d, 0.8), "Kicker", d.Color.yellow, "status")
                 if PM == w.M_OUR_KICKOFF:  # Desenha seta indicando direção do chute
-                    d.arrow(ball_2d, ball_2d + 5 * M.vector_from_angle(self.kick_dir), 0.4, 3, d.Color.cyan_light, "Target")
+                    d.arrow(ball_2d, ball_2d + 5 * GeneralMath.unit_vector_by_angle(self.kick_dir), 0.4, 3, d.Color.cyan_light, "Target")

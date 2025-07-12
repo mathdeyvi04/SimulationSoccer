@@ -25,9 +25,6 @@ class WorldParser:
         - get_next_tag
         - parse
 
-
-
-
     """
 
     def __init__(self, world: World, hear_callback: Callable) -> None:

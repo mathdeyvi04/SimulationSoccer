@@ -251,7 +251,7 @@ class Dribble:
                     dribble_target = None  # Dribla para o gol
                 self.env.dribble_rel_orientation = self.path_manager.get_dribble_path(optional_2d_target=dribble_target)[1]
             elif is_orientation_absolute:
-                self.env.dribble_rel_orientation = M.normalize_deg(orientation - r.imu_torso_orientation)
+                self.env.dribble_rel_orientation = GeneralMath.normalize_deg(orientation - r.imu_torso_orientation)
             else:
                 self.env.dribble_rel_orientation = float(orientation)  # Orientação relativa
 
