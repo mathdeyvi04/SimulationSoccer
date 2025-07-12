@@ -456,7 +456,7 @@ class PathManager:
 
         # Adicionar um obstáculo no lado oposto ao do alvo
         if dev_len > 0 and safety_margin > 0:
-            center = ball_2d - GeneralMath.normalize_vec(rel_target) * safety_margin
+            center = ball_2d - GeneralMath.normalize(rel_target) * safety_margin
             obstacles.append((*center, 0, safety_margin * 0.9, 5))
             if self._draw_obstacles:
                 d = w.team_draw if self._use_team_channel else w.draw

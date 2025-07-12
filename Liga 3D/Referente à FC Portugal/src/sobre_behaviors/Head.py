@@ -164,7 +164,7 @@ class Head:
         if self.state == TIMEOUT:
             if w.ball_last_seen > w.time_local_ms - w.VISUALSTEP_MS:
                 # Bola está no FOV: busca 45 graus para ambos os lados da bola
-                ball_dir = M.vector_angle(w.ball_rel_torso_cart_pos[:2])
+                ball_dir = GeneralMath.angle_horizontal_from_vector2D(w.ball_rel_torso_cart_pos[:2])
                 targ = np.clip(ball_dir + (45 if self.look_left else -45), -119, 119)
             else:
                 # Bola não está no FOV: busca 119 graus para ambos os lados do campo
