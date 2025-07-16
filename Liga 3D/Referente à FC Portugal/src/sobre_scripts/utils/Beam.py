@@ -70,15 +70,12 @@ class Beam(Testing):
 
         return None
 
+    # TEM QUE SER STATICMETHOD, para thread não pegar self como argumento
     @staticmethod
     def receber_entrada_paralela(
         running: list[bool],
         tripla_de_estados: list[float],
     ):
-        """
-
-        """
-
         while running[0]:
             if tripla_de_estados[-1] < 3:
                 tripla_de_estados[tripla_de_estados[-1]] = UserInterface.obter_float(

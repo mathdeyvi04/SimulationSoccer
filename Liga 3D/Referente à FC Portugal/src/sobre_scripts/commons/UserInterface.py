@@ -121,9 +121,12 @@ class UserInterface:
             return intervalo[0], False
 
         while True:
-            entrada_do_usuario = input(
-                prompt
-            )
+            try:
+                entrada_do_usuario = input(
+                    prompt
+                )
+            except KeyboardInterrupt:
+                break
 
             if entrada_do_usuario in lista_de_opcoes_de_string:
                 return lista_de_opcoes_de_string.index(
