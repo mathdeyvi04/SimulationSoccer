@@ -3,6 +3,7 @@ from os.path import join, dirname, isfile, isdir
 import json
 import sys
 from time import sleep
+import threading # Não ironicamente, usamos apenas para criar imersão.
 
 from sobre_scripts.commons.UserInterface import UserInterface
 
@@ -136,6 +137,23 @@ Descrição:
 import subprocess
 
 
+def mostrar_spinner(
+    running_flag: list[bool]
+) -> None:
+    """
+    Descrição:
+        Apenas uma função simples para apresentar uma imersão maior no carregamento.
+    """
+
+    spinner = ['|', '/', '-', '\\']
+    i = 0
+    while running_flag[0]:
+        print(f"{spinner[i % len(spinner)]}", end='', flush=True)
+        i += 1
+        sleep(0.2)
+        print("\b", end='')
+
+
 class Script:
     """
     Descrição:
@@ -241,15 +259,6 @@ class Script:
 
         if self.args.D:
             # Se quisermos rodar em modo debug
-
-            try:
-                print(
-                    "\nDICA: Se quiser ajuda, rode:",
-                    f"python3 {__main__.__file__} -h",
-                    sep=" "
-                )
-            except:
-                pass
 
             colunas = [
                 [],
@@ -392,7 +401,7 @@ class Script:
         # Vai obter a versão python do sistema, 3.11, por exemplo.
         python_cmd = f"python{sys.version_info.major}.{sys.version_info.minor}"
 
-        def builder() -> str:
+        def get_includes() -> str:
             """
             Descrição:
                 Função responsável por iniciar o processo de construção de módulos C++
@@ -441,10 +450,11 @@ class Script:
                 print(f"\033[7m\033[31mUm erro ocorreu na construção do módulo C++: {error_do_processo}\033[0m")
                 exit()
 
+            # Em minha visão, essa parte é inútil.
             includes_ = includes_.decode().rstrip()
             # Obtido por mim:
             # Using Pybind11 Includes: -I/usr/include/python3.12 -I/usr/lib/python3/dist-packages/pybind11/include
-            print(f"Using Pybind11 Includes: {includes_}")
+            # print(f"Usando Comandos de Pybind11 Includes: {includes_}\n")
             return includes_
 
         # Número de Processadores na máquina.
@@ -485,16 +495,17 @@ class Script:
                     if (bin_mod_time + 30) > code_mod_time:
                         continue
 
+            # Somente será executado uma vez.
             if zero_modulos_construidos:
                 if saida_da_construcao:
                     print("\nHá módulos C++ para construir, entretanto este jogador não está autorizado a construir. Abortando.")
                     exit()
 
                 zero_modulos_construidos = False
-                includes = builder()
+                includes = get_includes()
 
             # Vamos construir o módulo.
-            print(f'{f"Building: {modulo_cpp}... ":40}', end='', flush=True)
+            print(f'{f"Construindo: \033[1;32;40m{modulo_cpp}\033[0m":.<{60}}', end='', flush=True)
             processo = subprocess.Popen(
                 ["make", "-j" + n_proc, "PYBIND_INCLUDES=" + includes],
                 stdout=subprocess.PIPE,
@@ -502,11 +513,20 @@ class Script:
                 cwd=caminho_do_modulo
             )
 
+            # Apenas para termos um contador.
+            running_flag = [True]
+            thread = threading.Thread(target=mostrar_spinner, args=(running_flag,))
+            thread.start()
+
             output, error = processo.communicate()
             exit_code = processo.wait()
 
+            # Encerramos a thread seguida.
+            running_flag[0] = False
+            thread.join()
+            
             if exit_code == 0:
-                print("\033[7m\033[1mMódulo Construído.\033[0m")
+                print(" \033[1;7mMódulo Construído.\033[0m")
                 with open(
                         join(caminho_do_modulo, modulo_cpp + ".c_info"),
                         "wb"
@@ -519,11 +539,13 @@ class Script:
 
             subprocess.run(
                 ["make", "clean"],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
                 cwd=caminho_do_modulo
             )
 
         if not zero_modulos_construidos:
-            print("\033[7:32mTodos os módulos C++ foram construídos com sucesso.\033[0m")
+            print("\n\033[1;7mTodos os módulos C++ foram construídos com sucesso.\033[0m")
 
     # Os Demais Métodos São inerentes à importação 'import __main__'
 

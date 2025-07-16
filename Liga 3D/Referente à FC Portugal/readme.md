@@ -34,17 +34,6 @@ ou o modificado da RoboIME.
 
 # Principais Possíveis Melhorias Observadas
 
-* ### Presença de código inútil em [ambientacao](src/sobre_cpp/ambientacao)
-
-Dentro de [communication](src/communication), há classes e métodos que realizam comunicações
-sockets entre o agente e o robô, e entre o usuário e os softwares Roboviz e Simsparks.
-
-Entretanto, dentro do desenvolvimento da pasta `ambientacao`, também são definidos classes e métodos
-que realizam tais comunicações. 
-
-Acredito que isso ocorra devido à migração da aplicação geral de C++ para Python e a não eliminação do
-código obsoleto.
-
 * ### Tratamento de Importações
 
 Alguns arquivos, como os presentes em [communication](src/communication) ou em [sobre_behaviors](src/sobre_behaviors),
