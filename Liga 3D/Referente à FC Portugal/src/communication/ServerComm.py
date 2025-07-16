@@ -105,7 +105,7 @@ class ServerComm:
 
         # Tenta conectar ao servidor, aguardando se necessário
         if wait_for_server:
-            print("Aguardando o servidor em ", host, ":", agent_port, sep="", end=".", flush=True)
+            print(f"Aguardando o servidor em {host}:{agent_port}.\n", end=".", flush=True)
         while True:
             try:
                 self.socket.connect((host, agent_port))
@@ -116,7 +116,7 @@ class ServerComm:
                     print("Servidor está fora do ar. Encerrando...")
                     exit()
                 time.sleep(1)
-                print(".", end="", flush=True)
+                print("", end="", flush=True)
         print("Agente conectado", unum, self.socket.getsockname())
 
         # Envia mensagem de cena para selecionar o modelo do robô
@@ -147,7 +147,7 @@ class ServerComm:
             print("Conectando à porta de monitoramento do servidor em ", host, ":", monitor_port, sep="", end=".", flush=True)
             ServerComm.monitor_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             ServerComm.monitor_socket.connect((host, monitor_port))
-            print("Conexão concluída!")
+            print("-> Conexão concluída!")
 
     def _receive_async(
             self,
@@ -198,7 +198,7 @@ class ServerComm:
         # Restaura o modo bloqueante padrão do socket
         self.socket.setblocking(True)
         if not first_pass:
-            print("Concluído!")
+            print("\033[1;7mConcluído!\033[0m")
 
     def receive(self, update: bool = True):
         """

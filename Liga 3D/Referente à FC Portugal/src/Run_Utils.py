@@ -26,7 +26,7 @@ def main():
     _cwd = realpath(join(getcwd(), dirname(__file__)))
     gyms_path = _cwd + "/sobre_scripts/gyms/"
     utils_path = _cwd + "/sobre_scripts/utils/"
-    exclusions = ["__init__.py"]  # Ignora arquivos de inicialização
+    exclusions = {"__init__.py", "Testing.py"}  # Ignora arquivos de inicialização
 
     # Lista scripts disponíveis (sem __init__.py), ordenando os utils com 'Server' por último
     utils = sorted(
@@ -57,14 +57,14 @@ def main():
         else:
             chosen = None
 
-        cls_name = chosen[1]
-        mod = import_module(chosen[0] + chosen[1])  # Importa módulo dinamicamente
-
+        cls_name = chosen[1]  # Observe que necessariamente cada arquivo deve ter o nome de sua classe.
         '''
         Scripts não devem executar código automaticamente ao importar:
         - Multiprocessing pode duplicar execuções
         - O módulo pode ser recarregado várias vezes e gerar comportamento inesperado
         '''
+        mod = import_module(chosen[0] + chosen[1])  # Importa módulo dinamicamente
+
 
         if not is_gym:
             '''
@@ -78,6 +78,7 @@ def main():
                 obj.execute()
             except KeyboardInterrupt:
                 print("\nctrl+c pressed, returning...\n")
+                
             Draw.clear_all()  # Limpa todas as marcações de desenho
             BaseAgent.terminate_all()  # Encerra sockets de agentes e monitor
             script.players = []  # Limpa lista de jogadores registrados

@@ -1,10 +1,13 @@
 from Agent.BaseAgent import BaseAgent
 from sobre_scripts.commons.Script import Script
-from time import sleep
 from sobre_scripts.commons.UserInterface import UserInterface
+from sobre_scripts.utils.Testing import Testing
+from time import sleep
+
+import threading as th
 
 
-class Beam:
+class Beam(Testing):
     """
     Descrição:
         Classe utilitária para manipulação do posicionamento instantâneo ("beam").
@@ -67,6 +70,29 @@ class Beam:
 
         return None
 
+    @staticmethod
+    def receber_entrada_paralela(
+        running: list[bool],
+        tripla_de_estados: list[float],
+    ):
+        """
+
+        """
+
+        while running[0]:
+            if tripla_de_estados[-1] < 3:
+                tripla_de_estados[tripla_de_estados[-1]] = UserInterface.obter_float(
+                    f"Entre com a {tripla_de_estados[-1] + 1}° coordenada ('' para o resultado anterior, ctrl+c para sair): ", default=tripla_de_estados[tripla_de_estados[-1]]
+                )
+
+                print()
+
+                tripla_de_estados[-1] += 1
+            else:
+                sleep(0.1)
+
+        print("- Saindo do Loop de Entradas")
+
     def execute(self):
         """
         Descrição:
@@ -90,35 +116,40 @@ class Beam:
         # Define o modo de jogo para "PlayOn"
         self.player.scom.unofficial_set_play_mode("PlayOn")
 
+        print("\n\033[1;7mAguarde alguns segundos...\033[0m")
+
         # Desenha uma grade de referência no campo
         for x in range(-15, 16):
             for y in range(-10, 11):
                 d.point((x, y), 6, d.Color.red, "grid", False)
+                self.player.scom.send()
+                self.player.scom.receive()
         d.flush("grid")
 
-        # Inicializa a comunicação com o simulador
-        for _ in range(10):
-            self.player.scom.send()
-            self.player.scom.receive()
+        print("\nTeletransporte usando (x, y, orientação): \n")
 
-        print("\nBeam player to coordinates + orientation:")
+        tripla_de_estados = [0, 0, 0, 0]  # O quarto elemento servirá como index.
+        running = [True]
+        r = self.player.world.robot
 
-        x = y = a = 0
-        while True:  # Loop interativo para reposicionamento do robô
-            # Solicita coordenada x ao usuário
-            x = UserInterface.obter_float(
-                f"\nInput x coordinate       ('' to send {x:5} again, ctrl+c to return): ", default=x)
+        paralela = th.Thread(target=Beam.receber_entrada_paralela, args=(running, tripla_de_estados))
+        paralela.start()
 
-            self.beam_and_update(x, y, a)
+        try:
+            while True:
 
-            # Solicita coordenada y ao usuário
-            y = UserInterface.obter_float(
-                f"Input y coordinate       ('' to send {y:5} again, ctrl+c to return): ", default=y)
+                # Se desejamos que o loop não seja bloqueado pela espera da entrada, 
+                # devemos utilizar threads.
+                if tripla_de_estados[-1] == 3:
+                    self.beam_and_update(tripla_de_estados[0], tripla_de_estados[1], tripla_de_estados[2])
+                    tripla_de_estados[-1] = 0
 
-            self.beam_and_update(x, y, a)
+                # Apenas para servidor não ficar bloqueado.
+                sleep(0.02)
+                self.player.scom.commit_and_send(r.get_command())
+                self.player.scom.receive()
+        except KeyboardInterrupt:
+            print("- Saindo do Loop Principal")
+            running[0] = False
+            paralela.join()
 
-            # Solicita orientação ao usuário
-            a = UserInterface.obter_float(
-                f"Orientation -180 to 180  ('' to send {a:5} again, ctrl+c to return): ", default=a)
-
-            self.beam_and_update(x, y, a)

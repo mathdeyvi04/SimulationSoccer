@@ -686,6 +686,18 @@ class WorldParser:
 
                     tag, end, _ = self.get_next_tag(end)
 
+                ################################################################################################################
+                # Novas tags podem ser implementadas pela equipe oficial, portanto, devemos ser capazes de implementá-las também
+                # Verifique: https://gitlab.com/robocup-sim/SimSpark/-/tags
+
+                case b'foul':
+                    # Pelo que compreendi, serve para indicar que um determinado robô causou uma falta em si mesmo. 
+                    # Parece um tanto inútil, mas, por enquanto, vamos deixar registrado sempre.
+                    self.world.log(f"{self.LOG_PREFIX}Obtive 'foul': {tag} at {end}, \nMsg: {exp.decode()[end - 10: end + 10]}")
+                    tag, end, min_depth = self.get_next_tag(end)
+
+
+
                 case _:
                     # Caso encontre tag desconhecida na raiz da mensagem
                     self.world.log(f"{self.LOG_PREFIX}Tag Desconhecida na Mensagem Raiz: {tag} at {end}, \nMsg: {exp.decode()}")

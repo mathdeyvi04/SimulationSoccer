@@ -13,7 +13,8 @@ from math_ops.InverseKinematics import InverseKinematics
 from world.commons.PathManager import PathManager
 from world.World import World
 
-
+# Não utilizamos o ABC corretamente, pois em alguns casos como em utils, desejamos apenas BaseAgent.
+# Usar o ABC forçaria a necessidade de uma implementação aqui. 
 class BaseAgent:
     """
     Descrição:

@@ -29,7 +29,7 @@ Descrição:
 
 Exemplo:
     Suponha que estou executando um arquivo A.
-    Dentro da execução de A, importo um módulo B.
+    Dentro da execução de A, importo um módulo B.,
     Entretanto, eu desejo usar funções disponíveis de A em B.
     Para isso, uso import __main__ e consigo usar as funções de A
     em B.
@@ -50,7 +50,6 @@ Descrição:
 Exemplo:
     import argparse
 
-    # Criar o parser
     parser = argparse.ArgumentParser(description="Calculadora simples.")
     
     # Adicionar argumentos
@@ -88,7 +87,7 @@ Exemplo:
             
             optional arguments:
               -h, --help            show this help message and exit
-              --operacao {soma,subtracao}, -o {soma,subtracao}
+              --operacao {soma,subtracao}, -o {soma, subtracao}
                                     Operação a ser realizada (padrão: soma).
 """
 import argparse
@@ -96,9 +95,9 @@ import argparse
 # ISTO NÃO É TRIVIAL
 """
 Descrição:
-    Módulo usado para serializar (converter objetos Python
+    Módulo usado para serializar (converter objeto Python
     em uma sequência de bytes) e desserializar (converter
-    bytes de volta em objetos Python). Ele é útil para salvar
+    bytes de volta em objetos Python). Ele permite salvar
     o estado de um objeto em um arquivo ou transmiti-lo pela
     rede, permitindo que você armazene ou compartilhe 
     estruturas de dados complexas, como listas, dicionários 
@@ -427,7 +426,7 @@ class Script:
                     Caso ocorra um erro, encerra tudo com 'exit()'.
             """
 
-            print("\033[7m\033[1m|-- Construindo Módulos C++ --|\033[0m")
+            print("\033[7m\033[1m|-- Construindo Módulos C++ --|\033[0m\n")
 
             try:
                 """
@@ -505,7 +504,8 @@ class Script:
                 includes = get_includes()
 
             # Vamos construir o módulo.
-            print(f'{f"Construindo: \033[1;32;40m{modulo_cpp}\033[0m":.<{60}}', end='', flush=True)
+            msg = f'Construindo: \033[1;32;40m{modulo_cpp}\033[0m'
+            print(f"{msg:.<{60}}", end='', flush=True)
             processo = subprocess.Popen(
                 ["make", "-j" + n_proc, "PYBIND_INCLUDES=" + includes],
                 stdout=subprocess.PIPE,

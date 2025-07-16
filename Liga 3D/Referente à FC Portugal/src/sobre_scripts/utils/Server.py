@@ -1,7 +1,8 @@
 import os
 import subprocess
+from sobre_scripts.utils.Testing import Testing
 
-class Server:
+class Server(Testing):
     """
     Classe responsável por interpretar, exibir e modificar as configurações do servidor SimSpark (rcssserver3d).
     Permite alternar modos de jogo, visão, ruído, frequência de monitoramento e outros parâmetros fundamentais
@@ -34,15 +35,15 @@ class Server:
             "Cheats", "Full Vision", "Add Noise", "25Hz Monitor"
         ]
         self.descriptions = [
-            "Configuration used in official matches",
-            "Server's Penalty Shootout mode",
-            "Play modes, automatic referee, etc.",
-            "Synchronous communication between agents and server",
-            "Real Time (or maximum server speed)",
-            "Agent position & orientation, ball position",
-            "See 360 deg instead of 120 deg (vertically & horizontally)",
-            "Noise added to the position of visible objects",
-            "25Hz Monitor (or 50Hz but RoboViz will show 2x the actual speed)"
+            "Configuração usada em partidas oficiais",
+            "Modo de disputa por pênaltis do servidor",
+            "Modos de jogo, árbitro automático, etc.",
+            "Comunicação síncrona entre agentes e servidor",
+            "Tempo real (ou velocidade máxima do servidor)",
+            "Posição e orientação dos agentes, posição da bola",
+            "Visão de 360° em vez de 120° (vertical e horizontal)",
+            "Ruído adicionado à posição dos objetos visíveis",
+            "Monitor a 25Hz (ou 50Hz, mas o RoboViz mostrará o dobro da velocidade real)"
         ]
 
         # Arquivos de configuração utilizados por cada opção
@@ -90,7 +91,7 @@ class Server:
             "Official Config" com base em uma combinação padrão de valores esperados.
         """
         v = self.values = dict()
-        print("Reading server configuration files...")
+        print("\nLendo arquivos de configuração do servidor...")
 
         self.label("Penalty Shootout", "addSoccerVar('PenaltyShootout', true)", "addSoccerVar('PenaltyShootout', false)")
         self.label("Soccer Rules", " gameControlServer.initControlAspect('SoccerRuleAspect')", "#gameControlServer.initControlAspect('SoccerRuleAspect')")
@@ -167,14 +168,15 @@ class Server:
             UserInterface.apresentar_tabela(
                 [self.options, values_list, self.descriptions],
                 ["Setting", "Value", "Description"],
-                numbering=[True, False, False]
+                numbering=[True, False, False],
+                alinhamento=['<', '^', '<']
             )
 
             # Entrada do usuário
-            choice = UserInterface.obter_inteiro('Choose setting (ctrl+c to return): ', 0, len(self.options))
+            choice = UserInterface.obter_inteiro('Escolha configuração (ctrl+c to return): ', 0, len(self.options))
             opt = self.options[choice]
 
-            prefix = ['sudo', 'python3', 'scripts/utils/Server.py', opt]
+            prefix = ['sudo', 'python3', 'sobre_scripts/utils/Server.py', opt]
             suffix = []
             if opt in self.files:
                 suffix = [self.values[opt], self.files[opt]]
