@@ -159,8 +159,7 @@ private:
 		double media,
 		double desvio_padrao,
 		double inicio_do_intervalo,
-		double final_do_intervalo,
-		int n = 0
+		double final_do_intervalo
 	){
 		/*
 		Descrição:

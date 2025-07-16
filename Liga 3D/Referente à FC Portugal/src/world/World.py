@@ -352,9 +352,9 @@ class World:
             # Compute ball position, relative to torso
             self.ball_rel_torso_cart_pos = i_am_the_robot.head_to_body_part_transform("torso", self.ball_rel_head_cart_pos)
 
-        if self.vision_is_up_to_date:  # update vision based localization
+        if self.vision_is_up_to_date:  # update vision based ambientacao
 
-            # Prepare all variables for localization
+            # Prepare all variables for ambientacao
 
             feet_contact = np.zeros(6)
 
@@ -371,7 +371,7 @@ class World:
             posts_list = [[key in self.flags_posts, 0.0, *key, *self.flags_posts.get(key, (0, 0, 0))] for key in World.FLAGS_POSTS_POS]
             all_landmarks = np.array(corners_list + posts_list, float)
 
-            # Compute localization
+            # Compute ambientacao
 
             loc = ambientacao.localize_agent_pose(
                 i_am_the_robot.feet_toes_are_touching['lf'],
@@ -392,7 +392,7 @@ class World:
             me.state_abs_pos = i_am_the_robot.loc_head_position
             me.state_fallen = i_am_the_robot.loc_head_z < 0.3  # uses same criterion as for other teammates - not as reliable as player.behavior.is_ready("Get_Up")
             me.state_orientation = i_am_the_robot.loc_torso_orientation
-            me.state_ground_area = (i_am_the_robot.loc_head_position[:2], 0.2)  # relevant for localization demo
+            me.state_ground_area = (i_am_the_robot.loc_head_position[:2], 0.2)  # relevant for ambientacao demo
 
             # Save last ball position to history at every vision cycle (even if not up to date)
             self.ball_abs_pos_history.appendleft(self.ball_abs_pos)  # from vision or radio
@@ -476,7 +476,7 @@ class World:
             self.ball_2d_pred_vel = self.ball_2d_pred_vel[1:]
             self.ball_2d_pred_spd = self.ball_2d_pred_spd[1:]
 
-        i_am_the_robot.update_imu(self.time_local_ms)  # update imu (must be executed after localization)
+        i_am_the_robot.update_imu(self.time_local_ms)  # update imu (must be executed after ambientacao)
 
     def update_other_robot(self, other_robot: OtherRobot):
         """

@@ -173,8 +173,6 @@ LocalizerV2::run(){
 
     atualizar_estado_do_sistema(DONE);
 
-    printf("--------------------------------------");
-
     // Estatísticas da posição da bola
     if(
         mundo_existente.bola_detectada

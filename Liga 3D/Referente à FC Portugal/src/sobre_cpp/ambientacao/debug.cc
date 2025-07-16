@@ -206,7 +206,6 @@ localize_agent_pose(
         landmarks += 8;
     }
 
-
     mundo_existente.linhas_esfericas.clear();
 
     for(int i=0; i<lines_no; i++){
@@ -225,28 +224,28 @@ localize_agent_pose(
     // ================================================= 3. Prepare data to return
     
     float *ptr = retval;
-    // printf("\n-Head_to_Field\n");
+    printf("\n-Head_to_Field\n");
     for(int i=0; i<16; i++){
         ptr[i] = loc.Head_to_Field_Transform.conteudo[i];
-        // printf("\n(index, valor) = (%d, %.6lf)", i, ptr[i]);
+        printf("\n(index, valor) = (%d, %.8lf)", i, ptr[i]);
     }
-    // printf("\n");
+    printf("\n");
     ptr += 16;
-    // printf("\n-Field_to_Head-\n");
+    printf("\n-Field_to_Head-\n");
     for(int i=0; i<16; i++){
         ptr[i] = loc.Field_to_Head_Transform.conteudo[i];
-        // printf("\n(index, valor) = (%d, %.6lf)", i, ptr[i]);
+        printf("\n(index, valor) = (%d, %.8lf)", i, ptr[i]);
     }
     ptr += 16;
-    // printf("\n");
+    printf("\n");
 
     ptr[0] = (float) loc.is_uptodate;
     ptr[1] = loc.head_z;
     ptr[2] = (float) loc.is_head_z_uptodate;
 
-    // printf("\nis_uptodate = %f", ptr[0]);
-    // printf("\nhead_z = %f", ptr[1]);
-    // printf("\nis_head_z_uptodate = %f\n", ptr[2]);
+    printf("\nis_uptodate = %lf", ptr[0]);
+    printf("\nhead_z = %lf", ptr[1]);
+    printf("\nis_head_z_uptodate = %lf\n", ptr[2]);
 
     return retval;
 }

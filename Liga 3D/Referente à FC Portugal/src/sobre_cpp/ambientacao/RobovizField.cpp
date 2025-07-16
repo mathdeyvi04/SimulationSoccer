@@ -171,10 +171,6 @@ RobovizField::atualizar_marcadores(){
 	        - list_known_markers
 	        - list_segments
 	        - list_ground_markers
-	        - list_weighted_ground_markers
-	        - list_feet_contact_points
-	        - list_known_segments
-	        - list_unknown_markers
 	*/
 
 	// Não é necessário reservar espaço, já que os vetores irão expandir mais nos
@@ -353,19 +349,21 @@ RobovizField::atualizar_marcadores_por_transformacao( const Matriz4D& Head_to_Fi
 			if( error < min_error ) { error += calcular_dist_segm_para_pt2D_c( segm, linha_absoluta[1].to_2d() ); }
 
 			// Não é possível fazer o operador terciário...
-			if(
-				melhor_segm == nullptr
-			){
+			if(error < min_error){
+				if(
+					melhor_segm == nullptr
+				){
 
-				melhor_segm = &segm;
-			}
-			else{
+					melhor_segm = &segm;
+				}
+				else{
 
-				/*
-				Se houver mais de duas candidatas, devemos abortar.
-				*/
-				melhor_segm = nullptr;
-				break;
+					/*
+					Se houver mais de duas candidatas, devemos abortar.
+					*/
+					melhor_segm = nullptr;
+					break;
+				}
 			}
 		}
 

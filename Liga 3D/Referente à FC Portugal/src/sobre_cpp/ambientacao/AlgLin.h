@@ -42,7 +42,7 @@ Para nossa manipulação de matrizes.
 #define M_TAMANHO M_LINHAS * M_COLUNAS
 
 // Usamos para distância entre retas e segmentos de reta
-#define MIN_PARA_QUE_SEJAM_PARALELAS 1e-5
+#define MIN_PARA_QUE_SEJAM_PARALELAS 1e-8
 
 class Vetor2D  {
     /*
@@ -880,7 +880,7 @@ public:
         Observe que vamos comparar apenas as componentes esféricas, assim evitaremos 
         a propagação de erros.
         */
-        return ( ponto_inicial_esferica == outra_linha.ponto_inicial_esferica ) && ( ponto_final_esferica == outra_linha.ponto_final_esferica ); 
+        return ( this->ponto_inicial_esferica == outra_linha.ponto_inicial_esferica ) && ( this->ponto_final_esferica == outra_linha.ponto_final_esferica ); 
     }
 
     //////////////////////////////////////////////////////////////////////////////////////
@@ -951,7 +951,7 @@ public:
             ).CrossProduct(
                 ponto_qualquer_cart - ponto_final_cartesiano
             )
-        ).obter_modulo() / comprimento;
+        ).obter_modulo() / this->comprimento;
     }
 
     float 

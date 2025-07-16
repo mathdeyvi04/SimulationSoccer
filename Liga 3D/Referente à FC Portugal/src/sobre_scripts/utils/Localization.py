@@ -36,8 +36,8 @@ class Localization:
             self.script.batch_receive(slice(1, None))  # receive & update world state
 
             if p.world.vision_is_up_to_date:
-                if p.world.robot.loc_is_up_to_date:  # localization will draw the world of the last agent to be executed
-                    ambientacao.expose_runtime_data()  # print data received by the localization module
+                if p.world.robot.loc_is_up_to_date:  # ambientacao will draw the world of the last agent to be executed
+                    ambientacao.expose_runtime_data()  # print data received by the ambientacao module
                     ambientacao.illustrator(not p.world.team_side_is_left)  # draw visible elements
                     ambientacao.report_calculation_status(False)  # print report with stats
                     print("\nPress ctrl+c to return.")

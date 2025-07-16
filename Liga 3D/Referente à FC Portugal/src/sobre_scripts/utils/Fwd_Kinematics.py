@@ -68,7 +68,7 @@ class Fwd_Kinematics:
                         p.world.robot.cheat_abs_pos,
                         "Not enough visual data! Using IMU",
                         Draw.Color.red,
-                        "localization"
+                        "ambientacao"
                     )
 
                 # Para cada parte do corpo, desenha linha e anota o nome
@@ -112,7 +112,7 @@ class Fwd_Kinematics:
                         p.world.robot.cheat_abs_pos,
                         "Not enough visual data! Using IMU",
                         Draw.Color.red,
-                        "localization"
+                        "ambientacao"
                     )
 
                 zstep = 0.05
@@ -145,7 +145,7 @@ class Fwd_Kinematics:
                         p.world.robot.cheat_abs_pos,
                         "Not enough visual data! Using IMU",
                         Draw.Color.red,
-                        "localization"
+                        "ambientacao"
                     )
 
                 for key in p.world.robot.body_parts:

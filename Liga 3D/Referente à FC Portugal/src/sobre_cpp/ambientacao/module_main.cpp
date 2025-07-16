@@ -167,7 +167,7 @@ localize_agent_pose(
     O código original não levava isso em consideração e acessava
     elementos indefinidos.
     */
-    int lines_len = buffer_das_linhas.shape[0] / 6;  
+    int lines_len = buffer_das_linhas.shape[0];
     double *lines_ptr = (double *) buffer_das_linhas.ptr;
     world.linhas_esfericas.clear();
 

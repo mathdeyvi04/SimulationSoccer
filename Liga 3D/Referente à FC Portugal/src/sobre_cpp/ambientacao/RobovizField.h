@@ -76,7 +76,7 @@ public:
 
 		double x, y, z;
 		Vetor3D obter_vetor() const { return Vetor3D(x, y, z); }
-		void setar(	const sVetor3D& svet ){ x =  svet.x;  y = svet.y;  z = svet.z; }
+		void setar(	const sVetor3D& svet ){ x =  svet.x; y =  svet.y; z =  svet.z; }
 		void setar(	const Vetor3D& vetor ){ x = vetor.x; y = vetor.y; z = vetor.z; }
 	}; 
 

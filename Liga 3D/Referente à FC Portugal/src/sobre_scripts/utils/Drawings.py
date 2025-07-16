@@ -1,6 +1,7 @@
 from time import sleep
 from world.commons.Draw import Draw
 
+
 # Apenas um ambiente para apresentarmos como funcionará a funcionalidade de desenho.
 
 class Drawings:

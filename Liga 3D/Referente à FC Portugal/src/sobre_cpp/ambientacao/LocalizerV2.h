@@ -8,7 +8,8 @@ Vetor3D absoluteToRelativeCoordinates(const Vetor3D absoluteCoordinates) const;
 Vetor3D get_velocity(unsigned int n) const;
 void add_gsl_regression_sample(gsl_matrix* m, gsl_vector* v, int sample_no, const Vetor3D& relativeCoord, double absoluteCoord, double translCoeffMult=1);
 
-Atributos de Localizerv2
+Atributos de Localizerv2:
+
 std::array<Vetor3D, 10> position_history;
 unsigned int position_history_ptr = 0;
 float get_last_head_z() const;
@@ -589,9 +590,9 @@ private:
 	            
 	            // Erro é a soma das distâncias de um segmento de linha para ambos os extremos da linha observada
 	            float err = RobovizField::calcular_dist_segm_para_pt2D_c(segm,ponto_inicial_da_linha_abs.to_2d());
-	            if(err < min_err) err += RobovizField::calcular_dist_segm_para_pt2D_c(segm,ponto_final_da_linha_abs.to_2d());
+	            if(err < min_err) { err += RobovizField::calcular_dist_segm_para_pt2D_c(segm,ponto_final_da_linha_abs.to_2d()); }
 
-	            if(err < min_err) min_err = err;
+	            if(err < min_err) { min_err = err; }
 	        }
 
 	        total_err += min_err;
@@ -1001,7 +1002,7 @@ private:
 		gsl_vector* x =  criar_vetor_gsl<3>({initial_x, initial_y, initial_angle});    // Transformação inicial
 		gsl_vector* ss = criar_vetor_gsl<3>({0.02, 0.02, 0.03});                       // Define os tamanhos de passo iniciais
 		gsl_multimin_function minex_func = {map_error_euclidian_distance, 3, nullptr}; // Função de erro, número de variáveis, params
-		if(use_probabilities) minex_func.f = map_error_logprob;				           // Usa função de erro baseada em probabilidade
+		if(use_probabilities) { minex_func.f = map_error_logprob; } 		           // Usa função de erro baseada em probabilidade
 
 		const gsl_multimin_fminimizer_type *T = gsl_multimin_fminimizer_nmsimplex2;   // Tipo de algoritmo
 		gsl_multimin_fminimizer *s = gsl_multimin_fminimizer_alloc (T, 3);            // Aloca espaço de trabalho

@@ -489,7 +489,7 @@ class Radio:
         for c, ot in zip(players_combs, group):
             # Caso seja o próprio agente (self), só atualiza se não viu a si mesmo recentemente
             if ot.is_self:
-                # O mecanismo de self-localization é mais preciso que a informação vinda pelo rádio
+                # O mecanismo de self-ambientacao é mais preciso que a informação vinda pelo rádio
                 if r.loc_last_update < ago110ms:  # "Perdido" há mais de 2 ciclos visuais
                     data = Radio.get_player_position(c, Radio.TP)
                     if isinstance(data, tuple):
