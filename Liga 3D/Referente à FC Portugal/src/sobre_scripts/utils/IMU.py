@@ -196,7 +196,7 @@ class IMU:
         g = r.gyro / 50
         # Atualiza a matriz de rotação do torso para o campo usando o giro do IMU
         self.imu_torso_to_field_rotation[2].multiply(
-            Matrix_3x3.from_rotation_deg(g), in_place=True, reverse_order=True
+            Matriz3x3.create_sup_matrix_rotation(g), in_place=True, reverse_order=True
         )
         # Atualiza posição e velocidade do torso
         self.imu_torso_position[2][:] = self.imu_torso_next_position[2]
@@ -206,7 +206,7 @@ class IMU:
         # Corrige aceleração do IMU para coordenadas globais e soma gravidade
         self.imu_torso_acceleration[2] = self.imu_torso_to_field_rotation[2].multiply(r.acc) + Robot.GRAVITY
         # Atualiza transformações para torso e cabeça
-        self.imu_torso_to_field_transform[2] = Matrix_4x4.from_3x3_and_translation(
+        self.imu_torso_to_field_transform[2] = Matriz4x4.create_matrix_rot_and_trans(
             self.imu_torso_to_field_rotation[2], self.imu_torso_position[2]
         )
         self.imu_head_to_field_transform[2] = self.imu_torso_to_field_transform[2].multiply(
@@ -224,7 +224,7 @@ class IMU:
                 self.imu_torso_velocity[2] + self.imu_torso_acceleration[2] * 0.02
         )
         # Aplica fator de decaimento para estabilidade numérica
-        self.imu_torso_next_velocity[2] *= Robot.IMU_DECAY
+        #self.imu_torso_next_velocity[2] *= Robot.IMU_DECAY
 
     def compute_local_IMU_rotation_only(self):
         """
@@ -243,12 +243,12 @@ class IMU:
         g = r.gyro / 50
         # Atualiza matriz de rotação do torso para o campo usando apenas o giro do IMU
         self.imu_torso_to_field_rotation[1].multiply(
-            Matrix_3x3.from_rotation_deg(g), in_place=True, reverse_order=True
+            Matriz3x3.create_sup_matrix_rotation(g), in_place=True, reverse_order=True
         )
         # Atualiza posição do torso (usa localização visual/localizer)
         self.imu_torso_position[1][:] = r.loc_torso_position
         # Atualiza transformações para torso e cabeça
-        self.imu_torso_to_field_transform[1] = Matrix_4x4.from_3x3_and_translation(
+        self.imu_torso_to_field_transform[1] = Matriz4x4.create_matrix_rot_and_trans(
             self.imu_torso_to_field_rotation[1], self.imu_torso_position[1]
         )
         self.imu_head_to_field_transform[1] = self.imu_torso_to_field_transform[1].multiply(

@@ -31,8 +31,6 @@ Informações Importantes:
 
 ## Tipos de NAO
 
-**COLOCAR IMAGENS DOS RESPECTIVOS NAO's**
-
 * Tipo 0
   * NAO Padrão, 22 juntas.
 

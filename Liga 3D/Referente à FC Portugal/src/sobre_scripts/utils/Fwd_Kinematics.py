@@ -121,7 +121,7 @@ class Fwd_Kinematics:
                     zstep, zstep, 0, 0, zstep, zstep, 2 * zstep, 2 * zstep, 3 * zstep, 3 * zstep, 0, 0
                 ]
                 for j, transf in enumerate(p.world.robot.joints_transform):
-                    rp = transf.get_translation()
+                    rp = transf.obter_vetor_de_translacao()
                     pos = p.world.robot.loc_head_to_field_transform(rp, False)
                     j_name = str(j)
                     label_rp = np.array([rp[0] - 0.0001, rp[1] * 0.5, 0])
@@ -159,7 +159,7 @@ class Fwd_Kinematics:
                     x_axis = bpart_abs_pos((0.05, 0, 0), False)
                     y_axis = bpart_abs_pos((0, 0.05, 0), False)
                     z_axis = bpart_abs_pos((0, 0, 0.05), False)
-                    axes_0 = bpart_abs_pos.get_translation()
+                    axes_0 = bpart_abs_pos.obter_vetor_de_translacao()
                     p.world.draw.line(axes_0, x_axis, 2, Draw.Color.green_light, key, False)
                     p.world.draw.line(axes_0, y_axis, 2, Draw.Color.blue, key, False)
                     p.world.draw.line(axes_0, z_axis, 2, Draw.Color.red, key)

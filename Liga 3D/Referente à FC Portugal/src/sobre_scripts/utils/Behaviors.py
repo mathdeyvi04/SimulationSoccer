@@ -58,7 +58,7 @@ class Behaviors:
             Sincroniza o agente com o simulador, enviando o comando atual do robô e recebendo o novo estado do ambiente.
             Utilizado para garantir que comandos executados sejam processados e o ambiente esteja atualizado.
         """
-        for _ in range(5):
+        for _ in range(20):
             self.player.scom.commit_and_send(self.player.world.robot.get_command())
             self.player.scom.receive()
 
