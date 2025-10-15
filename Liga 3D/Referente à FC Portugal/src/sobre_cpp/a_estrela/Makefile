@@ -9,7 +9,7 @@ obj = $(src:.cpp=.o)
 CXXFLAGS = -O3 -shared -std=c++11 -fPIC -Wall $(PYBIND_INCLUDES)
 
 all: $(obj)
-	g++ $(CXXFLAGS) -o a_estrela.so $^
+	g++ -O3 $(CXXFLAGS) -o a_estrela.so $^
 
 teste:
 	g++ -g debug.cc -o main; ./main;

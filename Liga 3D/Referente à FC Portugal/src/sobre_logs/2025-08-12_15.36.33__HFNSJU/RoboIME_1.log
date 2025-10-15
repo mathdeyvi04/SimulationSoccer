@@ -1,0 +1,9 @@
+{Tue 15:36:33 Step:166} WorldParser.py: Obtive 'foul': bytearray(b'foul') at 62, 
+Msg: yOn))(foul 8)(GYR (n
+{Tue 15:36:39 Step:471} WorldParser.py: Obtive 'foul': bytearray(b'foul') at 62, 
+Msg: yOn))(foul 8)(GYR (n
+{Tue 15:36:42 Step:605} WorldParser.py: Received field line with NaNs [  nan   nan   nan 11.19 60.01 16.39]
+{Tue 15:36:58 Step:3} WorldParser.py: Obtive 'foul': bytearray(b'foul') at 84, 
+Msg: yOn))(foul 8)(foul 8
+{Tue 15:36:58 Step:3} WorldParser.py: Obtive 'foul': bytearray(b'foul') at 92, 
+Msg: ul 8)(foul 8)(GYR (n

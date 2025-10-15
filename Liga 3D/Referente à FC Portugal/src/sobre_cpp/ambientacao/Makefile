@@ -13,7 +13,7 @@ all: $(obj)
 	g++ $(CXXFLAGS) -o ambientacao.so $^ $(LDFLAGS) 
 
 teste: $(filter-out module_main.o, $(obj))
-	g++ -O0 -std=c++14 -Wall -g -o debug debug.cc $^ $(LDFLAGS); ./debug; rm -f $(obj) debug all
+	g++ -O3 -std=c++14 -Wall -g -o debug debug.cc $^ $(LDFLAGS); ./debug; rm -f $(obj) debug all
 
 .PHONY: clean
 

@@ -5,7 +5,6 @@ from sobre_scripts.commons.Script import Script
 from world.commons.Draw import Draw
 import numpy as np
 
-
 class Inv_Kinematics:
     """
     Descrição:
@@ -248,8 +247,9 @@ Examples:
                 player.world.robot.set_joints_target_position_direct(indices, values)
 
             # Envia comandos para o simulador e atualiza estado
-            player.scom.commit_and_send(player.world.robot.get_command())
-            player.scom.receive()
+            for _ in range(20):
+                player.scom.commit_and_send(player.world.robot.get_command())
+                player.scom.receive()
 
 
 

@@ -1,6 +1,6 @@
 # Sumário
 
-* [Instalando Dependências](#instalando-dependências-)
+* [Instalando Dependências](#instalando-dependências)
 
 * [Arquitetura Base do Código](#arquitetura-base-do-código)
     * [Explicando BashScripts](#explicando-bash-scripts)
@@ -9,7 +9,7 @@
 
 * [Arquitetura do Base_Agent](#arquitetura-do-base_agent)
 
-# Instalando Dependências 
+# Instalando Dependências
 
 Bibliotecas de manipulação de vetores e de dados.
 
