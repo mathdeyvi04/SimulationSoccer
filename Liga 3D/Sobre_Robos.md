@@ -12,11 +12,10 @@
 
 # Anatomia
 
-Os robôs apresentados são baseados no NAO
+Os robôs apresentados são baseados no NAO:
 
-<div align="center">
-<img src="https://github.com/user-attachments/assets/b3943863-4b2c-4942-bfc3-fcb2d27ae0a9" width="400"/>
-</div>
+![](https://github.com/user-attachments/assets/b3943863-4b2c-4942-bfc3-fcb2d27ae0a9)
+![](https://github.com/user-attachments/assets/b4fe648d-6e77-481b-927d-1c6efac3e5c8)
 
 Na prática, não existe comando como _correr_ ou _pular_, os comandos referenciam
 todos esses eixos e juntas e, com isso, controlamos o robô na simulação. Cada robô é

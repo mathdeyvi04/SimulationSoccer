@@ -1,5 +1,8 @@
 # Trilha de Construção
 
+Segue a ordem histórica de arquivos construídos. Observe que isso detalha também como 
+os arquivos se relacionam de cima para baixo.
+
 Relacionados ao Robô e seu comportamento
 - /sobre_cpp/
 - /math_ops/

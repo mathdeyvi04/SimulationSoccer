@@ -13,7 +13,7 @@ Para realizar operações de Machine Learning, é necessário que utilize:
 pip3 install stable-baselines3 gym shimmy
 ```
 
-# Dissertação Sobre Funcionalidades Individuais e Hierarquia
+# Legenda Rápida
 
 A seguir, uma breve explicação organizada dos arquivos e pastas do código.
 
@@ -51,10 +51,10 @@ necessário usar `make` antes.
 Arquivo específico **responsável pela portabilidade das aplicações para o Python**.
 
 Para compreender como o pybind funciona de verdade, sugiro verificar o arquivo 
-[module_main referente à estrela.cpp](../src/sobre_cpp/a_estrela/module_main.cpp).
+[module_main.cpp referente à estrela](../src/sobre_cpp/a_estrela/module_main.cpp).
 
 Caso deseje alterar algo, saiba que o _pybind somente aceitará caracteres ASCII_, 
-não tente colocar UTF-8 nas documentações ou nomes. Quando descobri isso, preferi reescrever inglês mesmo.
+não tente colocar UTF-8 nas documentações ou nomes. Quando descobri isso, preferi reescrever em inglês mesmo.
 
 Utilizando `help(nome_do_modulo)` pode-se obter mais informações sobre o módulo e 
 suas funcionalidades.
@@ -112,7 +112,7 @@ Classe responsável por aglutinar funções de rotação e de translação ligad
 * [InverseKinematics](../src/math_ops/InverseKinematics.py)
 
 Classe não-trivial responsável por gerenciar e calcular movimentos relativos ao corpo do robô, possuindo
-métodos relacionados à trajetória das pernas.
+métodos relacionados à trajetória das pernas, por exemplo.
 
 Apesar de ser construída a partir de uma entrada com classe específica, não há a importação explicíta
 dela, logo a construção desse arquivo não precisa depender de outros anteriores.
@@ -171,7 +171,7 @@ Classe responsável pelo gerenciamento das mensagens e conexões entre o agente 
 * [WorldParser.py](../src/communication/WorldParser.py)
 
 Classe focada na interpretação da mensagem raiz recebida pelo Servidor, conseguindo interpretá-la e
-interligar as informações com a classe World provida em `world/World.py`
+interligar as informações com a classe World provida em `world/World.py`.
 
 ---
 

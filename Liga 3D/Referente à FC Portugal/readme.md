@@ -21,6 +21,8 @@ ou o modificado da RoboIME.
     * [Código Completo Construído pela Equipe](https://github.com/m-abr/FCPCodebase)
 
         * Repositório da equipe responsável.
+  	
+	* Acredito que seja relevante também apresentar o [canal](https://www.youtube.com/@m_abreu/videos) representante da equipe, no qual é disponibilizado apresentações interessantes.
 
 * [Documentação Traduzida e Explicada Por Mim para Você](Visao_Superficial.md)
 

@@ -34,12 +34,12 @@ Apesar de estar obtendo valores iguais de resposta, os resultados temporais esta
 </div>
 
 Observe que em meu código, referente ao terminal `a_estrela`, o tempo médio de cada execução é aproximadamente
-o **dobro** do tempo para as mesmas execuções do código original, referente ao temrinal `a_star`.
+o **dobro** do tempo para as mesmas execuções do código original, referente ao terminal `a_star`.
 
 A partir dessa informação de perfomance, busquei comparar linha a linha dos códigos. Até que descobri o motivo:
 
 * Em meu código, por melhores práticas, achei necessário definir os construtores para a struct Node, 
-entretanto, apesar de ser uma boa prática e não influenciar o resultado final, a perfomance foi seriamente
+entretanto, apesar de ser uma boa prática e não influenciar o resultado, a perfomance foi seriamente
 prejudicada.
 
 Após comentar toda a parte referente aos construtores, pude verificar que:
