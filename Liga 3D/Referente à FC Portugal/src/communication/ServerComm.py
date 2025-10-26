@@ -6,6 +6,8 @@ from world.World import World
 import socket
 import time
 
+from communication.simulator_parser import parse_buffer 
+
 
 class ServerComm:
     """
@@ -241,6 +243,8 @@ class ServerComm:
 
             # Realiza o parsing da mensagem recebida, muito aloprado.
             self.world_parser.parse(self.rcv_buff[:msg_size])
+            # parse_buffer(self.rcv_buff[:msg_size])
+            # print(f"Traduzindo: \n{self.rcv_buff[:msg_size].decode("ascii")}")
 
             # Checa se ainda há dados disponíveis para leitura imediata no socket
             if len(select([self.socket], [], [], 0.0)[0]) == 0:

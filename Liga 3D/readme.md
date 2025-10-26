@@ -8,6 +8,10 @@
 * [Sobre Instalação do Setup da Competição e Primeiros Passos Para Um Time](Sobre_Setup.md)
   * Descrição sobre como instalar os softwares usados na competição.
 
+* [Sobre Simspark](https://gitlab.com/robocup-sim/SimSpark/-/wikis/home)
+  * Wiki do simulador da competição, acredito que enquanto desejarmos construir um código proprietário, esta
+  wiki é de extrema importância.
+
 * [Sobre RoboViz](Sobre_RoboViz.md)
   * Uma pequena documentação sobre as funções disponíveis do RoboViz, software usado como monitor para a simulação SimSpark.
 
