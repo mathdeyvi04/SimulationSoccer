@@ -6,9 +6,6 @@ from world.World import World
 import socket
 import time
 
-from communication.simulator_parser import parse_buffer 
-
-
 class ServerComm:
     """
     Descrição:
