@@ -2,4 +2,5 @@
 *.exe
 *.pyc
 *.log
-.gitignore
+rcssserver-19.0.0/
+.idea/
